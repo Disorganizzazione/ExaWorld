@@ -27,9 +27,15 @@ create table creature(
     dieta dietad default null
 );
 
+create view animali as select id, nome, comp, danno, sesso, dieta from creature where tipo = 'a';
+create view piante as select id, nome, comp from creature where tipo='v' ;
+create view carnivori as select id, nome, comp, danno, sesso from animali where dieta='c';
+create view erbivori as select id, nome, comp, danno, sesso from animali where dieta='e';
+create view onnivori as select id, nome, comp, danno, sesso from animali where dieta='o';
+
 create table erbivoro(
-    vegetale integer references creature on delete cascade,
     animale integer references creature on delete cascade,
+    vegetale integer references creature on delete cascade,
     primary key (animale,vegetale)
 );
 
