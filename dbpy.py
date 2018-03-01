@@ -10,10 +10,13 @@ class dbInterface(Datainterface):
             print("dbconnection fail")
         else:
             print("tutto bene")
-            return db.cousor()
+            return db.cursor()
 
-    def getTerrain(self):
-        record= getConnect().execute("select * from terreno");
+    def getTerrain(self,code):
+        cur = self.getConnect()
+
+        return cur.execute("select * from terreno where codice=%s ", (code))
 llonzo=dbInterface()
-db=llonzo.getConnect()
+db=llonzo.getTerrain(2)
+print("db");
 
