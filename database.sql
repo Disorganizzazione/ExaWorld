@@ -9,8 +9,12 @@ create domain tipod as char check(value='v' or value='a');
 create domain dietad as char check(value='e'or value='c' or value='o');
 create domain percent as integer check(value<=100 and value>=0);
 
+create SEQUENCE cod_terr;
+create SEQUENCE cod_comp;
+create SEQUENCE cod_creat;
+
 create table comportamento(
-    id           serial  primary key ,
+    id           integer primary key default NEXTVAL('cod_comp'),
     nome         varchar(100) not null,
     aggressività percent not null,
     dsimili      percent not null,
@@ -20,7 +24,7 @@ create table comportamento(
 
 
 create table creature(
-    id serial primary key,
+    id integer primary key default NEXTVAL('cod_creat'),
     nome varchar(50) not null,
     comp integer references comportamento on delete cascade,
     tipo tipod default 'v',
@@ -57,7 +61,7 @@ create table habitat(
 );
 
 create table terreno (
-    codice integer primary key,
+    codice integer primary key default NEXTVAL('cod_terr'),
     nome varchar(50) not null,
     tmin integer not null,
     tmax integer not null,
@@ -82,5 +86,5 @@ language plpgsql;
 create trigger certezza after insert on creature for each row execute procedure posto();
 
 \i popolare.sql;
-\copy creature from creature.txt;
+\copy creature (nome,tipo,danno,sesso,dieta)from creature.txt;
 
