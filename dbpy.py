@@ -13,7 +13,7 @@ class dbInterface(Datainterface):
             return db.cousor()
 
     def getTerrain(self):
-        with 
+        record= getConnect().execute("select * from terreno");
 llonzo=dbInterface()
 db=llonzo.getConnect()
 

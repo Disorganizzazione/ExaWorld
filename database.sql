@@ -42,18 +42,27 @@ create table erbivoro(
 );
 
 create table carnivoro(
-    predatore integer not null references creature on delete cascade,
-    preda integer not null references creature on delete cascade,
+    predatore integer references creature on delete cascade,
+    preda integer references creature on delete cascade,
     primary key (predatore,preda)
 );
 
 create table habitat(
-    creatura integer not null references creature on delete cascade,
+    creatura integer references creature on delete cascade,
     tmin integer not null,
     tmax integer not null,
     umin integer not null,
     umax integer not null,
     primary key(creatura)
+);
+
+create table terreno (
+    codice integer primary key,
+    nome varchar(50) not null,
+    tmin integer not null,
+    tmax integer not null,
+    umin integer not null,
+    umax integer not null
 );
 
 create function posto()returns trigger as $body$
