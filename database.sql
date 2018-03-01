@@ -1,4 +1,6 @@
-drop schema if exists World cascade;
+drop database if exists exaworld ;
+create database exaworld;
+\c exaworld;
 
 create schema World;
 set search_path to World ;
@@ -57,21 +59,11 @@ create table habitat(
 create function posto()returns trigger as $body$
 declare
     t1 integer not null := random()*100;
-    t2 integer not null := random()*100;
+    t2 integer not null := t1 + (10+random()*20);
     u1 integer not null := random()*100;
-    u2 integer not null := random()*100;
+    u2 integer not null := u1 + (10+random()*20);
     temp integer;
 begin
-    if t1>t2 then
-        temp:=t1;
-        t1:=t2;
-        t2:=temp;
-    end if;
-    if u1>u2 then
-        temp:=u1;
-        u1:=u2;
-        u2:=temp;
-    end if;
     insert into habitat(creatura, tmin, tmax, umin, umax) values (new.id, t1, t2, u1, u2);
     return null;
 end
