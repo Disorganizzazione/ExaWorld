@@ -33,11 +33,12 @@ create table creature(
     dieta dietad default null
 );
 
-create view animali as select id, nome, comp, danno, sesso, dieta from creature where tipo = 'a';
-create view piante as select id, nome, comp from creature where tipo='v' ;
-create view carnivori as select id, nome, comp, danno, sesso from animali where dieta='c';
-create view erbivori as select id, nome, comp, danno, sesso from animali where dieta='e';
-create view onnivori as select id, nome, comp, danno, sesso from animali where dieta='o';
+create view animali as select * from creature as x join comportamento as y on x.comp=y.id where tipo = 'a';
+create view piante as select * from creature as x join comportamento as y on x.comp=y.id where tipo='v' ;
+
+create view carnivori as select * from animali where dieta='c';
+create view erbivori as select * from animali where dieta='e';
+create view onnivori as select * from animali where dieta='o';
 
 create table erbivoro(
     animale integer references creature on delete cascade,
@@ -60,7 +61,7 @@ create table habitat(
     primary key(creatura)
 );
 
-create table terreno (
+create table terreno(
     codice integer primary key default NEXTVAL('cod_terr'),
     nome varchar(50) not null,
     tmin integer not null,
@@ -87,4 +88,3 @@ create trigger certezza after insert on creature for each row execute procedure 
 
 \i popolare.sql;
 \copy creature (nome,tipo,danno,sesso,dieta)from creature.txt;
-

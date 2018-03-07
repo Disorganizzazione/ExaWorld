@@ -12,11 +12,25 @@ class dbInterface(Datainterface):
             print("tutto bene")
             return db.cursor()
 
-    def getTerrain(self,code):
+    def getTerrain(self ,code):
         cur = self.getConnect()
+        cur.execute("select * from World.terreno as x where x.codice= %s ;" ,(code, ))
+        return cur.fetchone()
+    
+    def getPlant(self,code):
+        cur = self.getConnect()
+        cur.execute("select * from World.piante ;")
+        b=None
+        a=0
+        for a in range(0,code):
+            b=cur.fetchone()
+            if ( b == None):
+                return "fine"
+        return b    
 
-        return cur.execute("select * from terreno where codice=%s ", (code))
-llonzo=dbInterface()
-db=llonzo.getTerrain(2)
-print("db");
+db=dbInterface()
+print(db.getPlant(2))
+
+
+
 
