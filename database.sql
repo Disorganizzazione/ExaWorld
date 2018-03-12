@@ -17,7 +17,7 @@ create table comportamento(
     id           integer primary key default NEXTVAL('cod_comp'),
     nome         varchar(100) not null,
     aggressività percent not null,
-    dsimili      percent not null,
+    dsimili      percent not null, --FIIIIIIIILLLLLLLLLLL!!! >:(
     sedentarietà percent not null,
     riproduzione percent not null
 );
@@ -32,13 +32,6 @@ create table creature(
     sesso boolean default null,
     dieta dietad default null
 );
-
-create view animali as select * from creature as x join comportamento as y on x.comp=y.id where tipo = 'a';
-create view piante as select * from creature as x join comportamento as y on x.comp=y.id where tipo='v' ;
-
-create view carnivori as select * from animali where dieta='c';
-create view erbivori as select * from animali where dieta='e';
-create view onnivori as select * from animali where dieta='o';
 
 create table erbivoro(
     animale integer references creature on delete cascade,
@@ -70,6 +63,17 @@ create table terreno(
     umax integer not null
 );
 
+--popolazione
+\copy comportamento (nome, aggressività, dsimili, sedentarietà, riproduzione) from comportamento.txt;
+\copy creature (nome, comp, tipo,danno,sesso,dieta)from creature.txt; --il join qua dà problemi
+
+create view animali as select id, nome, comp, danno, sesso, dieta from creature where tipo = 'a';
+create view piante as select id, nome, comp from creature where tipo='v' ;
+
+create view carnivori as select * from animali where dieta='c';
+create view erbivori as select * from animali where dieta='e';
+create view onnivori as select * from animali where dieta='o';
+
 create function posto()returns trigger as $body$
 declare
     t1 integer not null := random()*100;
@@ -86,5 +90,3 @@ language plpgsql;
 
 create trigger certezza after insert on creature for each row execute procedure posto();
 
-\i popolare.sql;
-\copy creature (nome,tipo,danno,sesso,dieta)from creature.txt;

@@ -1,6 +1,6 @@
-a	a	30	false	c
-s	a	40	true 	e
-f	v	\N	\N	\N
-d	a	40	true	e
-q	v	\N	\N	\N
-e	v	\N	\N	\N
+a	1	a	30	false	c
+s	2	a	40	true 	e
+f	2	v	\N	\N	\N
+d	3	a	40	true	e
+q	1	v	\N	\N	\N
+e	3	v	\N	\N	\N
