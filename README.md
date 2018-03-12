@@ -1,2 +1,2 @@
 # ExaWorld
-Nome brutto e non definitivo
+ExaWorld, un progetto "per la simulazione di un ecosistema virtuale"
