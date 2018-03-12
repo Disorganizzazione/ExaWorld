@@ -67,6 +67,7 @@ create table terreno(
 \copy comportamento (nome, aggressività, dsimili, sedentarietà, riproduzione) from comportamento.txt;
 \copy creature (nome, comp, tipo,danno,sesso,dieta)from creature.txt; --il join qua dà problemi
 
+--viste
 create view animali as select id, nome, comp, danno, sesso, dieta from creature where tipo = 'a';
 create view piante as select id, nome, comp from creature where tipo='v' ;
 
@@ -74,6 +75,7 @@ create view carnivori as select * from animali where dieta='c';
 create view erbivori as select * from animali where dieta='e';
 create view onnivori as select * from animali where dieta='o';
 
+--trigger
 create function posto()returns trigger as $body$
 declare
     t1 integer not null := random()*100;

@@ -18,28 +18,6 @@ class dbInterface(Datainterface):
         return cur.fetchone()
     
     def searchCode(self, code, cur):
-        pass
-    #NON SIAMO CAPACI A CHIAMARE UNA FUNZIONE DENTRO AD UN'ALTRA
-    def getPlant(self,code):
-        cur = self.getConnect()
-        cur.execute("select * from World.piante join World.comportamento "+
-        "on World.comportamento.id=World.piante.comp;")
-        b=None
-        for a in cur:
-            if (code!=a[0]):
-                continue  
-            else:
-                b=a
-                break
-        if (b==None):
-            return "fine"
-        else:
-            return b
-    
-    def getHerbivore(self, code):
-        cur = self.getConnect()
-        cur.execute("select * from World.erbivori join World.comportamento "+
-        "on World.comportamento.id=World.erbivori.comp;")
         b=None
         for a in cur:
             if (code!=a[0]):
@@ -52,17 +30,31 @@ class dbInterface(Datainterface):
         else:
             return b
 
+    def getPlant(self,code):
+        cur = self.getConnect()
+        cur.execute("select * from World.piante as pi join World.comportamento as co on co.id=pi.comp;")
+        return self.searchCode(code, cur)
+
+    def getHerbivore(self, code):
+        cur = self.getConnect()
+        cur.execute("select * from World.erbivori as er join World.comportamento as co on co.id=er.comp;")
+        return self.searchCode(code, cur)
+
     def getCarnivorous(self, code):
-        pass
+        cur = self.getConnect()
+        cur.execute("select * from World.carnivori as ca join World.comportamento as co on co.id=ca.comp;")
+        return self.searchCode(code, cur)
+
     def getOmnivorous(self, code):
-        pass
+        cur = self.getConnect()
+        cur.execute("select * from World.onnivori as om join World.comportamento as co on co.id=om.comp;")
+        return self.searchCode(code, cur)
 
 db=dbInterface()
 
-print(db.getPlant(3))
-    
+print(db.getPlant(5)) 
 print(db.getHerbivore(2))
-
+print(db.getOmnivorous(6))
 
 
 

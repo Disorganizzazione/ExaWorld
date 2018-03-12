@@ -5,6 +5,8 @@ class Datainterface:
         pass
     def getTerrain(self):
         pass
+    def searchCode(self):
+        pass
     def getPlant(self):
         pass
     def getHerbivore(self):
