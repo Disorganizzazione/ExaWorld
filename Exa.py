@@ -1,25 +1,18 @@
 class Exa():
-    E=None
-    X=None
-    A=None
+    E, X, A
     
     def __init__(self, gon=None, E=None,X=None,A=None):
         if gon is None:
-            if (E == None and X==None and A==None):
-                E=0
-                X=0
-                A=0
-            else:
-                self.E=E
-                self.X=X
-                self.A=A
-                self.redux()      
+            self.E = E==None?0:E
+            self.X = X==None?0:X
+            self.A = A==None?0:A
+            self.redux()      
         else:
-            E= gon.E
-            X= gon.X
-            A= gon.A
+            self.E = gon.E
+            self.X = gon.X
+            self.A = gon.A
             
-    def redux(self):
+    def redux(self): 
         pass
     
     
