@@ -1,12 +1,13 @@
 class Exa():
     E, X, A
-    
-    def __init__(self, gon=None, E=None,X=None,A=None):
-        if gon is None:
-            self.E = E==None?0:E
-            self.X = X==None?0:X
-            self.A = A==None?0:A
-            self.redux()      
+    def __init__(self,E=0,X=0,A=0):
+        if E.isInteger():
+            self.E = E
+            self.X = X
+            self.A = A
+            self.redux()
+        #serve un altro controllo
+		# isinstance(E, Exa)
         else:
             self.E = gon.E
             self.X = gon.X
@@ -19,7 +20,4 @@ class Exa():
     def redux(self): 
         redx = 0
         #find the coord with intermediate value
-        #if (E<=A and E>=X or E<=X and E>=A)
-
-
-
+        #temp = sorted([E,X,A])
