@@ -12,11 +12,14 @@ class Exa():
             self.X = gon.X
             self.A = gon.A
             
+    def vector(self, E, X, A):
+        return Exa(, E, X, A)
+    
+    #coordinates reductor to a minimal form
     def redux(self): 
-        pass
-    
-    
-
+        redx = 0
+        #find the coord with intermediate value
+        #if (E<=A and E>=X or E<=X and E>=A)
 
 
 
