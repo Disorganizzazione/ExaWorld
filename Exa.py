@@ -85,7 +85,7 @@ class Exa:
         self.redux()
     def d(self):
         self.a -= 1
-        self.redux()
+        self.redux(cambiamenti vari a Exa.py)
     def x(self):
         self.x += 1
         self.redux()
