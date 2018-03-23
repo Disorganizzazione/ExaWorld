@@ -78,20 +78,27 @@ class Exa:
     # TODO: forse si può evitare di fare 6 metodi, ne farei 1 solo.
     # TODO: Esempio: move_to('lettera') con uno switch/case
     def w(self):
+    def w_(self):
         self.x -= 1
         self.redux()
     def e(self):
+    def e_(self):
         self.e += 1
         self.redux()
     def d(self):
+    def d_(self):
         self.a -= 1
         self.redux(cambiamenti vari a Exa.py)
     def x(self):
+        self.redux()
+    def x_(self):
         self.x += 1
         self.redux()
     def z(self):
+    def z_(self):
         self.e -= 1
         self.redux()
     def a(self):
+    def a_(self):
         self.a += 1
         self.redux()
