@@ -29,6 +29,10 @@ class Exa:
     def get_a(self):
         return self.a
 
+    def compare(self, exa):
+        return self.e == exa.get_e() and self.x == exa.get_x() and self.a == exa.get_a()
+
+
     # turn 3 numbers into an Exa object
     @staticmethod
     def vector(e, x, a):
@@ -93,3 +97,7 @@ class Exa:
     def a_(self):
         self.a += 1
         self.redux()
+
+    def __str__(self):
+        result = f"({self.e}, {self.x}, {self.a})"
+        return result
