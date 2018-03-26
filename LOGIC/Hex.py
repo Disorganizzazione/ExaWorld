@@ -1,5 +1,6 @@
 from Exa import *
 from Xel import *
+import copy
 
 class Hex:
 
@@ -11,9 +12,9 @@ class Hex:
             radius = 0
         self.radius = radius
         self.origin = Xel()
-        self.position = self.origin
+        self.position = copy.deepcopy(self.origin.gon)
 
-        temp = self.origin
+        temp = copy.deepcopy(self.origin)
         for r in range(radius):
             # first one
             if r > 0:
@@ -32,7 +33,6 @@ class Hex:
             temp = temp.link(5)
             for l in range(r+1):
                 temp = temp.link(15)
-
     def get_position(self):
         return self.position
 
@@ -49,16 +49,16 @@ class Hex:
         for i in range(-self.radius, self.radius+1):
             for j in range(abs(i)):
                 result += " "
-            temp = self.origin.access(vector.inv())
-            print(f"p: {self.position.gon}")
-            print(f"0: {temp.gon}")
+            temp =  copy.deepcopy(self.origin.access(vector.inv()))
+            print("quiiii", temp.gon)
             for j in range(ra):
                 str = ". "
-                if temp.gon == self.position.gon:
+                if temp.gon == self.position:
+                    print("VAFFANCULO")
                     str = "o "
+                print(f"temp={temp.gon}, position={self.position}")
                 result += str
                 temp = temp.d
-                print(f"{j}: {temp.gon}")
             if i < 0:
                 vector.z_()
                 ra += 1
@@ -148,6 +148,9 @@ class Hex:
                 temp.kill()'''
 
 #prova
-mappa = Hex(3)
+mappa = Hex(5)
 print(mappa)
-print(mappa.get_position().gon)
+print(mappa.get_position())
+mappa.set_position(Exa(0,0,1))
+print(mappa.get_position())
+print(mappa)
