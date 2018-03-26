@@ -135,10 +135,11 @@ class Xel:
         elif phase == 5:
             return self.w
     
-    def access(self, exa):
+    def access(self, exa): #MACHECOS fa questa funzione?
         """TODO"""
         temp = self
-        #
+        #print(f"Hex.__str__: t\n")
+        print(f"Xel.acces: temp={temp.gon}, exa={exa}")
         while exa.get_e() != 0:
             if exa.get_e() > 0:
                 exa.z_()
@@ -162,6 +163,7 @@ class Xel:
             else:
                 exa.a_()
                 temp = temp.a
+        print(f"Xel.acces: temp={temp.gon}, exa={exa}") #ACCESS rende exa=0,0,0, lasciando tmp=0,0,0
         return temp
 
         

@@ -49,14 +49,10 @@ class Hex:
         for i in range(-self.radius, self.radius+1):
             for j in range(abs(i)):
                 result += " "
-            temp =  copy.deepcopy(self.origin.access(vector.inv()))
-            print("quiiii", temp.gon)
+            temp =  copy.deepcopy(self.origin.access(vector.inv())) #QUI il problema, tmp è sempre 0,0,0
+            print(f"Hex.__str__: temp={temp.gon}, position={self.position}\n")
             for j in range(ra):
-                str = ". "
-                if temp.gon == self.position:
-                    print("VAFFANCULO")
-                    str = "o "
-                print(f"temp={temp.gon}, position={self.position}")
+                str = "o " if temp.gon.compare(self.position) else ". "
                 result += str
                 temp = temp.d
             if i < 0:
