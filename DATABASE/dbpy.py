@@ -2,6 +2,8 @@ from dinterface import *
 import psycopg2
 
 class dbInterface(Datainterface):
+    def __init__(self):
+        super().__init__()
     def getConnect(self):     
         conn="dbname='exaworld' user='postgres' host='localhost' "
         try:
