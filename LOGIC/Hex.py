@@ -11,6 +11,7 @@ class Hex:
             radius = 0
         self.radius = radius
         self.origin = Xel()
+        self.position = self.origin
 
         temp = self.origin
         for r in range(radius):
@@ -31,6 +32,42 @@ class Hex:
             temp = temp.link(5)
             for l in range(r+1):
                 temp = temp.link(15)
+
+    def get_position(self):
+        return self.position
+
+    def set_position(self, exa=Exa(0,0,0)):
+        self.position = exa
+
+    def __str__(self):
+        """TODO descrizione"""
+        result = ""
+        ra = self.radius + 1
+        vector = Exa(0, -self.radius, 0)
+
+        # TODO: check if cycle is correct
+        for i in range(-self.radius, self.radius+1):
+            for j in range(abs(i)):
+                result += " "
+            temp = self.origin.access(vector.inv())
+            print(f"p: {self.position.gon}")
+            print(f"0: {temp.gon}")
+            for j in range(ra):
+                str = ". "
+                if temp.gon == self.position.gon:
+                    str = "o "
+                result += str
+                temp = temp.d
+                print(f"{j}: {temp.gon}")
+            if i < 0:
+                vector.z_()
+                ra += 1
+            else:
+                vector.x_()
+                ra -= 1
+            result += "\n"
+        return result
+
     '''
     def act(self):
         """TODO descrizione"""
@@ -110,31 +147,7 @@ class Hex:
                 temp = temp.move(6)
                 temp.kill()'''
 
-    def __str__(self):
-        """TODO descrizione"""
-        result = ""
-        ra = self.radius + 1
-        vector = Exa(0, -self.radius, 0)
-
-        # TODO: check if cycle is correct
-        for i in range(-self.radius, self.radius+1):
-            for j in range(abs(i)):
-                result += " "
-            temp = self.origin.access(vector.inv())
-            for j in range(ra):
-                str = ". "
-                result += str
-                temp = temp.d
-            if i < 0:
-                vector.z_()
-                ra += 1
-            else:
-                vector.x_()
-                ra -= 1
-            result += "\n"
-        return result
-
-
 #prova
-mappa = Hex(10)
+mappa = Hex(3)
 print(mappa)
+print(mappa.get_position().gon)
