@@ -4,10 +4,10 @@ class Exa:
     # The argument of constructor should be a single Exa object or 3 int
     def __init__(self, *args):
         # Constructor with 1 parameter, Exa object
-        if len(args) == 1 and isinstance(args, Exa):
-            self.e = args.e
-            self.x = args.x
-            self.a = args.a
+        if len(args) == 1 and isinstance(args[0], Exa):
+            self.e = args[0].e
+            self.x = args[0].x
+            self.a = args[0].a
         # Constructor with 3 parameters, if they're all int
         elif len(args) == 3 and all(isinstance(a, int) for a in args):
             self.e = args[0]
