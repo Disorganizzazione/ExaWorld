@@ -1,3 +1,5 @@
+from Exa import *
+from Xel import *
 
 class Hex:
 
@@ -15,10 +17,10 @@ class Hex:
             # first one
             if r > 0:
                 temp = temp.link(6)
-                for l in range(r-1):
+                for _ in range(r-1):
                     temp = temp.link(16)
             # 4 slices
-            for v in range(1,5):
+            for v in range(1, 5):
                 if r == 0 and v == 1:
                     temp = temp.link(0)
                 else:
@@ -29,12 +31,12 @@ class Hex:
             temp = temp.link(5)
             for l in range(r+1):
                 temp = temp.link(15)
-
+    '''
     def act(self):
         """TODO descrizione"""
-        temp = origin
+        temp = self.origin
         temp.law()
-        for r in range(radius-1):
+        for r in range(self.radius-1):
             if r > 0:
                 temp = temp.move(6)
                 temp.law()
@@ -56,9 +58,9 @@ class Hex:
             for l in range(r+1):
                 temp = temp.move(6)
                 temp.law()
-        temp = origin
+        temp = self.origin
         temp.time()
-        for r in range(radius-1):
+        for r in range(self.radius-1):
             if r > 0:
                 temp = temp.move(6)
                 temp.time()
@@ -83,9 +85,9 @@ class Hex:
 
     def reset(self):
         """TODO descrizione"""
-        temp = origin
+        temp = self.origin
         temp.kill()
-        for r in range(radius-1):
+        for r in range(self.radius-1):
             if r > 0:
                 temp = temp.move(6)
                 temp.kill()
@@ -106,28 +108,33 @@ class Hex:
             temp.kill()
             for l in range(r+1):
                 temp = temp.move(6)
-                temp.kill()
+                temp.kill()'''
 
-    def print(self):
+    def __str__(self):
         """TODO descrizione"""
-        ra = radius + 1
-        vector = Exa(0, -radius, 0)
+        result = ""
+        ra = self.radius + 1
+        vector = Exa(0, -self.radius, 0)
 
         # TODO: check if cycle is correct
-        for i in range(-radius, radius+1):
+        for i in range(-self.radius, self.radius+1):
             for j in range(abs(i)):
-                print(" ")
-            temp = origin.access(vector.inv())
+                result += " "
+            temp = self.origin.access(vector.inv())
             for j in range(ra):
                 str = ". "
-                if temp.getLife():
-                    str = "o "
-                print(str)
+                result += str
                 temp = temp.d
             if i < 0:
-                vector.z()
+                vector.z_()
                 ra += 1
             else:
-                vector.x()
+                vector.x_()
                 ra -= 1
-            print("\n")
+            result += "\n"
+        return result
+
+
+#prova
+mappa = Hex(10)
+print(mappa)
