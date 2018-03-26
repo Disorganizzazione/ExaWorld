@@ -1,5 +1,5 @@
 
-class Datainterface:
+class DBInterface:
 
     def getConnect(self):
         pass

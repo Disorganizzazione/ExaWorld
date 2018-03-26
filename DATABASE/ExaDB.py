@@ -1,7 +1,7 @@
-from dinterface import *
+from DBInterface import *
 import psycopg2
 
-class dbInterface(Datainterface):
+class ExaDB(DBInterface):
     def __init__(self):
         super().__init__()
     def getConnect(self):     
@@ -52,7 +52,7 @@ class dbInterface(Datainterface):
         cur.execute("select * from World.onnivori as om join World.comportamento as co on co.id=om.comp;")
         return self.searchCode(code, cur)
 
-db=dbInterface()
+db=ExaDB()
 
 print(db.getPlant(5)) 
 print(db.getHerbivore(2))

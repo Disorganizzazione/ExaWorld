@@ -1,6 +1,5 @@
-import Exa
-import Xel
-import ExaWorld.DATABASE.dbpy
+from Exa import *
+from Xel import *
 
 class Hex:
 
