@@ -70,7 +70,7 @@ class Xel:
             x= Xel(self) #2
             self.x.w= self #double link
             self.x.gon.x_()
-            self.x.a= z #2.1
+            self.x.a= self.z #2.1
             self.z.d= x #double link
             self.x.z= self.z.x #create the middle point on the link X-Z
             self.z.x.e= self.x #create link from Z to the middle point and from the middle point to X
@@ -79,7 +79,7 @@ class Xel:
             z= Xel(self) #3
             self.z.e= self #double link
             self.z.gon.z_()
-            self.z.w= a #3.1
+            self.z.w= self.a #3.1
             self.a.x= z #double link
             self.z.a= self.a.z #create the middle point on the link Z-A
             self.a.z.d= self.z #create link from A to the middle point and from the middle point to Z
@@ -88,7 +88,7 @@ class Xel:
             a= Xel(self) #4
             self.a.d= self #double link
             self.a.gon.a_()
-            self.a.e= w #4.1
+            self.a.e= self.w #4.1
             self.w.z= a #double link
             self.a.w= self.w.a #create the middle point on the  link A-W
             self.w.a.x= self.a #create link from W to the middle point and from the middle point to A
@@ -97,7 +97,7 @@ class Xel:
             w= Xel(self) #5
             self.w.x= self #double link
             self.w.gon.w_()
-            self.w.d= e #5.1
+            self.w.d= self.e #5.1
             self.e.a= w #double link
             self.w.e= self.e.w #create the middle point on the  link W-E
             self.e.w.z= self.w #create link from E to the middle point and from the middle point to W
@@ -106,7 +106,7 @@ class Xel:
             e= Xel(self) #6
             self.e.z= self #double link
             self.e.gon.e_()
-            self.e.x= d #6.1
+            self.e.x= self.d #6.1
             self.d.w= e #double link
             self.e.d= self.d.e #create the middle point on the  link E-D
             self.d.e.a= self.e #create link from D to the middle point and from the middle point to E
@@ -115,7 +115,7 @@ class Xel:
             d= Xel(self) #1
             self.d.a= self #double link
             self.d.gon.d_()
-            self.d.z= x #1.1
+            self.d.z= self.x #1.1
             self.x.e= d #double link
             self.d.x= self.x.d #create the middle point on the  link D-X
             self.x.d.w= self.d #create link from X to the middle point and from the middle point to D
@@ -135,14 +135,44 @@ class Xel:
         elif phase == 5:
             return self.w
     
-    def access(self, vect):
-        pass
+    def access(self, exa):
+        """TODO"""
+        temp = self
+        #
+        while exa.get_e() != 0:
+            if exa.get_e() > 0:
+                exa.z_()
+                temp = temp.z
+            else:
+                exa.e_()
+                temp = temp.e
+        #
+        while exa.get_x() != 0:
+            if exa.get_x() > 0:
+                exa.w_()
+                temp = temp.w
+            else:
+                exa.x_()
+                temp = temp.x
+        #
+        while exa.get_a() != 0:
+            if exa.get_a() > 0:
+                exa.d_()
+                temp = temp.d
+            else:
+                exa.a_()
+                temp = temp.a
+        return temp
 
         
 
 ori=Xel()
 print(ori.link(0))
 xel=Xel(ori)
-print(xel.link(2))
-
+for i in range(1,7):
+    xel = xel.link(i)
+    print(f"{i}: {xel}")
+for i in range(11, 17):
+    xel = xel.link(i)
+    print(f"{i}: {xel}")
 
