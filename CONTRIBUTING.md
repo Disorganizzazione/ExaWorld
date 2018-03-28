@@ -1,5 +1,5 @@
 
-    
+### GIT
 ### Per creare un nuovo branch:
     1. git branch <nome_branch>
     2. git checkout <nome_branch>
@@ -20,3 +20,11 @@
     git checkout master
     git merge <nome_branch>
     git push
+
+
+
+### PYTHON
+### Per fare import di un file appartenente ad una cartella diversa da quella corrente
+    import sys
+    sys.path.append('..')
+    from Cartella import *
