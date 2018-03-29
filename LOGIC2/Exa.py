@@ -14,8 +14,6 @@ class Exa:
             self.x = 0
             self.a = 0
 
-<<<<<<< HEAD
-=======
     #Invert exa's coordinates
     def __neg__(self):
         return Exa(-self.e, -self.x, -self.a)
@@ -45,13 +43,29 @@ class Exa:
     def distance(self, exa):
         return len(self-exa)
     
-    
-    
-exa1=Exa(2,0,-2)
-exa1=Exa(3,0,-3)
-exa2=Exa(-1,1,0)
-print(len(exa1))    
-print(exa1.distance(exa2))    
->>>>>>> ef9d7c210910209019ec100c2cd9decb1eceb05e
+    def Q(self):
+        self.e=self.e + 1
+        self.x = self.x -1
+    def W(self):
+        self.e=self.e + 1
+        self.a = self.a -1
+    def E(self):
+        self.x=self.x + 1
+        self.a = self.a -1
+    def D(self):
+        self.e=self.e - 1
+        self.x = self.x +1
+    def S(self):
+        self.e=self.e - 1
+        self.a = self.a +1  
+    def A(self):
+        self.x=self.x - 1
+        self.a = self.a +1
+
+exa1=Exa()
+print(exa1)
+exa1.A()
+exa1.A()
+print(exa1)
         
             
