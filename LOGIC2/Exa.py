@@ -26,8 +26,6 @@ class Exa:
     #- operator
     def __sub__(self, other):
         return Exa(self.e - other.e, self.x - other.x , self.a - other.a)
-    
-
      
     # return an Exa which is the origin-specular version of the current Exa
     @staticmethod
@@ -43,12 +41,29 @@ class Exa:
     def distance(self, exa):
         return len(self-exa)
     
-    
-    
-exa1=Exa(2,0,-2)
-exa1=Exa(3,0,-3)
-exa2=Exa(-1,1,0)
-print(len(exa1))    
-print(exa1.distance(exa2))    
+    def Q(self):
+        self.e=self.e + 1
+        self.x = self.x -1
+    def W(self):
+        self.e=self.e + 1
+        self.a = self.a -1
+    def E(self):
+        self.x=self.x + 1
+        self.a = self.a -1
+    def D(self):
+        self.e=self.e - 1
+        self.x = self.x +1
+    def S(self):
+        self.e=self.e - 1
+        self.a = self.a +1  
+    def A(self):
+        self.x=self.x - 1
+        self.a = self.a +1
+
+exa1=Exa()
+print(exa1)
+exa1.A()
+exa1.A()
+print(exa1)
         
             
