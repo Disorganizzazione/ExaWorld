@@ -14,6 +14,7 @@ class Xel:
         self.x = self
         self.z = self
         self.a = self
+        print("nuovo xel=",self.gon)
 
     def link(self, phase): #network generation
         #one link
@@ -134,11 +135,15 @@ class Xel:
             return self.a
         elif phase == 5:
             return self.w
+        else: return None
     
-    def access(self, exa):
+    def access(self, exa): #MACHECOS fa questa funzione?
         """TODO"""
         temp = self
-        #
+        print("self=",self.gon)
+        #print(f"Hex.__str__: t\n")
+        assert isinstance(exa, Exa)
+        print(f"Xel.acces: temp={temp.gon}, exa={exa}")
         while exa.get_e() != 0:
             if exa.get_e() > 0:
                 exa.z_()
@@ -146,6 +151,7 @@ class Xel:
             else:
                 exa.e_()
                 temp = temp.e
+            print(f"----wh1: temp={temp.gon}, exa={exa}")
         #
         while exa.get_x() != 0:
             if exa.get_x() > 0:
@@ -154,6 +160,7 @@ class Xel:
             else:
                 exa.x_()
                 temp = temp.x
+            print(f"----wh1: temp={temp.gon}, exa={exa}")
         #
         while exa.get_a() != 0:
             if exa.get_a() > 0:
@@ -162,17 +169,32 @@ class Xel:
             else:
                 exa.a_()
                 temp = temp.a
+            print(f"----wh1: temp={temp.gon}, exa={exa}")
+        print(f"Xel.acces: temp={temp.gon}, exa={exa}") #ACCESS rende exa=0,0,0, lasciando tmp=0,0,0
         return temp
 
-        
+cella = Xel()
+tempio = cella
+print("tempio",tempio.gon)
+for r in range(2):
+        # first one
+    if r > 0:
+        tempio = tempio.link(6)
+        for _ in range(r-1):
+            tempio = tempio.link(16)
+        # 4 slices
+    for v in range(1, 5):
+        if r == 0 and v == 1:
+            tempio = tempio.link(0)
+        else:
+            tempio = tempio.link(v)
+        for l in range(r):
+            tempio = tempio.link(v + 10)
+        # last one
+    tempio = tempio.link(5)
+    for l in range(r+1):
+        tempio = tempio.link(15)
 
-ori=Xel()
-print(ori.link(0))
-xel=Xel(ori)
-for i in range(1,7):
-    xel = xel.link(i)
-    print(f"{i}: {xel}")
-for i in range(11, 17):
-    xel = xel.link(i)
-    print(f"{i}: {xel}")
+tempio=tempio.access(Exa(0,5,0))
 
+print(tempio.gon)

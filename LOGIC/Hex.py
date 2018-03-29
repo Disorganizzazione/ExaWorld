@@ -1,5 +1,6 @@
 from Exa import *
 from Xel import *
+import copy
 
 class Hex:
 
@@ -11,8 +12,9 @@ class Hex:
             radius = 0
         self.radius = radius
         self.origin = Xel()
+        self.position = copy.deepcopy(self.origin.gon)
 
-        temp = self.origin
+        temp = copy.deepcopy(self.origin)
         for r in range(radius):
             # first one
             if r > 0:
@@ -31,6 +33,37 @@ class Hex:
             temp = temp.link(5)
             for l in range(r+1):
                 temp = temp.link(15)
+    def get_position(self):
+        return self.position
+
+    def set_position(self, exa=Exa(0,0,0)):
+        self.position = exa
+
+    def __str__(self):
+        """TODO descrizione"""
+        result = ""
+        ra = self.radius + 1
+        vector = Exa(0, -self.radius, 0)
+        #print(f"Hex.__str__: temp={temp.gon}, position={self.position}\n")
+        # TODO: check if cycle is correct
+        for i in range(-self.radius, self.radius+1):
+            for j in range(abs(i)):
+                result += " "
+            temp = self.origin.access(vector.inv()) #QUI il problema, tmp è sempre 0,0,0
+            print(f"Hex.__str__: temp={temp.gon}, position={self.position}\n")
+            for j in range(ra):
+                str = "o " if temp.gon.compare(self.position) else ". "
+                result += str
+                temp = temp.d
+            if i < 0:
+                vector.z_()
+                ra += 1
+            else:
+                vector.x_()
+                ra -= 1
+            result += "\n"
+        return result
+
     '''
     def act(self):
         """TODO descrizione"""
@@ -110,31 +143,17 @@ class Hex:
                 temp = temp.move(6)
                 temp.kill()'''
 
-    def __str__(self):
-        """TODO descrizione"""
-        result = ""
-        ra = self.radius + 1
-        vector = Exa(0, -self.radius, 0)
-
-        # TODO: check if cycle is correct
-        for i in range(-self.radius, self.radius+1):
-            for j in range(abs(i)):
-                result += " "
-            temp = self.origin.access(vector.inv())
-            for j in range(ra):
-                str = ". "
-                result += str
-                temp = temp.d
-            if i < 0:
-                vector.z_()
-                ra += 1
-            else:
-                vector.x_()
-                ra -= 1
-            result += "\n"
-        return result
-
-
 #prova
-mappa = Hex(10)
+mappa = Hex(2)
+print(mappa.get_position())
 print(mappa)
+
+mappa.set_position(Exa(1,0,0))
+#mappa.origin= mappa.origin.move(1)
+print(mappa.get_position())
+print(mappa)
+
+mappa.set_position(Exa(1,1,0))
+print(mappa.get_position())
+print(mappa)
+

@@ -31,6 +31,10 @@ class Exa:
     def get_a(self):
         return self.a
 
+    def compare(self, exa):
+        return self.e == exa.get_e() and self.x == exa.get_x() and self.a == exa.get_a()
+
+
     # turn 3 numbers into an Exa object
     @staticmethod
     def vector(e, x, a):
@@ -79,26 +83,34 @@ class Exa:
     # TODO: Esempio: move_to('lettera') con uno switch/case
     def w(self):
     def w_(self):
-        self.x -= 1
+        self.x = self.x -1
         self.redux()
     def e(self):
     def e_(self):
-        self.e += 1
+        self.e = self.e +1
         self.redux()
     def d(self):
     def d_(self):
+<<<<<<< HEAD
         self.a -= 1
         self.redux(cambiamenti vari a Exa.py)
     def x(self):
+=======
+        self.a = self.a -1
+>>>>>>> 78a6ce89aa6f687a314b94bce29009da4afe3aa7
         self.redux()
     def x_(self):
-        self.x += 1
+        self.x = self.x + 1
         self.redux()
     def z(self):
     def z_(self):
-        self.e -= 1
+        self.e = self.e -1
         self.redux()
     def a(self):
     def a_(self):
-        self.a += 1
+        self.a = self.a +1
         self.redux()
+
+    def __str__(self):
+        result = f"({self.e}, {self.x}, {self.a})"
+        return result
