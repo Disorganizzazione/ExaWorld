@@ -43,6 +43,6 @@ class Xel:
         lastxel=temporg.q.e.s
         end=false
         while end==false :
-                
+            pass
         return org
 

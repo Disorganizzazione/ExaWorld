@@ -81,32 +81,21 @@ class Exa:
     # 6 directions movement methods
     # TODO: forse si può evitare di fare 6 metodi, ne farei 1 solo.
     # TODO: Esempio: move_to('lettera') con uno switch/case
-    def w(self):
     def w_(self):
         self.x = self.x -1
         self.redux()
-    def e(self):
     def e_(self):
         self.e = self.e +1
         self.redux()
-    def d(self):
     def d_(self):
-<<<<<<< HEAD
         self.a -= 1
-        self.redux(cambiamenti vari a Exa.py)
-    def x(self):
-=======
-        self.a = self.a -1
->>>>>>> 78a6ce89aa6f687a314b94bce29009da4afe3aa7
         self.redux()
     def x_(self):
         self.x = self.x + 1
         self.redux()
-    def z(self):
     def z_(self):
         self.e = self.e -1
         self.redux()
-    def a(self):
     def a_(self):
         self.a = self.a +1
         self.redux()

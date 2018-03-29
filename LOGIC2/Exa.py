@@ -1,4 +1,3 @@
-from Xel import *
 class Exa:
     def __init__(self, *args):
         if len(args) == 1 and isinstance(args[0], Exa):
@@ -44,28 +43,18 @@ class Exa:
         return len(self-exa)
     
     def Q(self):
-        self.e=self.e + 1
-        self.x = self.x -1
+        return Exa(self.e + 1, self.x -1, self.a)
     def W(self):
-        self.e=self.e + 1
-        self.a = self.a -1
+        return Exa(self.e + 1, self.x, self.a -1)
     def E(self):
-        self.x=self.x + 1
-        self.a = self.a -1
+        return Exa(self.e, self.x + 1, self.a -1)
     def D(self):
-        self.e=self.e - 1
-        self.x = self.x +1
+        return Exa(self.e - 1, self.x +1, self.a)
     def S(self):
-        self.e=self.e - 1
-        self.a = self.a +1  
+        return Exa(self.e - 1, self.x, self.a +1)
     def A(self):
-        self.x=self.x - 1
-        self.a = self.a +1
+        return Exa(self.e, self.x - 1, self.a +1)
 
-exa1=Exa()
-print(exa1)
-exa1.A()
-exa1.A()
-print(exa1)
+
         
             
