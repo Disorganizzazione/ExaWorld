@@ -12,5 +12,6 @@ class Exa:
             self.e = 0
             self.x = 0
             self.a = 0
+
         
         
