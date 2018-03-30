@@ -1,63 +1,80 @@
 from Exa import *
+#from copy import copy, deepcopy
 
 class Xel:
     def __init__(self, origin=None, direction=None):
         self.values=None
         
         self.exa=None
-        self.dir=dict()
+        self.link= {'q':None,'w':None,'e':None,'d':None,'s':None,'a':None}
 
-        #self.dir["q"]=None
-        #self.dir["w"]=None
-        #self.dir["e"]=None
-        #self.dir["d"]=None
-        #self.dir["s"]=None
-        #self.dir["a"]=None
+        #self.link["q"]=None
+        #self.link["w"]=None
+        #self.link["e"]=None
+        #self.link["d"]=None
+        #self.link["s"]=None
+        #self.link["a"]=None
 
         if origin != None and direction != None :
-            if direction=="q" :
-                self.exa=Exa(origin.e+1,origin.x-1,origin.a)
-            elif direction=="w":
-                self.exa=Exa(origin.e+1,origin.x,origin.a-1)
-            elif direction=="e":
-                self.exa=Exa(origin.e,origin.x+1,origin.a-1)
-            elif direction=="d":
-                self.exa=Exa(origin.e-1,origin.x+1,origin.a)
-            elif direction=="s":
-                self.exa=Exa(origin.e-1,origin.x,origin.a+1)
-            elif direction=="a":
-                self.exa=Exa(origin.e,origin.x-1,origin.a+1)
-        else :
+            if direction == "q" :
+                self.exa= origin.Q()
+            elif direction == "w":
+                self.exa= origin.W()
+            elif direction == "e":
+                self.exa= origin.E()
+            elif direction == "d":
+                self.exa= origin.D()
+            elif direction == "s":
+                self.exa= origin.S()
+            elif direction == "a":
+                self.exa= origin.A()
+        else:
             self.exa=Exa()
 
+    def __str__(self):
+        return Exa.__str__(self.exa) + f" -> [   q: {self.link['q'].exa if self.link['q']!=None else None},   w: {self.link['w'].exa if self.link['w']!=None else None},   e: {self.link['e'].exa if self.link['e']!=None else None},   d: {self.link['d'].exa if self.link['d']!=None else None},   s: {self.link['s'].exa if self.link['s']!=None else None},   a: {self.link['a'].exa if self.link['a']!=None else None}   ]"
+#q,w,e,d,s,a
+#0,1,2,3,4,5
     @staticmethod
     def newHex(radius):
-        org = Xel()
-        temporg = org
-        index=("q","w","e","d","s","a")
+        origin = Xel()
+        tmp_or = origin
+        tmp_or = origin 
         #first step
-        laststep=-1
-        lastxel=None
-        end=false
-        while end==false :
-            if lastxel==None:
-                lastxel=temporg.dir[index[laststep+1]]=xel(temporg,index[laststep+1])
-            else:
-                temporg.dir[index[laststep+1]]=lastxel
+        #######????dic_i=list(origin.link.keys())
+        ls=-1 #last step
+        lastXel=None
+        #end=False
 
-            if lastxel.dir[index[laststep+2]]==None:
-                lastxel=lastxel.dir[index[laststep+2]]=xel(lastxel,index[laststep+2])
-                if lastxel.exa.e>radius and lastxel.exa.x>radius and lastxel.exa.a>radius:
+        #Basic case
+        #print("or", tmp_or, "\nlast", lastXel,"\n")
+        lastXel= tmp_or.link['q'] = Xel(origin.exa, 'q') #first link
+        print("or", tmp_or, "\nlast", lastXel,"\n")
+        tmp_or=lastXel
+        lastXel= tmp_or.link['e']= Xel(lastXel.exa,'e') #second link
+        print("or", tmp_or, "\nlast", lastXel,"\n")
+        tmp_or=lastXel
+        lastXel= tmp_or.link['s']= origin #last link
+        print("or", tmp_or, "\nlast", lastXel,"\n")
+        tmp_or=lastXel
+        
+        lastXel = tmp_or.link['w'] = Xel(lastXel.exa,'w') #ultimo link (s)
+        print("or", tmp_or, "\nlast", lastXel,"\n")
+        tmp_or=lastXel
 
-                lastxel.dir[index[laststep+4]]=temporg
-            else:
-                temporg=lastxel.dir[index[laststep+2]]=temporg.dir[index[laststep+1]]
+        while(radius!=0):
+            for i, xdir in enumerate(origin.link.keys()):
+                print(i,xdir)
+            radius-=1      
 
-            laststep+=1
-            if laststep<=6:
-                laststep-=6
+        return origin          
+        
+        
 
-                        
-                
-        return org
+    @staticmethod
+    def triangle(i, origin):
+        pass
 
+
+origin = Xel.newHex(5)
+print(origin)
