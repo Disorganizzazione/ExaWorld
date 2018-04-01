@@ -18,12 +18,16 @@ class Exa:
         return Exa(-self.e, -self.x, -self.a)
     #== e != operators
     def __eq__(self, other):
+        if other == None and isinstance(self,Exa): return False
+        else: assert isinstance(other, Exa), f"{other} must be an Exa!"
         return self.e == other.e and self.x == other.x and self.a == other.a
     #+ operator
     def __add__(self, other):
+        assert isinstance(other, Exa), f"{other} must be an Exa!"
         return Exa(self.e + other.e, self.x + other.x , self.a + other.a)
     #- operator
     def __sub__(self, other):
+        assert isinstance(other, Exa), f"{other} must be an Exa!"
         return Exa(self.e - other.e, self.x - other.x , self.a - other.a)
     
 
@@ -34,7 +38,7 @@ class Exa:
         return Exa(e, x, a)
     #print coordinates
     def __str__(self):
-        return f"({self.e}, {self.x}, {self.a})"
+        return f"({self.e}, {self.x}, {self.a})" 
     #lenght (from origin)
     def __len__(self):
         return int((abs(self.e) + abs(self.x) + abs(self.a))/2)
@@ -57,4 +61,3 @@ class Exa:
 
 
         
-            
