@@ -38,43 +38,67 @@ class Xel:
     @staticmethod
     def newHex(radius):
         origin = Xel()
-        tmp_or = origin
-        tmp_or = origin 
-        #first step
-        #######????dic_i=list(origin.link.keys())
-        ls=-1 #last step
-        lastXel=None
-        #end=False
+        tmp_or = origin #scan every xel
+        next_or = origin  #change origin after a final step
+        lastXel=None #last created exa
+        index=list(origin.link.keys())  # index of directions
 
-        #Basic case
-        #print("or", tmp_or, "\nlast", lastXel,"\n")
-        lastXel= tmp_or.link['q'] = Xel(origin.exa, 'q') #first link
-        print("or", tmp_or, "\nlast", lastXel,"\n")
-        tmp_or=lastXel
-        lastXel= tmp_or.link['e']= Xel(lastXel.exa,'e') #second link
-        print("or", tmp_or, "\nlast", lastXel,"\n")
-        tmp_or=lastXel
-        lastXel= tmp_or.link['s']= origin #last link
-        print("or", tmp_or, "\nlast", lastXel,"\n")
-        tmp_or=lastXel
-        
-        lastXel = tmp_or.link['w'] = Xel(lastXel.exa,'w') #ultimo link (s)
-        print("or", tmp_or, "\nlast", lastXel,"\n")
-        tmp_or=lastXel
+        odd= ['a','w','d'] #dispari (w,d,a)
+        even= ['s','q','e']  #pari (q,e,s)
 
-        while(radius!=0):
-            for i, xdir in enumerate(origin.link.keys()):
-                print(i,xdir)
-            radius-=1      
+        #BBASIC CASE
+        lastXel= tmp_or.link['q'] = Xel(origin.exa, 'q') #first link (new exa)
+        tmp_or=lastXel
+        lastXel= tmp_or.link['e']= Xel(lastXel.exa,'e') #second link (new exa)
+        tmp_or=lastXel
+        tmp_or.link['s']= origin #last link (existing exa)
+        tmp_or=origin
 
+        even.append(even.pop(0))
+        i=0
+        indx_tmp=odd
+        while(i<6*radius*radius-1):
+            i+=1
+            print(i)
+            
+            if i%2==0:
+                even.append(even.pop(0))
+                indx_tmp=even[:]
+                tmp=odd[:]
+            else: 
+                odd.append(odd.pop(0))
+                indx_tmp=odd[:]
+                tmp=even[:]              
+
+            #STANDARD/FINAL FIRST LINK CASE
+            tmp_or.link[indx_tmp[0]]=lastXel #first link (existing exa)
+            tmp_or=lastXel
+            
+            #STANDARD CASE         
+            if next_or.link[tmp[1]]==None:   
+                lastXel= tmp_or.link[indx_tmp[1]]= Xel(lastXel.exa, indx_tmp[1]) #second link (new exa)
+                tmp_or=lastXel
+                tmp_or.link[indx_tmp[2]]=next_or #last link (existing exa)
+                tmp_or=next_or
+                continue #not a final case
+            
+            #FINAL CASE
+            tmp_or.link[indx_tmp[1]]= next_or.link[tmp[1]] #second link (existing exa)
+            tmp_or= next_or.link[tmp[1]]
+            tmp_or.link[indx_tmp[2]]=next_or #last link (existing exa)
+            next_or=tmp_or #change origin for next cycle
+
+            even.append(even.pop(0))
+            odd.append(odd.pop(0))
+            even.append(even.pop(0))
+            odd.append(odd.pop(0))
         return origin          
         
         
 
-    @staticmethod
-    def triangle(i, origin):
-        pass
 
+origin = Xel.newHex(2)
+print("MAAAAAAIN\n",origin)
+print(origin.link['q'])
+print(origin.link['q'].link['q'])
 
-origin = Xel.newHex(5)
-print(origin)
