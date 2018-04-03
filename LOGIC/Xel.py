@@ -76,6 +76,16 @@ class Xel:
                 tmp_or =tmp_or.link[index[i%6]] #create link
         return origin          
 
-
- 
- 
+    #movement func
+    def Q(self):
+        return self.link['q']
+    def W(self):
+        return self.link['w']
+    def E(self):
+        return self.link['e']
+    def D(self):
+        return self.link['d']
+    def S(self):
+        return self.link['s']
+    def A(self):
+        return self.link['a']
