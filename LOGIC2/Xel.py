@@ -1,5 +1,4 @@
 from Exa import *
-#from copy import copy, deepcopy
 
 class Xel:
     def __init__(self, origin=None, direction=None):
@@ -65,4 +64,18 @@ class Xel:
             tmp_or.link[index[(i+4)%6]]=next_or #last link (existing exa)
             next_or=tmp_or #change origin for next cycle
             i-=2
+
+        tmp_or=lastXel # set temp_or on the edge
+        i=1
+        
+        while(i<=6): #create external links
+            if tmp_or.link[index[i%6]]==None: 
+                i+=1 #change direction
+            else:
+                tmp_or.link[index[i%6]].link[index[(i+3)%6]]= tmp_or #go back
+                tmp_or =tmp_or.link[index[i%6]] #create link
         return origin          
+
+
+ 
+ 
