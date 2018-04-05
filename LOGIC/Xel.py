@@ -89,3 +89,76 @@ class Xel:
         return self.link['s']
     def A(self):
         return self.link['a']
+    
+
+    def findXel(self, exa):
+        assert self.exa==Exa(0,0,0)
+
+        coord={'e':exa.e, 'x':exa.x, 'a':exa.a}
+        print(coord)
+        coord=sorted(coord.items(), key=lambda coord: coord[1])
+        #coord=sorted(coord, key=coord.get)
+        print(coord)
+
+        if coord[2][1]>=abs(coord[0][1]):#e o x o a
+            max_coord= coord[2][0]
+            inv=False
+        else: 
+            max_coord= coord[0][0]#-e o -x o -a
+            inv=True
+        print(max_coord)
+
+        mid= abs(coord[1][1]) if inv==False else abs(coord[2][1])
+        min= abs(coord[0][1]) if inv==False else abs(coord[1][1])
+        
+        print(mid)
+        print(min) 
+        
+        print(inv)
+        ret=origin
+        if inv==False:
+            while(mid!=0):
+                if max_coord=='e':
+                    ret=ret.Q()
+                elif max_coord=='x':
+                    ret=ret.E()
+                elif max_coord=='a':
+                    ret=ret.S()
+                mid-=1
+
+            while(min!=0):
+                if max_coord=='e':
+                    ret=ret.W()
+                elif max_coord=='x':
+                    ret=ret.D()
+                elif max_coord=='a':
+                    ret=ret.A()
+                min-=1
+        else:
+            while(mid!=0):
+                if max_coord=='a':
+                    ret=ret.W()
+                elif max_coord=='e':
+                    ret=ret.D()
+                elif max_coord=='x':
+                    ret=ret.A()
+                mid-=1
+
+            while(min!=0):
+                if max_coord=='x':
+                    ret=ret.Q()
+                elif max_coord=='a':
+                    ret=ret.E()
+                elif max_coord=='e':
+                    ret=ret.S()
+                min-=1
+
+        return ret
+
+        
+
+
+
+origin= Xel.newHex(5)
+print(origin.findXel(Exa(-4,-1,5)))
+print(origin)
