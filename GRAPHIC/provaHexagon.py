@@ -44,7 +44,7 @@ if __name__ == "__main__":
     hex5 = Hexagon((300, 100), 30, False, True, (1.0, 0.0, 0.0, 1.0), 5)
     """
     center1 = (gameDisplay.get_width()/2, gameDisplay.get_height()/2 + hex_side*math.sqrt(3))
-    hex1 = GraphicHexagon(center1, hex_side)
+    hex1 = GraphicHexagon((origin_center[0] + 0, origin_center[1] + hex_side*math.sqrt(3)), hex_side)
 
     # Events loop
     clock = pg.time.Clock()
