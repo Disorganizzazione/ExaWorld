@@ -76,7 +76,7 @@ class Xel:
                 tmp_or =tmp_or.link[index[i%6]] #create link
         return origin          
 
-    #movement func
+    # movement func
     def Q(self):
         return self.link['q']
     def W(self):
@@ -89,76 +89,87 @@ class Xel:
         return self.link['s']
     def A(self):
         return self.link['a']
-    
+
+    # Compact function for movement
+    def move_to(self, direction='q'):
+        assert direction in ['q', 'w', 'e', 'd', 's', 'a']
+        return self.link[direction]
 
     def findXel(self, exa):
-        assert self.exa==Exa(0,0,0)
+        # Usa un array direzioni che contiene le 6 possibili direzioni di spostamento
+        # Ne prende un sottoarray di 2 direzioni in base alla coordinata maggiore di exa
+        # Sceglie su quale delle due direzioni muoversi prima in base alla coord minore in modulo
+        # Prima si muove in dir_1 compiendo mov_1 passi
+        # Infine si muove in dir_2 compiendo mov_2 passi
 
-        coord={'e':exa.e, 'x':exa.x, 'a':exa.a}
+        assert self.exa == Exa(0, 0, 0)
+        # q,w,e,d,s,a
+        # 0,1,2,3,4,5
+        directions = ['q', 'w', 'e', 'd', 's', 'a']
+
+        coord = {'e': exa.e, 'x': exa.x, 'a': exa.a}
+        abcoord = {'e': abs(exa.e), 'x': abs(exa.x), 'a': abs(exa.a)}
         print(coord)
-        coord=sorted(coord.items(), key=lambda coord: coord[1])
-        #coord=sorted(coord, key=coord.get)
+        coord = sorted(coord.items(), key=lambda coord: coord[1])
+        abcoord = sorted(abcoord.items(), key=lambda abcoord: abcoord[1])
         print(coord)
 
         if coord[2][1]>=abs(coord[0][1]):#e o x o a
             max_coord= coord[2][0]
             inv=False
-        else: 
+        else:
             max_coord= coord[0][0]#-e o -x o -a
             inv=True
-        print(max_coord)
+        print("max_coord: ", max_coord)
 
-        mid= abs(coord[1][1]) if inv==False else abs(coord[2][1])
-        min= abs(coord[0][1]) if inv==False else abs(coord[1][1])
-        
-        print(mid)
-        print(min) 
-        
-        print(inv)
-        ret=origin
-        if inv==False:
-            while(mid!=0):
-                if max_coord=='e':
-                    ret=ret.Q()
-                elif max_coord=='x':
-                    ret=ret.E()
-                elif max_coord=='a':
-                    ret=ret.S()
-                mid-=1
+        if max_coord is 'e':
+            i = 0
+        elif max_coord is 'x':
+            i = 2
+        else:  # max_coord is 'a':
+            i = 4
+        two_directions = [directions[i], directions[i+1]]
+        print(two_directions)
 
-            while(min!=0):
-                if max_coord=='e':
-                    ret=ret.W()
-                elif max_coord=='x':
-                    ret=ret.D()
-                elif max_coord=='a':
-                    ret=ret.A()
-                min-=1
+        min_abcoord = abcoord[0][0]
+        print("MIN: ", min_abcoord)
+
+        if min_abcoord is 'e':
+            i = 0
+        elif min_abcoord is 'x':
+            i = 2
+        else:  # min_abcoord is 'a':
+            i = 4
+        four_directions = [directions[i], directions[i+1], directions[(i+3) % 6], directions[(i+4) % 6]]
+        print(four_directions)
+
+        if two_directions[0] in four_directions:
+            dir_1 = two_directions[0]
+            dir_2 = two_directions[1]
         else:
-            while(mid!=0):
-                if max_coord=='a':
-                    ret=ret.W()
-                elif max_coord=='e':
-                    ret=ret.D()
-                elif max_coord=='x':
-                    ret=ret.A()
-                mid-=1
+            dir_1 = two_directions[1]
+            dir_2 = two_directions[0]
+        print(f"dir_1: {dir_1}, dir_2: {dir_2}")
 
-            while(min!=0):
-                if max_coord=='x':
-                    ret=ret.Q()
-                elif max_coord=='a':
-                    ret=ret.E()
-                elif max_coord=='e':
-                    ret=ret.S()
-                min-=1
+        mov_1 = abcoord[0][1]
+        mov_2 = abcoord[1][1]
+        print(f"mov_1: {mov_1}, mov_2: {mov_2}")
 
-        return ret
+        res = origin
 
-        
+        while mov_1 > 0:
+            res = res.move_to(dir_1)
+            mov_1 -= 1
 
+        while mov_2 > 0:
+            res = res.move_to(dir_2)
+            mov_2 -= 1
 
+        return res
 
 origin= Xel.newHex(5)
-print(origin.findXel(Exa(-4,-1,5)))
+print(origin.findXel(Exa(-1,-4,5)), "\n")
+print(origin.findXel(Exa(-4,-1,5)), "\n")
+print(origin.findXel(Exa(-3,3,0)), "\n")
+print(origin.findXel(Exa(2,-4,2)), "\n") # TODO: errore grave! Da risolvere ma ho sonno! (Francesco)
 print(origin)
