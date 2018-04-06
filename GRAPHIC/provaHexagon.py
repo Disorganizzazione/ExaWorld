@@ -16,7 +16,8 @@ if __name__ == "__main__":
     displayInfo = pg.display.Info()
     window_width = 800
     window_height = 640
-    hex_side = 40
+    side = 40
+    hex_side = side - 5
     gameDisplay = pg.display.set_mode((window_width, window_height), pg.OPENGL | pg.DOUBLEBUF)
     pg.display.set_caption("Prova 1")
 
@@ -32,19 +33,32 @@ if __name__ == "__main__":
     glEnable(GL_LINE_SMOOTH)
 
     # Origin Hexagon center = center of the pygame window
-    origin_center = (gameDisplay.get_width()/2, gameDisplay.get_height()/2)
+    # TODO: capire perché height/4
+    origin_center = (gameDisplay.get_width()/2, gameDisplay.get_height()/4)
+
+    v3s = math.sqrt(3) * side / 2
+    s3 = 3 * side / 2
+    dirs = ['q', 'w', 'e', 'd', 's', 'a']
+    coords = {'q': (-s3, v3s), 'w': (0, v3s*2), 'e': (s3, v3s),
+              'd': (s3, -v3s), 's': (0, -v3s*2), 'a': (-s3, -v3s)}
+
+    print(coords['q'])
 
     # Creating hexagons
     hex0 = GraphicHexagon(origin_center, hex_side)
-    """
-    hex1 = Hexagon((100, 100), 20, False)
-    hex2 = Hexagon((200, 200), 40, True)
-    hex3 = Hexagon((300, 300), 40, True, False, (1.0, 0.0, 0.0, 1.0))
-    hex4 = Hexagon((100, 300), 30, True, False, (1.0, 0.0, 0.0, 1.0), 3)
-    hex5 = Hexagon((300, 100), 30, False, True, (1.0, 0.0, 0.0, 1.0), 5)
-    """
-    center1 = (gameDisplay.get_width()/2, gameDisplay.get_height()/2 + hex_side*math.sqrt(3))
-    hex1 = GraphicHexagon((origin_center[0] + 0, origin_center[1] + hex_side*math.sqrt(3)), hex_side)
+
+    hexs = list()
+    i = 0
+    while i < 6:
+        x, y = hex0.get_center()
+        print(x, y)
+        center = (x + coords[dirs[i]][0],
+                  y + coords[dirs[i]][1])
+        print(center[0], center[1])
+
+        hexs.append(GraphicHexagon((center[0], center[1]), hex_side))
+
+        i += 1
 
     # Events loop
     clock = pg.time.Clock()
@@ -59,9 +73,11 @@ if __name__ == "__main__":
 
         # Draw the hexagons
         hex0.draw()
-        hex1.draw()
+        # hex1.draw()
+
+        for h in hexs:
+            h.draw()
 
         # Update
         pg.display.flip()
-
-    clock.tick(30)
+        clock.tick(30)
