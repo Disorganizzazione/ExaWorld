@@ -140,8 +140,8 @@ class Xel:
             dir_2 = two_directions[0]
         mov_1 = abcoord[0][1]
         mov_2 = abcoord[1][1]
-
-        res = origin
+        
+        res = self
         while mov_1 > 0: #Moving towards dir_1 by mov_1 steps
             res = res.move_to(dir_1)
             mov_1 -= 1
