@@ -28,23 +28,39 @@ def mirror() :
 
 def cross_map():
     mirror()
+    direc=[False]
     if l_position.__len__()>0:
         if abs(l_position[0].e)==radius:
+            direc[0]=True
             if l_position[0].e<0:
                 l_map[1]= b_map['ds']
+                direc.append('ds')
             else:
                 l_map[1]= b_map['qw']
+                direc.append('qw')
         if abs(l_position[0].x)==radius:
+            direc[0]=True
             i= 2 if abs(l_position[0].x) == abs(l_position[0].e) else 1
             if l_position[0].x<0:
                 l_map[i]= b_map['aq']
+                direc.append('aq')
             else:
                 l_map[i]= b_map['ed']
+                direc.append('ed')
         if abs(l_position[0].a)==radius:
+            direc[0]=True
             if l_position[0].a<0:
                  l_map[2]= b_map['we']
+                 direc.append('we')
             else:
                 l_map[2]= b_map['sa']
+                direc.append('sa')
+    return direc
+
+
+def change_map(check, a):
+    print(check)
+
 
 def menu(a):
     if a=="q":
@@ -61,7 +77,11 @@ def menu(a):
         l_position[0]=l_position[0].A()
     elif a=="exit":
         quit()
-    cross_map()
+    check= cross_map()
+    if(check[0]==True):
+        if (a in check[1] or a in check[2]):
+            change_map(check[1:3], a)
+        
 
 
 init()
