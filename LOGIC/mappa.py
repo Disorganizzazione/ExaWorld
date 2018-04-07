@@ -18,10 +18,10 @@ def mirror() :
     print("ciao")
     if l_position[0].e == radius or l_position[0].e == -radius:
         l_position.append(Exa(-l_position[0].e,-l_position[0].a,-l_position[0].x))
-        print(l_position[1],"primo")
+
     if l_position[0].x == radius or l_position[0].x == -radius:
         l_position.append(Exa(-l_position[0].a,-l_position[0].x,-l_position[0].e))
-        print(l_position[2],"secondo")
+
     if l_position[0].a == radius or l_position[0].a == -radius:
         l_position.append(Exa(-l_position[0].e,-l_position[0].a,-l_position[0].x))
 
@@ -44,8 +44,7 @@ def cross_map():
             else:
                 l_map.append(b_map['sa'])
 
-def menu():
-    a=input()
+def menu(a):
     if a=="q":
         l_position[0]=l_position[0].Q()
         cross_map()
@@ -67,11 +66,21 @@ def menu():
     if a=="exit":
         quit()
 
+def rolling_map(a):
+    if a=='q' or a=='w':
+    if a=='q' or a=='w':
+    if a=='q' or a=='w':
+    if a=='q' or a=='w':
+    if a=='q' or a=='w':
+    if a=='q' or a=='w':
+        
 
 init()
 print(l_position[0])
 while 1:
-    menu()
+    a=input()
+    rolling_map(a)
+    menu(a)
     print("--------------------------------------------------------------------------------")
     try:
         print(l_position[0],'mappa2',l_position[1],'mappa3', l_position[2])
