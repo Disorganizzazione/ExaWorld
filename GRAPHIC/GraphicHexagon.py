@@ -16,6 +16,7 @@ class GraphicHexagon:
         self.__filled = bool(filled)
         self.__color = color
         self.__line_thickness = line_thickness
+        self.__drawn = False
 
     def set_center(self, new_center):
         self.__center = new_center
@@ -53,6 +54,9 @@ class GraphicHexagon:
     def get_line_thickness(self):
         return self.line_thickness
 
+    def is_drawn(self):
+        return self.__drawn
+
     def draw(self):
         glLoadIdentity()
 
@@ -78,3 +82,5 @@ class GraphicHexagon:
                        self.__center[1] +
                        self.__size * math.cos(angle))
         glEnd()
+
+        self.__drawn = True

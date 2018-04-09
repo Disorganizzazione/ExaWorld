@@ -8,8 +8,6 @@ from OpenGL.GLU import *
 # Entry Point
 # ----------------------------------------------------------
 if __name__ == "__main__":
-    # TODO trovare il centro della finestra di pygame
-    # TODO trovare il modo di sommare le coppie di coordinate ES: hex.center + (x,y)
 
     # Pygame initialization
     pg.init()
@@ -33,7 +31,7 @@ if __name__ == "__main__":
     glEnable(GL_LINE_SMOOTH)
 
     # Origin Hexagon center = center of the pygame window
-    # TODO: capire perché height/4
+    # TODO: capire perché height/4 e non height/2
     origin_center = (gameDisplay.get_width()/2, gameDisplay.get_height()/4)
 
     v3s = math.sqrt(3) * side / 2
@@ -46,10 +44,8 @@ if __name__ == "__main__":
 
     # Creating hexagons
     hex0 = GraphicHexagon(origin_center, hex_side)
-
     hexs = list()
-    i = 0
-    while i < 6:
+    for i in range(6):
         x, y = hex0.get_center()
         print(x, y)
         center = (x + coords[dirs[i]][0],
@@ -57,8 +53,6 @@ if __name__ == "__main__":
         print(center[0], center[1])
 
         hexs.append(GraphicHexagon((center[0], center[1]), hex_side))
-
-        i += 1
 
     # Events loop
     clock = pg.time.Clock()
@@ -73,8 +67,6 @@ if __name__ == "__main__":
 
         # Draw the hexagons
         hex0.draw()
-        # hex1.draw()
-
         for h in hexs:
             h.draw()
 
