@@ -1,6 +1,6 @@
 from Xel import *
 
-radius=5
+radius=10
 org= Exa()
 origin=Xel.newHex(radius)
 origin
