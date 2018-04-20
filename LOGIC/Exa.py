@@ -58,6 +58,21 @@ class Exa:
         return Exa(self.e - 1, self.x, self.a +1)
     def A(self):
         return Exa(self.e, self.x - 1, self.a +1)
-
+    
+    def move_to(self, direction):
+        if direction=="q":
+            return self.Q()
+        elif direction=="w":
+            return self.W()
+        elif direction=="e":
+            return self.E()
+        elif direction=="d":
+            return self.D()
+        elif direction=="s":
+            return self.S()
+        elif direction=="a":
+            return self.A()
+ 
+        
 
         

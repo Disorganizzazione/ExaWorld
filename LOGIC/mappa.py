@@ -15,7 +15,6 @@ def init(): #create global map, local and surrounding maps and respective positi
         b_map[i]=Xel.newHex(radius)
 
 def mirror() : #mirror the map when you get to a border
-    print("ciao")
     if l_position[0].e == radius or l_position[0].e == -radius:
         l_position[1]= Exa(-l_position[0].e,-l_position[0].a,-l_position[0].x)
         
@@ -59,10 +58,24 @@ def cross_map():
 
 
 def change_map(check, a):
-    print(check)
+    if check.__len__()==1:
+        if a in check[0]:
+            l_map[0]=l_map[1]
+            l_position[0]=l_position[1]
+            g_position=g_map.findXel
+    else:
+        if a in check[0] and a in check[1]:
+            l_map[0]=l_map[1]
+            l_position[0]=l_position[1]
+        else:
+            l_map[0]=l_map[2]
+            l_position[0]=l_position[2]
 
-
-def menu(a): #input menu
+def menu(a):
+    check=cross_map()
+    if(check[0]==True):
+        if (a in check[1] or a in check[2]):
+            change_map(check[1:], a)
     if a=="q":
         l_position[0]=l_position[0].Q()
     elif a=="w":
@@ -77,21 +90,17 @@ def menu(a): #input menu
         l_position[0]=l_position[0].A()
     elif a=="exit":
         quit()
+    print("---------------non qui--------------------")
     check= cross_map()
-    if(check[0]==True):
-        if (a in check[1] or a in check[2]):
-            change_map(check[1:3], a) #TO DO
         
-
-
 init() #indefinitely asks for inputs
 print(l_position[0])
 while 1:
     a=input()
-
     menu(a)
+    
     print("--------------------------------------------------------------------------------")
     try:
-        print(l_map, l_position[0],'mappa2',l_position[1],'mappa3', l_position[2])
+        print(l_position[0],'mappa2',l_position[1],'mappa3', l_position[2])
     except :
-        print(l_map,l_position[0])
+        print(l_position[0])
