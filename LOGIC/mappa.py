@@ -64,7 +64,7 @@ def change_map(check, a):
             l_position[0]=l_position[1]
             g_position=g_map.findXel
     else:
-        if a in check[1] and a in check[2]:
+        if a in check[0] and a in check[1]:
             l_map[0]=l_map[1]
             l_position[0]=l_position[1]
         else:
