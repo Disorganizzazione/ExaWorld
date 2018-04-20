@@ -6,7 +6,7 @@ l_map=[None, None, None]#map where your are in (max 3) [0:origin map, 1 or 2: ot
 l_position=[None, None, None]#your position in l_map (max 3)
 b_map={'qw':None,'we':None, 'ed':None,'ds':None,'sa':None,'aq':None}#map stored in memory
 
-def init():
+def init(): #create global map, local and surrounding maps and respective positions
     g_map=Xel.newHex(radius)
     g_position=Exa()
     l_map[0]=Xel.newHex(radius)
@@ -14,7 +14,7 @@ def init():
     for i in b_map :
         b_map[i]=Xel.newHex(radius)
 
-def mirror() :
+def mirror() : #mirror the map when you get to a border
     print("ciao")
     if l_position[0].e == radius or l_position[0].e == -radius:
         l_position[1]= Exa(-l_position[0].e,-l_position[0].a,-l_position[0].x)
@@ -62,7 +62,7 @@ def change_map(check, a):
     print(check)
 
 
-def menu(a):
+def menu(a): #input menu
     if a=="q":
         l_position[0]=l_position[0].Q()
     elif a=="w":
@@ -80,11 +80,11 @@ def menu(a):
     check= cross_map()
     if(check[0]==True):
         if (a in check[1] or a in check[2]):
-            change_map(check[1:3], a)
+            change_map(check[1:3], a) #TO DO
         
 
 
-init()
+init() #indefinitely asks for inputs
 print(l_position[0])
 while 1:
     a=input()

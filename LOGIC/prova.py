@@ -31,10 +31,10 @@ while True :
     print("""istruzioni:
     ci si muove con q,w,a,s,z,x, purtroppo essendo l'esagono piegato di novanta gradi ho dovuto improvvisare,
     si esce scrivendo 'exit' senza apostrofi, buon divertimento""")
-    rorg=origin
+    realorg=origin
     result=""
     for i in range(-radius, radius+1):
-        temorg = rorg
+        temporg = realorg
         for j in range(abs(i)):
             result += " "
 
@@ -42,20 +42,20 @@ while True :
             print("\nout of range\n")
             break
 
-        while temorg != None:
-            if temorg.exa == org :
+        while temporg != None:
+            if temporg.exa == org :
                 result += "o "
 
             else:
                 result += ". "
 
-            temorg=temorg.link["w"]
+            temporg=temporg.link["w"]
         result += "\n"
         if i<0:
-            rorg=rorg.link["d"]
+            realorg=realorg.link["d"]
         else:
-            rorg=rorg.link["e"]
-        #print("temorg=",temorg,"\nrorg=",rorg,"\n\n")
+            realorg=realorg.link["e"]
+        #print("temporg=",temporg,"\nrealorg=",realorg,"\n\n")
     print(result)
     print("position:",org)
     org=menu(org)
