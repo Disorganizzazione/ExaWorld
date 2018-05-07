@@ -1,6 +1,7 @@
+
+import math
 from OpenGL.GL import *
 from OpenGL.GLU import *
-import math
 
 
 class GraphicHexagon:
@@ -8,7 +9,7 @@ class GraphicHexagon:
     def __init__(self, center, size,
                  pointy_top=False, filled=False,
                  color=(1.0, 1.0, 1.0, 1.0),
-                 line_thickness=1):
+                 line_thickness=1, text=""):
 
         self.__center = center
         self.__size = size
@@ -16,6 +17,8 @@ class GraphicHexagon:
         self.__filled = bool(filled)
         self.__color = color
         self.__line_thickness = line_thickness
+        self.__text = text
+        self.__drawn = False
 
     def set_center(self, new_center):
         self.__center = new_center
@@ -53,6 +56,12 @@ class GraphicHexagon:
     def get_line_thickness(self):
         return self.line_thickness
 
+    def set_text(self, txt):
+        self.__text = txt
+
+    def is_drawn(self):
+        return self.__drawn
+
     def draw(self):
         glLoadIdentity()
 
@@ -78,3 +87,5 @@ class GraphicHexagon:
                        self.__center[1] +
                        self.__size * math.cos(angle))
         glEnd()
+
+        self.__drawn = True
