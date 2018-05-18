@@ -1,3 +1,0 @@
-Pacioso	 1	90	40	70
-Solitario	60	1	40	10
-Malvagio	100	5	60	50
