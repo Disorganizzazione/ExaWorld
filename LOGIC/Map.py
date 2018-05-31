@@ -1,5 +1,5 @@
 from Xel import *
-radius=10#radius maps
+radius=3#radius maps
 g_map=None#pointer to origin of the global map
 g_position=None #global position
 l_map=[None, None, None]#map where your are in (max 3) [0:origin map, 1 or 2: other cross map]
@@ -27,7 +27,7 @@ def mirror() : #mirror the map when you get to a border
 
 def cross_map():
     mirror()
-    direc=[False]
+    direc=[False] 
     if l_position.__len__()>0:
         if abs(l_position[0].e)==radius:
             direc[0]=True
@@ -57,8 +57,8 @@ def cross_map():
     return direc
 
 
-def change_map(check, a):
-    if check.__len__()==1:
+def change_map(check, a): #check[0]=true if you're in a cross, [1] & [2] directions of crossed maps
+    if check.__len__()==1: 
         if a in check[0]:
             l_map[0]=l_map[1]
             l_position[0]=l_position[1]
@@ -71,8 +71,8 @@ def change_map(check, a):
             l_map[0]=l_map[2]
             l_position[0]=l_position[2]
 
-def menu(a):
-    check=cross_map()
+def menu(a): #a=input direction
+    check=cross_map() 
     if(check[0]==True):
         if (a in check[1] or a in check[2]):
             change_map(check[1:], a)
