@@ -14,10 +14,10 @@ create SEQUENCE cod_comp;
 create SEQUENCE cod_creat;
 
 create table comportamento(
-    id           cod_comp primary key default NEXTVAL('cod_comp'),
+    id           integer primary key default NEXTVAL('cod_comp'),
     nome         varchar(100) not null,
     aggressività percent not null,
-    dim_branco percent not null, 
+    dsimili percent not null,  
     sedentarietà percent not null,
     riproduzione percent not null
 );
@@ -26,10 +26,12 @@ create table comportamento(
 create table creature(
     id integer primary key default NEXTVAL('cod_creat'),
     nome varchar(50) not null,
-    comp integer references comportamento on delete cascade,
+    comp integer default null references comportamento on delete cascade,
+    riprod integer default null,
     tipo tipod default 'v',
-    danno integer default null,
-    sesso boolean default null,
+    resistenza integer not null,
+    forza integer default null,
+    velocita integer default null,
     dieta dietad default null,
     tmin integer not null,
     tmax integer not null,
@@ -61,13 +63,13 @@ create table terreno(
 --popolazione
 --\copy comportamento (nome, aggressività, dsimili, sedentarietà, riproduzione) from comportamento.txt;
 --\copy creature (nome, comp, tipo,danno,sesso,dieta, tmin, tmax, umin, umax)from creature.txt; --il join qua dà problemi
-
+\i popolare.sql 
 --viste
-create view animali as select id, nome, comp, danno, sesso, dieta, tmin, tmax, umin, umax from creature where tipo = 'a';
-create view piante as select id, nome, comp, tmin, tmax, umin, umax from creature where tipo='v' ;
+--create view animali as select id, nome, comp, danno, sesso, dieta, tmin, tmax, umin, umax from creature where tipo = 'a';
+--create view piante as select id, nome, comp, tmin, tmax, umin, umax from creature where tipo='v' ;
 
-create view carnivori as select * from animali where dieta='c';
-create view erbivori as select * from animali where dieta='e';
-create view onnivori as select * from animali where dieta='o';
+--create view carnivori as select * from animali where dieta='c';
+--create view erbivori as select * from animali where dieta='e';
+--create view onnivori as select * from animali where dieta='o';
 
 

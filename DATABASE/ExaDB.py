@@ -1,6 +1,7 @@
 from DBInterface import *
 import psycopg2
 
+
 class ExaDB(DBInterface):
     def __init__(self):
         super().__init__()

@@ -1,5 +1,5 @@
 from Xel import *
-radius=10#radius maps
+radius=3#radius maps
 g_map=None#pointer to origin of the global map
 g_position=None #global position
 l_map=[None, None, None]#map where your are in (max 3) [0:origin map, 1 or 2: other cross map]
@@ -58,11 +58,10 @@ def cross_map():
 
 
 def change_map(check, a):
-    if check.__len__()==1:
-        if a in check[0]:
+    if check.__len__()==2:
+        if a in check[1]:
             l_map[0]=l_map[1]
             l_position[0]=l_position[1]
-            g_position=g_map.findXel
     else:
         if a in check[0] and a in check[1]:
             l_map[0]=l_map[1]
