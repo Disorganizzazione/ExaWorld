@@ -27,7 +27,7 @@ create table creature(
     id integer primary key default NEXTVAL('cod_creat'),
     nome varchar(50) not null,
     comp integer default null references comportamento on delete cascade,
-    riprod integer default null,
+    riprod percent default null,
     tipo tipod default 'v',
     resistenza integer not null,
     forza integer default null,
@@ -61,15 +61,13 @@ create table terreno(
 );
 
 --popolazione
---\copy comportamento (nome, aggressività, dsimili, sedentarietà, riproduzione) from comportamento.txt;
---\copy creature (nome, comp, tipo,danno,sesso,dieta, tmin, tmax, umin, umax)from creature.txt; --il join qua dà problemi
-\i popolare.sql 
---viste
---create view animali as select id, nome, comp, danno, sesso, dieta, tmin, tmax, umin, umax from creature where tipo = 'a';
---create view piante as select id, nome, comp, tmin, tmax, umin, umax from creature where tipo='v' ;
+\i popolare.sql;
 
---create view carnivori as select * from animali where dieta='c';
---create view erbivori as select * from animali where dieta='e';
---create view onnivori as select * from animali where dieta='o';
+--viste
+create view animali as select id, nome, comp, resistenza, forza, velocita, dieta, tmin, tmax, umin, umax from creature where tipo = 'a';
+create view piante as select id, nome, resistenza, riprod, tmin, tmax, umin, umax from creature where tipo= 'v' ;
+create view carnivori as select * from animali where dieta='c';
+create view erbivori as select * from animali where dieta='e';
+create view onnivori as select * from animali where dieta='o';
 
 

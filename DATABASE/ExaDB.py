@@ -35,29 +35,22 @@ class ExaDB(DBInterface):
 
     def getPlant(self,code):
         cur = self.getConnect()
-        cur.execute("select * from World.piante as pi join World.comportamento as co on co.id=pi.comp;")
+        cur.execute("select * from World.piante;")
         return self.searchCode(code, cur)
 
-    def getHerbivore(self, code):
+    def getAnimal(self, code):
         cur = self.getConnect()
-        cur.execute("select * from World.erbivori as er join World.comportamento as co on co.id=er.comp;")
+        cur.execute("select * from World.animali as an join World.comportamento as co on co.id=an.comp;")
         return self.searchCode(code, cur)
+    
+a=ExaDB()
+a.getConnect()
+for b in range(1,6):
+    print(a.getAnimal(b))
+    print(a.getPlant(b))
+    print(b)
 
-    def getCarnivorous(self, code):
-        cur = self.getConnect()
-        cur.execute("select * from World.carnivori as ca join World.comportamento as co on co.id=ca.comp;")
-        return self.searchCode(code, cur)
 
-    def getOmnivorous(self, code):
-        cur = self.getConnect()
-        cur.execute("select * from World.onnivori as om join World.comportamento as co on co.id=om.comp;")
-        return self.searchCode(code, cur)
-
-db=ExaDB()
-
-print(db.getPlant(5)) 
-print(db.getHerbivore(2))
-print(db.getOmnivorous(6))
 
 
 
