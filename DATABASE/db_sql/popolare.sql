@@ -1,8 +1,8 @@
-insert into comportamento(nome, aggressività, dsimili, sedentarietà, riproduzione) values ('feroce', 100, 30, 50, 20);
-insert into comportamento(nome, aggressività, dsimili, sedentarietà, riproduzione) values ('pascolatore', 30, 20, 70, 40);
-insert into comportamento(nome, aggressività, dsimili, sedentarietà, riproduzione) values ('difensore', 50, 40, 90, 70);
-insert into comportamento(nome, aggressività, dsimili, sedentarietà, riproduzione) values ('individuale', 70, 80, 20, 90);
-insert into comportamento(nome, aggressività, dsimili, sedentarietà, riproduzione) values ('nomade', 10, 90, 40, 10);
+insert into comportamento(nome, aggressività, branco, sedentarietà, riproduzione) values ('feroce', 100, 30, 50, 20);
+insert into comportamento(nome, aggressività, branco, sedentarietà, riproduzione) values ('pascolatore', 30, 20, 70, 40);
+insert into comportamento(nome, aggressività, branco, sedentarietà, riproduzione) values ('difensore', 50, 40, 90, 70);
+insert into comportamento(nome, aggressività, branco, sedentarietà, riproduzione) values ('individuale', 70, 80, 20, 90);
+insert into comportamento(nome, aggressività, branco, sedentarietà, riproduzione) values ('nomade', 10, 90, 40, 10);
 insert into creature(nome, comp, tipo, resistenza, forza, velocita, dieta, tmin, tmax, umin, umax) values ('lupo', 1, 'a', 3, 2, 7, 'c', -20, 20, 3, 5);
 insert into creature(nome, comp, tipo, resistenza, forza, velocita, dieta, tmin, tmax, umin, umax) values ('mucca', 2, 'a', 6, 1, 3, 'e', 30, 40, 2, 4);
 insert into creature(nome, comp, tipo, resistenza, forza, velocita, dieta, tmin, tmax, umin, umax) values ('orso', 3, 'a', 9, 7, 2, 'c', -10, 30, 1, 3);

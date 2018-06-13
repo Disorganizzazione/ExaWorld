@@ -17,7 +17,7 @@ create table comportamento(
     id           integer primary key default NEXTVAL('cod_comp'),
     nome         varchar(100) not null,
     aggressività percent not null,
-    dsimili percent not null,  
+    branco percent not null,  
     sedentarietà percent not null,
     riproduzione percent not null
 );
@@ -38,6 +38,11 @@ create table creature(
     umin integer not null,
     umax integer not null
 );
+create view carnivori as select * from creature where dieta='c';
+
+create view erbivori as select * from creature where dieta='e';
+
+create view onnivori as select * from creature where dieta='o';
 
 create table erbivoro(
     animale integer references creature on delete cascade,
@@ -63,11 +68,6 @@ create table terreno(
 --popolazione
 \i popolare.sql;
 
---viste
-create view animali as select id, nome, comp, resistenza, forza, velocita, dieta, tmin, tmax, umin, umax from creature where tipo = 'a';
-create view piante as select id, nome, resistenza, riprod, tmin, tmax, umin, umax from creature where tipo= 'v' ;
-create view carnivori as select * from animali where dieta='c';
-create view erbivori as select * from animali where dieta='e';
-create view onnivori as select * from animali where dieta='o';
+
 
 
