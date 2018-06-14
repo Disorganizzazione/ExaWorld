@@ -1,5 +1,5 @@
 from Xel import *
-radius=100 #radius maps 
+radius=4 #radius maps 
 position=None #position in l_map. Must be a Xel! position.exa in order to get coordinates (EXA)
 l_map=None #local map
 adj_maps={'qw':None,'we':None, 'ed':None,'ds':None,'sa':None,'qa':None} #maps stored in memory
@@ -18,7 +18,7 @@ def init():
     
 def menu(a): #a=input direction
     global position
-    if is_border(a)==False:
+    if is_border(a)==False: #is_border -> changemap -> mirror
         if a=="q":
             position=position.Q()
         elif a=="w":
@@ -33,7 +33,6 @@ def menu(a): #a=input direction
             position=position.A()
         elif a=="exit":
             quit()
-    
 
 def is_border(a): #check if position has reached the limit of the local map
     global position
@@ -86,14 +85,12 @@ def change_map(a, n):
 def mirror(a, n, direc):
     global l_map
     global position
-    global change_dir
     global adj_maps
     pos=None #temp new position
     exa= position.exa #exa of the new position (find xel)
     coords = ['q', 'w', 'e', 'd', 's', 'a']
     if direc=='qa':
         direc='aq'
-    print("------", direc, change_dir)
     if n==3: #corner
         if a==direc[0]: #-2 (q) 
             exa.a, exa.x = exa.x, exa.a
@@ -121,8 +118,22 @@ def mirror(a, n, direc):
             pos= l_map.findXel(exa.__neg__()).link[coords[(coords.index(direc[0])+2)%6]] #w
     if direc=='aq':
         direc='qa'
+    update_maps(direc, pos)
+
+def update_maps(direc, pos):
+    global l_map
+    global position
+    global adj_maps
     l_map= adj_maps[direc]
     position= pos
+    d= list(adj_maps.keys()) #adj_maps keys
+    i=d.index(direc) #index of direc
+    adj_maps[d[i-2]]=adj_maps[d[i-1]] #sa=aq
+    adj_maps[d[i+3]]=adj_maps[d[i]] #ds=qw
+    adj_maps[d[i+2]]=adj_maps[d[i+1]] #ed=we
+    adj_maps[d[i-1]]=Xel.newHex(radius) #aq=new_aq
+    adj_maps[d[i]]=Xel.newHex(radius) #qw=new_qw
+    adj_maps[d[i+1]]=Xel.newHex(radius) #we=new_we
 
 def choose_piv():
     global position
@@ -135,16 +146,15 @@ def choose_piv():
         return 'q' if 'q' in change_dir else 'd'
 
 
-        
-
-    
-
 #Main execution
 init()
-print(position)
 print("--------------------------------------------------------------------------------")
 while 1:
+    print(position)
+    print("loc :   ", str(hex(id(l_map)))[-5:])
+    for i in adj_maps:
+        print(i, " :   ", str(hex(id(adj_maps.get(i))))[-5:]) 
+    print("--------------------------------------------------------------------------------")
     a=input()
     menu(a)
-    print(position)
-    print("--------------------------------------------------------------------------------")
+    
