@@ -57,11 +57,12 @@ def cross_map():
     return direc
 
 
-def change_map(check, a):
-    if check.__len__()==2:
-        if a in check[1]:
+def change_map(check, a): #check[0]=true if you're in a cross, [1] & [2] directions of crossed maps
+    if check.__len__()==1: 
+        if a in check[0]:
             l_map[0]=l_map[1]
             l_position[0]=l_position[1]
+            g_position=g_map.findXel
     else:
         if a in check[0] and a in check[1]:
             l_map[0]=l_map[1]
@@ -70,8 +71,8 @@ def change_map(check, a):
             l_map[0]=l_map[2]
             l_position[0]=l_position[2]
 
-def menu(a):
-    check=cross_map()
+def menu(a): #a=input direction
+    check=cross_map() 
     if(check[0]==True):
         if (a in check[1] or a in check[2]):
             change_map(check[1:], a)
