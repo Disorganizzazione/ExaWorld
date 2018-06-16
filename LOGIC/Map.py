@@ -1,106 +1,160 @@
 from Xel import *
-radius=3#radius maps
-g_map=None#pointer to origin of the global map
-g_position=None #global position
-l_map=[None, None, None]#map where your are in (max 3) [0:origin map, 1 or 2: other cross map]
-l_position=[None, None, None]#your position in l_map (max 3)
-b_map={'qw':None,'we':None, 'ed':None,'ds':None,'sa':None,'aq':None}#map stored in memory
+radius=4 #radius maps 
+position=None #position in l_map. Must be a Xel! position.exa in order to get coordinates (EXA)
+l_map=None #local map
+adj_maps={'qw':None,'we':None, 'ed':None,'ds':None,'sa':None,'qa':None} #maps stored in memory
+change_dir=None #POSSIBLE directions that will lead to change map
 
-def init(): #create global map, local and surrounding maps and respective positions
-    g_map=Xel.newHex(radius)
-    g_position=Exa()
-    l_map[0]=Xel.newHex(radius)
-    l_position[0]=Exa()
-    for i in b_map :
-        b_map[i]=Xel.newHex(radius)
-
-def mirror() : #mirror the map when you get to a border
-    if l_position[0].e == radius or l_position[0].e == -radius:
-        l_position[1]= Exa(-l_position[0].e,-l_position[0].a,-l_position[0].x)
-        
-    if l_position[0].x == radius or l_position[0].x == -radius:
-        i= 2 if abs(l_position[0].x) == abs(l_position[0].e) else 1
-        l_position[i] =Exa(-l_position[0].a,-l_position[0].x,-l_position[0].e)
-
-    if l_position[0].a == radius or l_position[0].a == -radius:
-        l_position[2]= Exa(-l_position[0].e,-l_position[0].a,-l_position[0].x)
-
-def cross_map():
-    mirror()
-    direc=[False]
-    if l_position.__len__()>0:
-        if abs(l_position[0].e)==radius:
-            direc[0]=True
-            if l_position[0].e<0:
-                l_map[1]= b_map['ds']
-                direc.append('ds')
-            else:
-                l_map[1]= b_map['qw']
-                direc.append('qw')
-        if abs(l_position[0].x)==radius:
-            direc[0]=True
-            i= 2 if abs(l_position[0].x) == abs(l_position[0].e) else 1
-            if l_position[0].x<0:
-                l_map[i]= b_map['aq']
-                direc.append('aq')
-            else:
-                l_map[i]= b_map['ed']
-                direc.append('ed')
-        if abs(l_position[0].a)==radius:
-            direc[0]=True
-            if l_position[0].a<0:
-                 l_map[2]= b_map['we']
-                 direc.append('we')
-            else:
-                l_map[2]= b_map['sa']
-                direc.append('sa')
-    return direc
-
-
-def change_map(check, a): #check[0]=true if you're in a cross, [1] & [2] directions of crossed maps
-    if check.__len__()==1: 
-        if a in check[0]:
-            l_map[0]=l_map[1]
-            l_position[0]=l_position[1]
-            g_position=g_map.findXel
-    else:
-        if a in check[0] and a in check[1]:
-            l_map[0]=l_map[1]
-            l_position[0]=l_position[1]
-        else:
-            l_map[0]=l_map[2]
-            l_position[0]=l_position[2]
-
+def init():
+    #global initializations
+    global l_map
+    global position
+    global adj_maps
+    #instatntiate
+    l_map= Xel.newHex(radius)
+    position= l_map
+    for i in adj_maps:
+        adj_maps[i]=Xel.newHex(radius)
+    
 def menu(a): #a=input direction
-    check=cross_map() 
-    if(check[0]==True):
-        if (a in check[1] or a in check[2]):
-            change_map(check[1:], a)
-    if a=="q":
-        l_position[0]=l_position[0].Q()
-    elif a=="w":
-        l_position[0]=l_position[0].W()
-    elif a=="e":
-        l_position[0]=l_position[0].E()
-    elif a=="d":
-        l_position[0]=l_position[0].D()
-    elif a=="s":
-        l_position[0]=l_position[0].S()
-    elif a=="a":
-        l_position[0]=l_position[0].A()
-    elif a=="exit":
-        quit()
-    print("---------------non qui--------------------")
-    check= cross_map()
+    global position
+    if is_border(a)==False: #is_border -> changemap -> mirror
+        if a=="q":
+            position=position.Q()
+        elif a=="w":
+            position=position.W()
+        elif a=="e":
+            position=position.E()
+        elif a=="d":
+            position=position.D()
+        elif a=="s":
+            position=position.S()
+        elif a=="a":
+            position=position.A()
+        elif a=="exit":
+            quit()
+
+def is_border(a): #check if position has reached the limit of the local map
+    global position
+    border=0
+    if position.exa.e==radius or position.exa.e==-radius:
+        border+=1
+    if position.exa.x==radius or position.exa.x==-radius:
+        border+=1
+    if position.exa.a==radius or position.exa.a==-radius:
+        border+=1
+
+    global change_dir 
+    if border != 0:   #reached the limit of the local map
+        change_dir= [k for k,v in position.link.items() if v == None] #POSSIBLE directions that will lead to change map (none Xels)
+        print("Possible new maps directions= ", change_dir)
+        if border==1: #reached a edge
+            print("You're in an edge")
+            return change_map(a,2)
+        if border==2: #reached an corner
+            print("You're in a corner")
+            return change_map(a,3)
+    return False
         
-init() #indefinitely asks for inputs
-print(l_position[0])
+
+def change_map(a, n):
+    global l_map
+    global position
+    global change_dir
+    global adj_maps
+    coords = ['q', 'w', 'e', 'd', 's', 'a']
+    direc=None
+    if a in change_dir: #the input direction leads to change the map
+        print("Direction= ",a)
+        direc=change_dir[0]+change_dir[1] #n==2
+        if n==3:
+            piv=choose_piv() #the direction that can leads 
+            if a==piv:
+                direc=[k for k in adj_maps.keys() if piv in k and coords[(coords.index(piv)+1)%6] in k].pop() #ex. q (qw)
+            else:
+                direc= [k for k in adj_maps.keys() if piv in k and a in k].pop() #ex. w or a (qw or qa)
+            mirror(a, n, direc)
+            print("New Map= ",direc)
+            return True
+        mirror(a, n, direc)
+        print("New Map= ",direc)
+        return True
+    else:
+        return False
+    
+def mirror(a, n, direc):
+    global l_map
+    global position
+    global adj_maps
+    pos=None #temp new position
+    exa= position.exa #exa of the new position (find xel)
+    coords = ['q', 'w', 'e', 'd', 's', 'a']
+    if direc=='qa':
+        direc='aq'
+    if n==3: #corner
+        if a==direc[0]: #-2 (q) 
+            exa.a, exa.x = exa.x, exa.a
+            exa.a, exa.e = exa.e, exa.a
+            pos= l_map.findXel(exa) 
+        elif direc[1]==coords[(coords.index(direc[0])+1)%6]: #q+1=(w)
+            exa.a, exa.x = exa.x, exa.a
+            exa.a, exa.e = exa.e, exa.a
+            pos= l_map.findXel(exa).link[coords[(coords.index(direc[0])+2)%6]]  #q+2 - ossia q+e (w)
+        else: #+2 (a)
+            exa.a, exa.e = exa.e, exa.a
+            exa.a, exa.x = exa.x, exa.a
+            pos= l_map.findXel(exa) 
+    else:  #edge
+        max_coord= max(max(abs(exa.e),abs(exa.x)),abs(exa.a))
+        if max_coord==abs(exa.e):
+            exa.a, exa.x = exa.x, exa.a
+        elif max_coord==abs(exa.x):
+            exa.a, exa.e = exa.e, exa.a
+        else:
+            exa.e, exa.x = exa.x, exa.e
+        if a==direc[0]:
+            pos= l_map.findXel(exa.__neg__()) #q
+        else:
+            pos= l_map.findXel(exa.__neg__()).link[coords[(coords.index(direc[0])+2)%6]] #w
+    if direc=='aq':
+        direc='qa'
+    update_maps(direc, pos)
+
+def update_maps(direc, pos):
+    global l_map
+    global position
+    global adj_maps
+    l_map= adj_maps[direc]
+    position= pos
+    d= list(adj_maps.keys()) #adj_maps keys
+    i=d.index(direc) #index of direc
+    adj_maps[d[i-2]]=adj_maps[d[i-1]] #sa=aq
+    adj_maps[d[i+3]]=adj_maps[d[i]] #ds=qw
+    adj_maps[d[i+2]]=adj_maps[d[i+1]] #ed=we
+    adj_maps[d[i-1]]=Xel.newHex(radius) #aq=new_aq
+    adj_maps[d[i]]=Xel.newHex(radius) #qw=new_qw
+    adj_maps[d[i+1]]=Xel.newHex(radius) #we=new_we
+
+def choose_piv():
+    global position
+    global change_dir
+    if position.exa.e==0:
+        return 'e' if 'e' in change_dir else 'a'
+    if position.exa.x==0:
+        return 'w' if 'w' in change_dir else 's'
+    if position.exa.a==0:
+        return 'q' if 'q' in change_dir else 'd'
+
+
+#Main execution
+init()
+print("--------------------------------------------------------------------------------")
 while 1:
+    print(position)
+    print("loc :   ", str(hex(id(l_map)))[-5:])
+    for i in adj_maps:
+        print(i, " :   ", str(hex(id(adj_maps.get(i))))[-5:]) 
+    print("--------------------------------------------------------------------------------")
     a=input()
     menu(a)
     
-    print("--------------------------------------------------------------------------------")
-    try:
-        print(l_position[0],'mappa2',l_position[1],'mappa3', l_position[2])
-    except :
-        print(l_position[0])
