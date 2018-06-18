@@ -1,5 +1,5 @@
 from Xel import *
-radius=4 #radius maps 
+radius=3 #radius maps 
 position=None #position in l_map. Must be a Xel! position.exa in order to get coordinates (EXA)
 l_map=None #local map
 adj_maps={'qw':None,'we':None, 'ed':None,'ds':None,'sa':None,'qa':None} #maps stored in memory
@@ -63,7 +63,7 @@ def change_map(a, n):
     global change_dir
     global adj_maps
     coords = ['q', 'w', 'e', 'd', 's', 'a']
-    direc=None
+    direc=None #new map direction (ex. qw, we ...)
     if a in change_dir: #the input direction leads to change the map
         print("Direction= ",a)
         direc=change_dir[0]+change_dir[1] #n==2
@@ -128,12 +128,12 @@ def update_maps(direc, pos):
     position= pos
     d= list(adj_maps.keys()) #adj_maps keys
     i=d.index(direc) #index of direc
-    adj_maps[d[i-2]]=adj_maps[d[i-1]] #sa=aq
-    adj_maps[d[i+3]]=adj_maps[d[i]] #ds=qw
-    adj_maps[d[i+2]]=adj_maps[d[i+1]] #ed=we
-    adj_maps[d[i-1]]=Xel.newHex(radius) #aq=new_aq
-    adj_maps[d[i]]=Xel.newHex(radius) #qw=new_qw
-    adj_maps[d[i+1]]=Xel.newHex(radius) #we=new_we
+    adj_maps[d[(i-2)%6]]=adj_maps[d[(i-1)%6]] #sa=aq
+    adj_maps[d[(i+3)%6]]=adj_maps[d[(i)%6]] #ds=qw
+    adj_maps[d[(i+2)%6]]=adj_maps[d[(i+1)%6]] #ed=we
+    adj_maps[d[(i-1)%6]]=Xel.newHex(radius) #aq=new_aq
+    adj_maps[d[(i)%6]]=Xel.newHex(radius) #qw=new_qw
+    adj_maps[d[(i+1)%6]]=Xel.newHex(radius) #we=new_we
 
 def choose_piv():
     global position
