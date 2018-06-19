@@ -151,7 +151,7 @@ def choose_piv():
     if position.exa.a==0:
         return 'q' if 'q' in change_dir else 'd'
 
-
+"""
 #Main execution
 init()
 print("--------------------------------------------------------------------------------")
@@ -165,4 +165,4 @@ while 1:
     menu(a)
     usage = sum(sys.getsizeof(i) for i in gc.get_objects())
     print("Mem usage:           ",usage, "bytes")
-    
+"""
