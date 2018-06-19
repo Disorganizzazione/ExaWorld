@@ -1,4 +1,7 @@
 from Xel import *
+import gc, sys
+import copy
+
 radius=3 #radius maps 
 position=None #position in l_map. Must be a Xel! position.exa in order to get coordinates (EXA)
 l_map=None #local map
@@ -73,36 +76,37 @@ def change_map(a, n):
                 direc=[k for k in adj_maps.keys() if piv in k and coords[(coords.index(piv)+1)%6] in k].pop() #ex. q (qw)
             else:
                 direc= [k for k in adj_maps.keys() if piv in k and a in k].pop() #ex. w or a (qw or qa)
-            mirror(a, n, direc)
+            update_maps(direc) #update adj_maps and local_map
+            mirror(a, direc, piv)
             print("New Map= ",direc)
             return True
-        mirror(a, n, direc)
+        update_maps(direc) #update adj_maps and local_map
+        mirror(a, direc, None) #mirror the new position
         print("New Map= ",direc)
         return True
     else:
         return False
     
-def mirror(a, n, direc):
+def mirror(a, direc, piv):
     global l_map
     global position
-    global adj_maps
     pos=None #temp new position
-    exa= position.exa #exa of the new position (find xel)
+    exa= copy.copy(position.exa) #exa of the new position (for find xel)
     coords = ['q', 'w', 'e', 'd', 's', 'a']
     if direc=='qa':
         direc='aq'
-    if n==3: #corner
-        if a==direc[0]: #-2 (q) 
+    if piv!=None: #corner
+        if a==piv: #-2 (q) 
             exa.a, exa.x = exa.x, exa.a
             exa.a, exa.e = exa.e, exa.a
             pos= l_map.findXel(exa) 
-        elif direc[1]==coords[(coords.index(direc[0])+1)%6]: #q+1=(w)
+        elif direc[1]==coords[(coords.index(piv)+1)%6]: #q+1=(w)
             exa.a, exa.x = exa.x, exa.a
             exa.a, exa.e = exa.e, exa.a
             pos= l_map.findXel(exa).link[coords[(coords.index(direc[0])+2)%6]]  #q+2 - ossia q+e (w)
         else: #+2 (a)
-            exa.a, exa.e = exa.e, exa.a
             exa.a, exa.x = exa.x, exa.a
+            exa.e, exa.x = exa.x, exa.e
             pos= l_map.findXel(exa) 
     else:  #edge
         max_coord= max(max(abs(exa.e),abs(exa.x)),abs(exa.a))
@@ -118,22 +122,24 @@ def mirror(a, n, direc):
             pos= l_map.findXel(exa.__neg__()).link[coords[(coords.index(direc[0])+2)%6]] #w
     if direc=='aq':
         direc='qa'
-    update_maps(direc, pos)
+    position= pos #update mirrored position
 
-def update_maps(direc, pos):
+def update_maps(direc):
     global l_map
-    global position
     global adj_maps
+    l_map_tmp=l_map 
     l_map= adj_maps[direc]
-    position= pos
     d= list(adj_maps.keys()) #adj_maps keys
     i=d.index(direc) #index of direc
+    #switch existing maps
     adj_maps[d[(i-2)%6]]=adj_maps[d[(i-1)%6]] #sa=aq
-    adj_maps[d[(i+3)%6]]=adj_maps[d[(i)%6]] #ds=qw
+    adj_maps[d[(i+3)%6]]=l_map_tmp #ds=qw
     adj_maps[d[(i+2)%6]]=adj_maps[d[(i+1)%6]] #ed=we
+    #create last 3 map
     adj_maps[d[(i-1)%6]]=Xel.newHex(radius) #aq=new_aq
     adj_maps[d[(i)%6]]=Xel.newHex(radius) #qw=new_qw
     adj_maps[d[(i+1)%6]]=Xel.newHex(radius) #we=new_we
+    print("Collected:           ", gc.collect()," objects")
 
 def choose_piv():
     global position
@@ -157,4 +163,6 @@ while 1:
     print("--------------------------------------------------------------------------------")
     a=input()
     menu(a)
+    usage = sum(sys.getsizeof(i) for i in gc.get_objects())
+    print("Mem usage:           ",usage, "bytes")
     
