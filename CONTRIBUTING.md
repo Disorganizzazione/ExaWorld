@@ -20,6 +20,11 @@
     git checkout master
     git merge <nome_branch>
     git push
+    
+    
+### Per eliminare un sotto branch:
+    git push origin --delete <your_branch> 
+    git branch -D <branch_name> 
 
 
 
