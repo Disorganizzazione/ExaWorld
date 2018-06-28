@@ -1,14 +1,13 @@
-from direct.showbase.ShowBase import *
+from direct.showbase.ShowBase import ShowBase
 
-class Window(ShowBase):
+class MyApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
-        self.loadModels()
+        self.obj1 = self.loader.loadModel("untitled.egg")
+        self.obj1.reparentTo(self.render)
 
-    def loadModels(self):
-        path="untitled.egg"
-        self.ttc= loader.loadModel(path)
-        self.ttc.reparentTo(render)
+        self.obj1.setPos(-3,7,5)
+        self.useDrive()
 
-game= Window()
-game.run()
+app = MyApp()
+app.run()
