@@ -4,15 +4,8 @@ from panda3d.core import DirectionalLight
 from panda3d.core import AmbientLight
 from panda3d.core import VBase4
 
-
-class MyApp(ShowBase):
-    def __init__(self):
-        ShowBase.__init__(self)
-
-        self.loadModels()
-        self.setupLight()
-        self.useDrive()
-
+class Light:
+    @staticmethod
     def setupLight(self):
         primeL= DirectionalLight("prime")
         primeL.setColor(VBase4(.9,.9,.9,1))
@@ -26,10 +19,3 @@ class MyApp(ShowBase):
         render.setLight(self.ambLight)
         return
 
-    def loadModels(self):
-        self.obj1 = self.loader.loadModel("Models/Exa.egg")
-        self.obj1.reparentTo(self.render)
-        self.obj1.setPos(-3, 7, 5)
-
-app = MyApp()
-app.run()
