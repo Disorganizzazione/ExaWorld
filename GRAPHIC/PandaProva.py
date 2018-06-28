@@ -15,7 +15,7 @@ class MyApp(ShowBase):
 
     def setupLight(self):
         primeL= DirectionalLight("prime")
-        primeL.setColor(VBase4(.6,.6,.6,1))
+        primeL.setColor(VBase4(.9,.9,.9,1))
         self.light= render.attachNewNode(primeL)
         self.light.setHpr(45,-60,0)
         render.setLight(self.light)
@@ -27,17 +27,9 @@ class MyApp(ShowBase):
         return
 
     def loadModels(self):
-        self.obj1 = self.loader.loadModel("untitled.egg")
+        self.obj1 = self.loader.loadModel("Models/Exa.egg")
         self.obj1.reparentTo(self.render)
         self.obj1.setPos(-3, 7, 5)
-
-        self.obj2 = self.loader.loadModel("material_box.egg")
-        self.obj2.reparentTo(self.render)
-        self.obj2.setPos(3, 7, 5)
-
-        self.obj3 = self.loader.loadModel("texture_box.egg")
-        self.obj3.reparentTo(self.render)
-        self.obj3.setPos(0, 0, 0)
 
 app = MyApp()
 app.run()
