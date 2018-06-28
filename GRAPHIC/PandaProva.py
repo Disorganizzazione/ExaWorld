@@ -8,12 +8,10 @@ from panda3d.core import VBase4
 class MyApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
-        self.obj1 = self.loader.loadModel("untitled.egg")
-        self.obj1.reparentTo(self.render)
 
-        self.obj1.setPos(-3,7,5)
-        self.useDrive()
+        self.loadModels()
         self.setupLight()
+        self.useDrive()
 
     def setupLight(self):
         primeL= DirectionalLight("prime")
@@ -27,6 +25,19 @@ class MyApp(ShowBase):
         self.ambLight= render.attachNewNode(ambL)
         render.setLight(self.ambLight)
         return
+
+    def loadModels(self):
+        self.obj1 = self.loader.loadModel("untitled.egg")
+        self.obj1.reparentTo(self.render)
+        self.obj1.setPos(-3, 7, 5)
+
+        self.obj2 = self.loader.loadModel("material_box.egg")
+        self.obj2.reparentTo(self.render)
+        self.obj2.setPos(3, 7, 5)
+
+        self.obj3 = self.loader.loadModel("texture_box.egg")
+        self.obj3.reparentTo(self.render)
+        self.obj3.setPos(0, 0, 0)
 
 app = MyApp()
 app.run()
