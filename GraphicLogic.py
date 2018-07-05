@@ -1,5 +1,6 @@
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import PandaNode, NodePath, Camera, TextNode, OrthographicLens
+from panda3d.core import CollisionTraverser, CollisionNode, CollisionHandlerQueue, CollisionRay, CollideMask
 from direct.gui.OnscreenText import OnscreenText
 from direct.actor.Actor import Actor
 import sys
@@ -8,7 +9,7 @@ import math
 from GRAPHIC import LoadLight, LoadModel
 from LOGIC import *
 
-
+CHAR_MAX_ZGAP = 0.2
 apo = 0.86603
 r = 1
 PI = math.pi
@@ -61,10 +62,37 @@ class MyApp(ShowBase):
         for i in range(6):
             center = (x + coords[dirs[i]][0],
                       y + coords[dirs[i]][1])
-            hexs.append(self.model.loadModels(self, center[0], center[1], hex0.getZ()+i*0.2))
+            hexs.append(self.model.loadModels(self, center[0], center[1], hex0.getZ()+i*CHAR_MAX_ZGAP*0.99))
 
         # Create the main character
         self.char = self.model.loadCharacter(self, 0, 0, 0)
+
+        # We will detect the height of the terrain by creating a collision
+        # ray and casting it downward toward the terrain.  One ray will
+        # start above char's head, and the other will start above the camera.
+        # A ray may hit the terrain, or it may hit a rock or a tree.  If it
+        # hits the terrain, we can detect the height.  If it hits anything
+        # else, we rule that the move is illegal.
+        self.cTrav = CollisionTraverser()
+
+        self.charGroundRay = CollisionRay()
+        self.charGroundRay.setOrigin(0, 0, 9)
+        self.charGroundRay.setDirection(0, 0, -1)
+        self.charGroundCol = CollisionNode('charRay')
+        self.charGroundCol.addSolid(self.charGroundRay)
+        self.charGroundCol.setFromCollideMask(CollideMask.bit(0))
+        self.charGroundCol.setIntoCollideMask(CollideMask.allOff())
+        self.charGroundColNp = self.char.attachNewNode(self.charGroundCol)
+        self.charGroundHandler = CollisionHandlerQueue()
+        self.cTrav.addCollider(self.charGroundColNp, self.charGroundHandler)
+
+        # Uncomment this line to see the collision rays
+        #self.charGroundColNp.show()
+        #self.camGroundColNp.show()
+
+        # Uncomment this line to show a visual representation of the
+        # collisions occuring
+        # self.cTrav.showCollisions(render)
 
         # This is used to store which keys are currently pressed.
         self.keyMap = {"restart": 0, "left": 0, "right": 0, "forward": 0, "backward": 0,
@@ -172,6 +200,25 @@ class MyApp(ShowBase):
             self.char.setH(self.camera.getH()-90)
             self.char.setPos(self.char.getPos() + (delta_cos, delta_sin, 0))
 
+        # Normally, we would have to call traverse() to check for collisions.
+        # However, the class ShowBase that we inherit from has a task to do
+        # this for us, if we assign a CollisionTraverser to self.cTrav.
+        self.cTrav.traverse(render)
+
+        # Adjust char's Z coordinate.  If char's ray hit terrain,
+        # update his Z. If it hit anything else, or didn't hit anything, put
+        # him back where he was last frame.
+        entries = list(self.charGroundHandler.getEntries())
+        entries.sort(key=lambda x: x.getSurfacePoint(render).getZ())
+
+        if (len(entries) > 0
+                and entries[0].getIntoNode().getName() == "ExaTile"
+                and entries[0].getSurfacePoint(render).getZ()-self.char.getZ()<=CHAR_MAX_ZGAP):
+            self.char.setZ(entries[0].getSurfacePoint(render).getZ())
+        else:
+            self.char.setPos(startpos)
+
+        # Camera handling
         self.camera.setPos(self.char.getPos() +
                            (math.sin(cam_angle[cam_current])*cam_dist,
                             -math.cos(cam_angle[cam_current])*cam_dist,
