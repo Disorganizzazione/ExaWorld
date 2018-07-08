@@ -1,5 +1,5 @@
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import PandaNode, NodePath, Camera, TextNode, OrthographicLens
+from panda3d.core import PandaNode, NodePath, TextNode, OrthographicLens, Camera, VBase2, VBase3
 from panda3d.core import CollisionTraverser, CollisionNode, CollisionHandlerQueue, CollisionRay, CollideMask
 from direct.gui.OnscreenText import OnscreenText
 from direct.actor.Actor import Actor
@@ -9,18 +9,22 @@ import math
 from GRAPHIC import LoadLight, LoadModel
 from LOGIC import *
 
-CHAR_MAX_ZGAP = 0.2
+CHAR_MAX_ZGAP = 0.3
 apo = 0.86603
 r = 1
 PI = math.pi
+# factor to convert angles from rad to deg
+RAD_DEG = 180.0/PI
+# factor to convert angles from deg to rad
+DEG_RAD = PI/180.0
 side = r
-v3s = math.sqrt(3) * side / 2
-s3 = 3 * side / 2
+v3s = math.sqrt(3) * side / 2.0
+s3 = 3 * side / 2.0
 dirs = ['q', 'w', 'e', 'd', 's', 'a']
 coords = {'q': (-s3, v3s), 'w': (0, v3s * 2), 'e': (s3, v3s),
           'd': (s3, -v3s), 's': (0, -v3s * 2), 'a': (-s3, -v3s)}
 
-# distance of each char's step in dt
+# distance of each char's step in dt (delta time)
 step = 5
 # distance between camera and char in x,y plane
 cam_dist = 5
@@ -28,8 +32,14 @@ cam_dist = 5
 cam_dz = 10
 # angles (in rad) that the camera can assume.
 # In deg: {-120, 180, 120, 60, 0, -60}
-cam_angle = {'q': -PI*2/3, 'w': PI, 'e': PI*2/3, 'd': PI/3, 's': 0, 'a': -PI/3}
-cam_current = 's'
+cam_angle = {'q': -PI*2/3.0, 'w': PI, 'e': PI*2/3.0, 'd': PI/3.0, 's': 0, 'a': -PI/3.0}
+cam_view = 's'
+# camera's task frequency: pause between spinCameraTasks call (seconds)
+cam_task_time = 0.01  # 0.01 is the min value accepted
+# related to camera's rotation speed (degrees)
+cam_delta_angle = 5
+# used to check if the camera rotation task is running
+cam_rotating = False
 # char's rotation angle
 char_angle = 0
 
@@ -87,8 +97,7 @@ class MyApp(ShowBase):
         self.cTrav.addCollider(self.charGroundColNp, self.charGroundHandler)
 
         # Uncomment this line to see the collision rays
-        #self.charGroundColNp.show()
-        #self.camGroundColNp.show()
+        self.charGroundColNp.show()
 
         # Uncomment this line to show a visual representation of the
         # collisions occuring
@@ -129,7 +138,7 @@ class MyApp(ShowBase):
         self.accept("a-up", self.setKey, ["cam-a", False])
         # self.accept("restart", self.char.setPos(0,0,0))
 
-        taskMgr.add(self.move, "moveTask")
+        self.taskMgr.add(self.move, "moveTask")
 
         # Game state variables
         self.isMoving = False
@@ -140,8 +149,8 @@ class MyApp(ShowBase):
         lens.setFilmSize(20, 16)
         self.cam.node().setLens(lens)
         self.camera.setPos(self.char.getPos() +
-                           (math.sin(cam_angle[cam_current]) * cam_dist,
-                            -math.cos(cam_angle[cam_current]) * cam_dist,
+                           (math.sin(cam_angle[cam_view]) * cam_dist,
+                            -math.cos(cam_angle[cam_view]) * cam_dist,
                             cam_dz))
         self.camera.lookAt(self.char)
 
@@ -157,79 +166,112 @@ class MyApp(ShowBase):
 
         # If the camera-left key is pressed, move camera left.
         # If the camera-right key is pressed, move camera right.
-        global cam_current
+        global cam_view
+        temp_cam = cam_view
         if self.keyMap["cam-q"]:
-            cam_current = 'q'
-            print(self.camera.getH())
+            cam_view = 'q'
         if self.keyMap["cam-w"]:
-            print(self.camera.getH())
-            cam_current = 'w'
+            cam_view = 'w'
         if self.keyMap["cam-e"]:
-            print(self.camera.getH())
-            cam_current = 'e'
+            cam_view = 'e'
         if self.keyMap["cam-d"]:
-            cam_current = 'd'
-            print(self.camera.getH())
+            cam_view = 'd'
         if self.keyMap["cam-s"]:
-            print(self.camera.getH())
-            cam_current = 's'
+            cam_view = 's'
         if self.keyMap["cam-a"]:
-            print(self.camera.getH())
-            cam_current = 'a'
+            cam_view = 'a'
 
-        # save char's initial position so that we can restore it,
-        # in case he falls off the map or runs into something.
-        startpos = self.char.getPos()
+        global cam_rotating
+        final_angle = int(round((cam_angle[cam_view] * RAD_DEG))) % 360
+        current_angle = int(round(self.camera.getH())) % 360
 
-        # If a move-key is pressed, move char in the specified direction.
-        # Movements in 2D plane depend on camera's position-orientation
-        ang = (self.camera.getH())/180 * math.pi
-        delta_cos = math.cos(ang) * step * dt
-        delta_sin = math.sin(ang) * step * dt
+        # Camera rotation task is triggered when a different angle of view is selected.
+        # The direction of rotation is chosen by comparing the two angles
+        # and changing the sign of the camera rotation angle: cam_delta_angle
+        if final_angle != current_angle:
+            if not self.taskMgr.hasTaskNamed("SpinCameraTask"):
+                global cam_delta_angle
+                diff = final_angle - current_angle
+                cam_delta_angle = math.copysign(cam_delta_angle, diff)
+                if diff > 180:
+                    cam_delta_angle = math.copysign(cam_delta_angle, -1)
+                elif diff < -180:
+                    cam_delta_angle = math.copysign(cam_delta_angle, 1)
+                self.taskMgr.doMethodLater(cam_task_time, self.spinCameraTask, "SpinCameraTask")
+            cam_rotating = True
 
-        if self.keyMap["forward"]:
-            self.char.setH(self.camera.getH())
-            self.char.setPos(self.char.getPos() + (-delta_sin, delta_cos, 0))
-        if self.keyMap["backward"]:
-            self.char.setH(self.camera.getH() - 180)
-            self.char.setPos(self.char.getPos() - (-delta_sin, delta_cos, 0))
-        if self.keyMap["left"]:
-            self.char.setH(self.camera.getH() + 90)
-            self.char.setPos(self.char.getPos() - (delta_cos, delta_sin, 0))
-        if self.keyMap["right"]:
-            self.char.setH(self.camera.getH()-90)
-            self.char.setPos(self.char.getPos() + (delta_cos, delta_sin, 0))
+        if not cam_rotating:
+            # save char's initial position so that we can restore it,
+            # in case he falls off the map or runs into something.
+            startpos = self.char.getPos()
 
-        # Normally, we would have to call traverse() to check for collisions.
-        # However, the class ShowBase that we inherit from has a task to do
-        # this for us, if we assign a CollisionTraverser to self.cTrav.
-        self.cTrav.traverse(render)
+            # If a move-key is pressed, turn and move char in the relative direction.
+            # The pressure of multiple keys at the same time is handled by the v_rot vector
+            # Movements in 2D plane depend on camera's position & orientation
+            v_rot = VBase3(0, 0, 0)
 
-        # Adjust char's Z coordinate.  If char's ray hit terrain,
-        # update his Z. If it hit anything else, or didn't hit anything, put
-        # him back where he was last frame.
-        entries = list(self.charGroundHandler.getEntries())
-        entries.sort(key=lambda x: x.getSurfacePoint(render).getZ())
+            if self.keyMap["forward"]:
+                v_rot += (0, 1, 0)
+            if self.keyMap["backward"]:
+                v_rot += (0, -1, 0)
+            if self.keyMap["left"]:
+                v_rot += (-1, 0, 0)
+            if self.keyMap["right"]:
+                v_rot += (1, 0, 0)
 
-        if (len(entries) > 0
-                and entries[0].getIntoNode().getName() == "ExaTile"
-                and entries[0].getSurfacePoint(render).getZ()-self.char.getZ()<=CHAR_MAX_ZGAP):
-            self.char.setZ(entries[0].getSurfacePoint(render).getZ())
-        else:
-            self.char.setPos(startpos)
+            if v_rot.normalize():
+                self.char.lookAt(self.char.getPos() + v_rot)
+                self.char.setH(self.char.getH() + self.camera.getH())
+                self.char.setY(self.char, step*dt)
 
-        # Camera handling
-        self.camera.setPos(self.char.getPos() +
-                           (math.sin(cam_angle[cam_current])*cam_dist,
-                            -math.cos(cam_angle[cam_current])*cam_dist,
-                            cam_dz))
-        self.camera.lookAt(self.char)
+            # Normally, we would have to call traverse() to check for collisions.
+            # However, the class ShowBase that we inherit from has a task to do
+            # this for us, if we assign a CollisionTraverser to self.cTrav.
+            self.cTrav.traverse(render)
 
+            # Adjust char's Z coordinate.  If char's ray hit terrain,
+            # update his Z. If it hit anything else, or didn't hit anything, put
+            # him back where he was last frame.
+            entries = list(self.charGroundHandler.getEntries())
+            entries.sort(key=lambda x: x.getSurfacePoint(render).getZ())
+            if (len(entries) > 0
+                    and entries[0].getIntoNode().getName() == "ExaTile"
+                    and entries[0].getSurfacePoint(render).getZ()-self.char.getZ() <= CHAR_MAX_ZGAP):
+                self.char.setZ(entries[0].getSurfacePoint(render).getZ())
+            else:
+                self.char.setPos(startpos)
+
+            # Camera position handling: it depends on char's position
+            self.camera.setX(self.char.getX() + math.sin(current_angle*DEG_RAD) * cam_dist)
+            self.camera.setY(self.char.getY() - math.cos(current_angle*DEG_RAD) * cam_dist)
+            self.camera.setZ(self.char.getZ() + cam_dz)
+            self.camera.lookAt(self.char)
+
+        else:  # cam is rotating
+            if final_angle == current_angle:
+                print("CAM IN PLACE!")
+                self.taskMgr.remove("SpinCameraTask")
+                cam_rotating = False
+        #print("curr: ", self.camera.getH())
+        #print("dest: ", cam_angle[cam_view]*RAD_DEG)
         return task.cont
+
+    # Task to animate the camera when user changes the angle of view.
+    # Make the camera rotate counterclockwise around the character in x,y plane
+    # TODO: add cam's "shortest path". The direction of rotation must be chosen according to the final angle of view
+    def spinCameraTask(self, task):
+        print(cam_delta_angle)
+        angle_deg = int(round(self.camera.getH())) + cam_delta_angle
+        angle_rad = angle_deg * DEG_RAD
+        delta_v = VBase3(self.char.getX() + cam_dist*math.sin(angle_rad),
+                         self.char.getY() - cam_dist*math.cos(angle_rad),
+                         self.camera.getZ())
+        self.camera.setPos(delta_v)
+        self.camera.lookAt(self.char)
+        return task.done
 
     def restartGame(self):
         pass
-
 
 
 app = MyApp()
