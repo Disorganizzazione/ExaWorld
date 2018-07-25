@@ -1,8 +1,8 @@
-from Xel import *
+from LOGIC import Xel as Xel
 import gc, sys
 import copy
 
-radius=3 #radius maps 
+radius=4 #radius maps 
 position=None #position in l_map. Must be a Xel! position.exa in order to get coordinates (EXA)
 l_map=None #local map
 adj_maps={'qw':None,'we':None, 'ed':None,'ds':None,'sa':None,'qa':None} #maps stored in memory
@@ -14,10 +14,10 @@ def init():
     global position
     global adj_maps
     #instatntiate
-    l_map= Xel.newHex(radius)
+    l_map= Xel.Xel.newHex(radius)
     position= l_map
     for i in adj_maps:
-        adj_maps[i]=Xel.newHex(radius)
+        adj_maps[i]=Xel.Xel.newHex(radius)
     
 def menu(a): #a=input direction
     global position

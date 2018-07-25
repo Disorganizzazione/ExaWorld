@@ -5,24 +5,26 @@ from direct.gui.OnscreenText import OnscreenText
 from direct.actor.Actor import Actor
 import sys
 import math
+import random
 
 from GRAPHIC import LoadLight, LoadModel
-from LOGIC import *
+from LOGIC import Map as Map
+from LOGIC import Exa as Exa
 
 CHAR_MAX_ZGAP = 0.3
 apo = 0.86603
-r = 1
+
 PI = math.pi
 # factor to convert angles from rad to deg
 RAD_DEG = 180.0/PI
 # factor to convert angles from deg to rad
 DEG_RAD = PI/180.0
-side = r
+side = 1
 v3s = math.sqrt(3) * side / 2.0
-s3 = 3 * side / 2.0
+s3 = 1.5*side
 dirs = ['q', 'w', 'e', 'd', 's', 'a']
-coords = {'q': (-s3, v3s), 'w': (0, v3s * 2), 'e': (s3, v3s),
-          'd': (s3, -v3s), 's': (0, -v3s * 2), 'a': (-s3, -v3s)}
+coords = {'qw': (-s3, v3s), 'we': (0, v3s * 2), 'ed': (s3, v3s),
+          'ds': (s3, -v3s), 'sa': (0, -v3s * 2), 'qa': (-s3, -v3s)}
 
 # distance of each char's step in dt (delta time)
 step = 5
@@ -56,7 +58,44 @@ def addTitle(text):
                         parent=base.a2dBottomRight, align=TextNode.ARight,
                         pos=(-0.1, 0.09), shadow=(0, 0, 0, 1))
 
+
+
+
 class MyApp(ShowBase):
+    def drawMap(self, x_center, y_center):
+        
+        Map.init()
+        hexI = self.model.loadModels(self, x_center, y_center, 0) #Z= prevedi!
+        
+        #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
+        
+
+
+        print(Map.l_map)
+        #dirs = ['q', 'w', 'e', 'd', 's', 'a']
+        for i in range(1, Map.radius+1): #scorre gli anelli
+            Map.l_map= Map.l_map.link['s']
+            for m in Map.adj_maps.values():
+                m= m.link['s']
+                print("--", m)
+            print(Map.l_map)
+            
+            for j in range(6): #scorre gli esagoni
+                for k in range(i): #scorre le posizioni
+                    Map.l_map= Map.l_map.link[dirs[j]]
+                    print(Map.l_map)
+                    (q,r)= VBase2(Map.l_map.exa.x, Map.l_map.exa.a)
+                    v_center= VBase3(s3*q, v3s*2*(q/2+r), random.uniform(0, CHAR_MAX_ZGAP*0.99)) #z=random
+                    hexI= self.model.loadModels(self, v_center[0], v_center[1], v_center[2])
+                    #adj maps
+                    for k,m in Map.adj_maps.items():
+                        m= m.link[dirs[j]]
+                        hexI_adj= self.model.loadModels(self, v_center[0]+ coords[k][0]*Map.radius, v_center[1]+coords[k][1]*Map.radius, v_center[2])
+                        print("--", m)
+
+
+
+
     def __init__(self):
         ShowBase.__init__(self)
 
@@ -66,13 +105,12 @@ class MyApp(ShowBase):
 
         # Load Environment
         self.model = LoadModel.Model
-        hex0 = self.model.loadModels(self, 0, 0, 0)
-        hexs = list()
-        x, y = hex0.getX(), hex0.getY()
-        for i in range(6):
-            center = (x + coords[dirs[i]][0],
-                      y + coords[dirs[i]][1])
-            hexs.append(self.model.loadModels(self, center[0], center[1], hex0.getZ()+i*CHAR_MAX_ZGAP*0.99))
+        
+        #hexs = list()
+        #x, y = hex0.getX(), hex0.getY()
+        self.drawMap(0,0)
+
+
 
         # Create the main character
         self.char = self.model.loadCharacter(self, 0, 0, 0)
@@ -147,6 +185,7 @@ class MyApp(ShowBase):
         self.disableMouse()
         lens = OrthographicLens()
         lens.setFilmSize(20, 16)
+        lens.setNear(-1)
         self.cam.node().setLens(lens)
         self.camera.setPos(self.char.getPos() +
                            (math.sin(cam_angle[cam_view]) * cam_dist,
@@ -241,6 +280,13 @@ class MyApp(ShowBase):
             else:
                 self.char.setPos(startpos)
 
+            
+
+            #QUIIIIIII
+
+
+
+
             # Camera position handling: it depends on char's position
             self.camera.setX(self.char.getX() + math.sin(current_angle*DEG_RAD) * cam_dist)
             self.camera.setY(self.char.getY() - math.cos(current_angle*DEG_RAD) * cam_dist)
@@ -260,7 +306,6 @@ class MyApp(ShowBase):
     # Make the camera rotate counterclockwise around the character in x,y plane
     # TODO: add cam's "shortest path". The direction of rotation must be chosen according to the final angle of view
     def spinCameraTask(self, task):
-        print(cam_delta_angle)
         angle_deg = int(round(self.camera.getH())) + cam_delta_angle
         angle_rad = angle_deg * DEG_RAD
         delta_v = VBase3(self.char.getX() + cam_dist*math.sin(angle_rad),
