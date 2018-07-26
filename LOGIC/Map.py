@@ -68,7 +68,7 @@ def change_map(a, n):
     coords = ['q', 'w', 'e', 'd', 's', 'a']
     direc=None #new map direction (ex. qw, we ...)
     if a in change_dir: #the input direction leads to change the map
-        print("Direction= ",a)
+        """print("Direction= ",a)"""
         direc=change_dir[0]+change_dir[1] #n==2
         if n==3:
             piv=choose_piv() #the direction that can leads 
@@ -107,6 +107,7 @@ def mirror(a, direc, piv):
         else: #+2 (a)
             exa.a, exa.x = exa.x, exa.a
             exa.e, exa.x = exa.x, exa.e
+            print("QUIIIIII",l_map)
             pos= l_map.findXel(exa) 
     else:  #edge
         max_coord= max(max(abs(exa.e),abs(exa.x)),abs(exa.a))
@@ -136,10 +137,10 @@ def update_maps(direc):
     adj_maps[d[(i+3)%6]]=l_map_tmp #ds=qw
     adj_maps[d[(i+2)%6]]=adj_maps[d[(i+1)%6]] #ed=we
     #create last 3 map
-    adj_maps[d[(i-1)%6]]=Xel.newHex(radius) #aq=new_aq
-    adj_maps[d[(i)%6]]=Xel.newHex(radius) #qw=new_qw
-    adj_maps[d[(i+1)%6]]=Xel.newHex(radius) #we=new_we
-    print("Collected:           ", gc.collect()," objects")
+    adj_maps[d[(i-1)%6]]=Xel.Xel.newHex(radius) #aq=new_aq
+    adj_maps[d[(i)%6]]=Xel.Xel.newHex(radius) #qw=new_qw
+    adj_maps[d[(i+1)%6]]=Xel.Xel.newHex(radius) #we=new_we
+    """print("Collected:           ", gc.collect()," objects")"""
 
 def choose_piv():
     global position

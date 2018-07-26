@@ -23,8 +23,13 @@ side = 1
 v3s = math.sqrt(3) * side / 2.0
 s3 = 1.5*side
 dirs = ['q', 'w', 'e', 'd', 's', 'a']
-coords = {'qw': (-s3, v3s), 'we': (0, v3s * 2), 'ed': (s3, v3s),
-          'ds': (s3, -v3s), 'sa': (0, -v3s * 2), 'qa': (-s3, -v3s)}
+
+boh= Map.radius*2*math.sqrt(3)
+coords = {'qw': (-0.5*boh -s3, v3s*boh -apo), 'we': (0.5*boh -s3, v3s*boh +apo), 'ed': (1*boh , 0 +apo),
+          'ds': (0.5*boh +s3, -v3s*boh +apo), 'sa': (-0.5*boh +s3, -v3s*boh -apo), 'qa': (-1*boh, 0 -apo)}
+
+#previous exa position
+pix_pos_tmp= VBase3(0,0,0)
 
 # distance of each char's step in dt (delta time)
 step = 5
@@ -61,37 +66,37 @@ def addTitle(text):
 
 
 
+
 class MyApp(ShowBase):
     def drawMap(self, x_center, y_center):
         
         Map.init()
+        l_map= Map.l_map
+        adj_maps= Map.adj_maps
+
+        #Centers
         hexI = self.model.loadModels(self, x_center, y_center, 0) #Z= prevedi!
+        for c,m in adj_maps.items():
+            hexI_adj= self.model.loadModels(self, x_center + coords[c][0], y_center+coords[c][1], 0)#v_center[2])
         
         #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
         
-
-
-        print(Map.l_map)
-        #dirs = ['q', 'w', 'e', 'd', 's', 'a']
         for i in range(1, Map.radius+1): #scorre gli anelli
-            Map.l_map= Map.l_map.link['s']
-            for m in Map.adj_maps.values():
+            l_map= l_map.link['s']
+            for m in adj_maps.values():
                 m= m.link['s']
-                print("--", m)
-            print(Map.l_map)
-            
+
             for j in range(6): #scorre gli esagoni
                 for k in range(i): #scorre le posizioni
-                    Map.l_map= Map.l_map.link[dirs[j]]
-                    print(Map.l_map)
-                    (q,r)= VBase2(Map.l_map.exa.x, Map.l_map.exa.a)
+                    l_map= l_map.link[dirs[j]]
+
+                    (q,r)= VBase2(l_map.exa.x, l_map.exa.a)
                     v_center= VBase3(s3*q, v3s*2*(q/2+r), random.uniform(0, CHAR_MAX_ZGAP*0.99)) #z=random
                     hexI= self.model.loadModels(self, v_center[0], v_center[1], v_center[2])
-                    #adj maps
-                    for k,m in Map.adj_maps.items():
+
+                    for c,m in adj_maps.items():
                         m= m.link[dirs[j]]
-                        hexI_adj= self.model.loadModels(self, v_center[0]+ coords[k][0]*Map.radius, v_center[1]+coords[k][1]*Map.radius, v_center[2])
-                        print("--", m)
+                        hexI_adj= self.model.loadModels(self, v_center[0]+ coords[c][0], v_center[1]+coords[c][1], 0.4)#v_center[2])            
 
 
 
@@ -243,7 +248,6 @@ class MyApp(ShowBase):
             # save char's initial position so that we can restore it,
             # in case he falls off the map or runs into something.
             startpos = self.char.getPos()
-
             # If a move-key is pressed, turn and move char in the relative direction.
             # The pressure of multiple keys at the same time is handled by the v_rot vector
             # Movements in 2D plane depend on camera's position & orientation
@@ -282,7 +286,49 @@ class MyApp(ShowBase):
 
             
 
-            #QUIIIIIII
+            #QUIIIIIII+
+            global pix_pos_tmp 
+            pix_pos= self.char.getPos()
+
+            
+
+            exa_pos= None
+            
+        #if (math.isclose(abs(pix_pos[0])%(apo+0.05), apo, rel_tol=0.05) or math.isclose(abs(pix_pos[1])%(apo+0.05), apo,rel_tol=0.05)):
+            
+            exa_pos= -1/3 *pix_pos[0] + math.sqrt(3)/3*pix_pos[1], 2/3 * pix_pos[0]
+            
+
+            pix_pos= VBase3(round(exa_pos[0]), round(exa_pos[1]), 0)
+            pix_pos+= VBase3(0,0, round(-pix_pos[0] - pix_pos[1]))
+
+            
+            pix_pos_diff= VBase3(abs(pix_pos[0] - exa_pos[0]), abs(pix_pos[1] - exa_pos[1]), abs(pix_pos[2] - (-exa_pos[0] - exa_pos[1])))
+
+
+            if( pix_pos_diff[0] > pix_pos_diff[1] and pix_pos_diff[0] > pix_pos_diff[2]):
+                pix_pos[0]= -pix_pos[1]-pix_pos[2]
+            elif (pix_pos_diff[1] > pix_pos_diff[2]):
+                pix_pos[1]= -pix_pos[0]-pix_pos[2]
+            else:
+                pix_pos[2]= -pix_pos[0]-pix_pos[1]
+
+            
+            if(pix_pos_tmp != pix_pos):
+                direc= pix_pos - pix_pos_tmp
+                directions= {VBase3(1,-1,0): 'q', VBase3(1,0,-1): 'w', VBase3(0,1,-1): 'e', VBase3(-1,1,0): 'd', VBase3(-1,0,1): 's', VBase3(0,-1,1): 'a'}
+                Map.menu(directions.get(direc))
+                print(Map.position)
+            
+            pix_pos_tmp= pix_pos
+
+
+        #Map.position= l_map.findXel()
+        
+            #print(Exa.Exa(pix_pos[0], pix_pos[1], -pix_pos[2]))
+            
+            
+
 
 
 
