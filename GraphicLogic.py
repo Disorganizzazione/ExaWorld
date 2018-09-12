@@ -20,13 +20,16 @@ RAD_DEG = 180.0/PI
 # factor to convert angles from deg to rad
 DEG_RAD = PI/180.0
 side = 1
+R= Map.radius
 v3s = math.sqrt(3) * side / 2.0
+v3R = math.sqrt(3) * R / 2.0
 s3 = 1.5*side
 dirs = ['q', 'w', 'e', 'd', 's', 'a']
 
-boh= Map.radius*2*math.sqrt(3)
-coords = {'qw': (-0.5*boh -s3, v3s*boh -apo), 'we': (0.5*boh -s3, v3s*boh +apo), 'ed': (1*boh , 0 +apo),
-          'ds': (0.5*boh +s3, -v3s*boh +apo), 'sa': (-0.5*boh +s3, -v3s*boh -apo), 'qa': (-1*boh, 0 -apo)}
+boh=R*100
+scale= math.sqrt(3)
+coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*scale +2*apo), 'ed': (2*v3R*scale +s3, 0*scale +apo),
+          'ds': (v3R*scale +s3, -1.5*R*scale -apo), 'sa': (-v3R*scale +0, -1.5*R*scale -2*apo), 'qa': (-2*v3R*scale -s3, 0*scale -apo)}
 
 #previous exa position
 pix_pos_tmp= VBase3(0,0,0)
@@ -77,7 +80,7 @@ class MyApp(ShowBase):
         #Centers
         hexI = self.model.loadModels(self, x_center, y_center, 0) #Z= prevedi!
         for c,m in adj_maps.items():
-            hexI_adj= self.model.loadModels(self, x_center + coords[c][0], y_center+coords[c][1], 0)#v_center[2])
+            hexI_adj= self.model.loadModels(self, x_center + coords[c][0], y_center+coords[c][1], random.uniform(0, CHAR_MAX_ZGAP*0.99))
         
         #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
         
@@ -96,7 +99,7 @@ class MyApp(ShowBase):
 
                     for c,m in adj_maps.items():
                         m= m.link[dirs[j]]
-                        hexI_adj= self.model.loadModels(self, v_center[0]+ coords[c][0], v_center[1]+coords[c][1], 0.4)#v_center[2])            
+                        hexI_adj= self.model.loadModels(self, v_center[0]+ coords[c][0], v_center[1]+coords[c][1], v_center[2])            
 
 
 
