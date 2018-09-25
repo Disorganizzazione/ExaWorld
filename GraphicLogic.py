@@ -6,12 +6,13 @@ from direct.actor.Actor import Actor
 import sys
 import math
 import random
+from opensimplex import OpenSimplex
 
 from GRAPHIC import LoadLight, LoadModel
 from LOGIC import Map as Map
 from LOGIC import Exa as Exa
 
-CHAR_MAX_ZGAP = 0.3
+CHAR_MAX_ZGAP = 10 #temporary value
 apo = 0.86603
 
 PI = math.pi
@@ -93,7 +94,7 @@ class MyApp(ShowBase):
                 for k in range(i): #scorre le posizioni
                     l_map= l_map.link[dirs[j]]
 
-                    if abs(l_map.exa.e)==Map.radius or abs(l_map.exa.x)==Map.radius or abs(l_map.exa.a)==Map.radius : 
+                    if Map.radius in (abs(l_map.exa.e), abs(l_map.exa.x), abs(l_map.exa.a)): 
                         color = "yellow"
                     else:
                         color = "green"
