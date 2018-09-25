@@ -35,7 +35,7 @@ coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*s
 pix_pos_tmp= VBase3(0,0,0)
 
 # distance of each char's step in dt (delta time)
-step = 5
+step = 5    
 # distance between camera and char in x,y plane
 cam_dist = 5
 # distance between camera and char in z axis
@@ -78,9 +78,9 @@ class MyApp(ShowBase):
         adj_maps= Map.adj_maps
 
         #Centers
-        hexI = self.model.loadModels(self, x_center, y_center, 0) #Z= prevedi!
+        hexI = self.model.loadExaTile(self, x_center, y_center, 0, "red") #Z= prevedi!
         for c,m in adj_maps.items():
-            hexI_adj= self.model.loadModels(self, x_center + coords[c][0], y_center+coords[c][1], random.uniform(0, CHAR_MAX_ZGAP*0.99))
+            hexI_adj= self.model.loadExaTile(self, x_center + coords[c][0], y_center+coords[c][1], random.uniform(0, CHAR_MAX_ZGAP*0.99), "red")
         
         #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
         
@@ -93,13 +93,19 @@ class MyApp(ShowBase):
                 for k in range(i): #scorre le posizioni
                     l_map= l_map.link[dirs[j]]
 
+                    if abs(l_map.exa.e)==Map.radius or abs(l_map.exa.x)==Map.radius or abs(l_map.exa.a)==Map.radius : 
+                        color = "yellow"
+                    else:
+                        color = "green"
                     (q,r)= VBase2(l_map.exa.x, l_map.exa.a)
                     v_center= VBase3(s3*q, v3s*2*(q/2+r), random.uniform(0, CHAR_MAX_ZGAP*0.99)) #z=random
-                    hexI= self.model.loadModels(self, v_center[0], v_center[1], v_center[2])
+
+                    hexI= self.model.loadExaTile(self, v_center[0], v_center[1], v_center[2], color)
 
                     for c,m in adj_maps.items():
                         m= m.link[dirs[j]]
-                        hexI_adj= self.model.loadModels(self, v_center[0]+ coords[c][0], v_center[1]+coords[c][1], v_center[2])            
+
+                        hexI_adj= self.model.loadExaTile(self, v_center[0]+ coords[c][0], v_center[1]+coords[c][1], v_center[2], color)            
 
 
 
@@ -297,7 +303,7 @@ class MyApp(ShowBase):
 
             exa_pos= None
             
-        #if (math.isclose(abs(pix_pos[0])%(apo+0.05), apo, rel_tol=0.05) or math.isclose(abs(pix_pos[1])%(apo+0.05), apo,rel_tol=0.05)):
+            #if (math.isclose(abs(pix_pos[0])%(apo+0.05), apo, rel_tol=0.05) or math.isclose(abs(pix_pos[1])%(apo+0.05), apo,rel_tol=0.05)):
             
             exa_pos= -1/3 *pix_pos[0] + math.sqrt(3)/3*pix_pos[1], 2/3 * pix_pos[0]
             
@@ -326,7 +332,7 @@ class MyApp(ShowBase):
             pix_pos_tmp= pix_pos
 
 
-        #Map.position= l_map.findXel()
+            #Map.position= l_map.findXel()
         
             #print(Exa.Exa(pix_pos[0], pix_pos[1], -pix_pos[2]))
             
