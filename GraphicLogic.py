@@ -94,19 +94,29 @@ class MyApp(ShowBase):
                 for k in range(i): #scorre le posizioni
                     l_map= l_map.link[dirs[j]]
 
-                    if Map.radius in (abs(l_map.exa.e), abs(l_map.exa.x), abs(l_map.exa.a)): 
-                        color = "yellow"
-                    else:
-                        color = "green"
                     (q,r)= VBase2(l_map.exa.x, l_map.exa.a)
                     v_center= VBase3(s3*q, v3s*2*(q/2+r), random.uniform(0, CHAR_MAX_ZGAP*0.99)) #z=random
 
-                    hexI= self.model.loadExaTile(self, v_center[0], v_center[1], v_center[2], color)
+                    if Map.radius in (abs(l_map.exa.e), abs(l_map.exa.x), abs(l_map.exa.a)):
+                        color = "green"
+                    else:
+                        color = "green"
+
+                    #prova!
+                    if i==Map.radius and k%Map.radius==0:
+                        print("QUII! :",k)
+                        list = [(0, 10)] * 80 + [(11, 40)] * 15 + [(41, 100)] * 5
+                        chosen = random.choice(list)
+                        height = random.randint(chosen[0], chosen[1])/10*random.choice([-1,1])
+                        hexI = self.model.loadExaTile(self, v_center[0], v_center[1], height, "yellow")
+                    ###
+                    else:
+                        hexI= self.model.loadExaTile(self, v_center[0], v_center[1], 0, color)
 
                     for c,m in adj_maps.items():
                         m= m.link[dirs[j]]
 
-                        hexI_adj= self.model.loadExaTile(self, v_center[0]+ coords[c][0], v_center[1]+coords[c][1], v_center[2], color)            
+                        hexI_adj= self.model.loadExaTile(self, v_center[0]+ coords[c][0], v_center[1]+coords[c][1], 0, color)
 
 
 
@@ -154,7 +164,7 @@ class MyApp(ShowBase):
 
         # Uncomment this line to show a visual representation of the
         # collisions occuring
-        # self.cTrav.showCollisions(render)
+        self.cTrav.showCollisions(render)
 
         # This is used to store which keys are currently pressed.
         self.keyMap = {"restart": 0, "left": 0, "right": 0, "forward": 0, "backward": 0,
@@ -329,6 +339,7 @@ class MyApp(ShowBase):
                 directions= {VBase3(1,-1,0): 'q', VBase3(1,0,-1): 'w', VBase3(0,1,-1): 'e', VBase3(-1,1,0): 'd', VBase3(-1,0,1): 's', VBase3(0,-1,1): 'a'}
                 Map.menu(directions.get(direc))
                 print(Map.position)
+                print(self.char.getPos())
             
             pix_pos_tmp= pix_pos
 

@@ -2,6 +2,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import VBase4
 from opensimplex import OpenSimplex
 import math
+import random
 
 switch_exa = {
         "green": "Exa.egg",
@@ -17,7 +18,9 @@ class Model:
     @staticmethod
     def loadExaTile(self, x, y, z, type):
         #temporary randomizing
-        height = openS.noise2d(x,y) + (math.sqrt(x*x+y*y)-2)/5
+        #height = openS.noise2d(x,y) + (math.sqrt(x*x+y*y)-2)/5
+        height = z
+
         #temporary
         if type == "green":
             if height > 3: 

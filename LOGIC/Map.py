@@ -107,7 +107,6 @@ def mirror(a, direc, piv):
         else: #+2 (a)
             exa.a, exa.x = exa.x, exa.a
             exa.e, exa.x = exa.x, exa.e
-            print("QUIIIIII",l_map)
             pos= l_map.findXel(exa) 
     else:  #edge
         max_coord= max(max(abs(exa.e),abs(exa.x)),abs(exa.a))
