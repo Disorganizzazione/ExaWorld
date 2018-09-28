@@ -13,7 +13,7 @@ from GRAPHIC import LoadLight, LoadModel
 from LOGIC import Map as Map
 from LOGIC import Exa as Exa
 
-CHAR_MAX_ZGAP = 5 #temporary value
+CHAR_MAX_ZGAP = 5  # temporary value
 apo = 0.86603
 
 PI = math.pi
@@ -117,8 +117,8 @@ class MyApp(ShowBase):
                     ###
                     else:  # run-time calculated exaTiles
                         if l_map.exa.a >= 0 and l_map.exa.e >= 0:
-                           # high = ExaRandom.interpolate((0, map0_edges_z[0], map0_edges_z[1]), )
-                            hexI = self.model.loadExaTile(self, v_center[0], v_center[1], 1, color)
+                            high = ExaRandom.interpolate(self, (0, map0_edges_z[0], map0_edges_z[1]), Map.radius, (l_map.exa.e, l_map.exa.x, l_map.exa.a))
+                            hexI = self.model.loadExaTile(self, v_center[0], v_center[1], high, color)
                         else:
                             hexI = self.model.loadExaTile(self, v_center[0], v_center[1], 0, color)
 
