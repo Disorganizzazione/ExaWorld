@@ -82,9 +82,8 @@ class MyApp(ShowBase):
         #Centers
         hexI = self.model.loadExaTile(self, x_center, y_center, 0, "red")  # TODO: Z= prevedi!
 
-        ra = Map.radius
-        map0_edges_exa = [(ra,-ra,0),(0,-ra,ra),(-ra,0,ra),(-ra,ra,0),(0,ra,-ra),(0,ra,-ra)]
-        map0_edges_z = ExaRandom.randomize_vertices(self)
+        map0_edges_z = [3, 8, -2, -1, 6, -6]
+        # map0_edges_z = ExaRandom.randomize_vertices(self)
         print(map0_edges_z)
 
         for c,m in adj_maps.items():
@@ -110,14 +109,14 @@ class MyApp(ShowBase):
                         color = "green"
 
                     # prova!
-                    if i == Map.radius and k == 3:  # vertices
+                    if i == Map.radius and k == Map.radius-1:  # vertices
                         print("QUA! (j)(center):", j, (v_center[0], v_center[1]))
                         height = map0_edges_z[j]
                         hexI = self.model.loadExaTile(self, v_center[0], v_center[1], height, "yellow")
                     ###
                     else:  # run-time calculated exaTiles
-                        if l_map.exa.a >= 0 and l_map.exa.e >= 0:
-                            high = ExaRandom.interpolate(self, (0, map0_edges_z[0], map0_edges_z[1]), Map.radius, (l_map.exa.e, l_map.exa.x, l_map.exa.a))
+                        if l_map.exa.x <= 0 and l_map.exa.a <= 0:  #TODO: fix: this map scan inverts 'e' with 'a' coords
+                            high = ExaRandom.interpolate(self, (0, map0_edges_z[1], map0_edges_z[2]), Map.radius, (l_map.exa.e, l_map.exa.x, l_map.exa.a))  #TODO: fix: this map scan inverts 'e' with 'a' coords
                             hexI = self.model.loadExaTile(self, v_center[0], v_center[1], high, color)
                         else:
                             hexI = self.model.loadExaTile(self, v_center[0], v_center[1], 0, color)
