@@ -7,12 +7,13 @@ import sys
 import math
 import random
 from opensimplex import OpenSimplex
+from ExaRandomMachine import ExaRandom
 
 from GRAPHIC import LoadLight, LoadModel
 from LOGIC import Map as Map
 from LOGIC import Exa as Exa
 
-CHAR_MAX_ZGAP = 10 #temporary value
+CHAR_MAX_ZGAP = 5 #temporary value
 apo = 0.86603
 
 PI = math.pi
@@ -79,44 +80,51 @@ class MyApp(ShowBase):
         adj_maps= Map.adj_maps
 
         #Centers
-        hexI = self.model.loadExaTile(self, x_center, y_center, 0, "red") #Z= prevedi!
+        hexI = self.model.loadExaTile(self, x_center, y_center, 0, "red")  # TODO: Z= prevedi!
+
+        ra = Map.radius
+        map0_edges_exa = [(ra,-ra,0),(0,-ra,ra),(-ra,0,ra),(-ra,ra,0),(0,ra,-ra),(0,ra,-ra)]
+        map0_edges_z = ExaRandom.randomize_vertices(self)
+        print(map0_edges_z)
+
         for c,m in adj_maps.items():
             hexI_adj= self.model.loadExaTile(self, x_center + coords[c][0], y_center+coords[c][1], random.uniform(0, CHAR_MAX_ZGAP*0.99), "red")
         
         #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
         
-        for i in range(1, Map.radius+1): #scorre gli anelli
+        for i in range(1, Map.radius+1):  # scan the hexagonal-rings
             l_map= l_map.link['s']
             for m in adj_maps.values():
                 m= m.link['s']
 
-            for j in range(6): #scorre gli esagoni
-                for k in range(i): #scorre le posizioni
+            for j in range(6):  # direction for movement through map links
+                for k in range(i):  # scan all positions
                     l_map= l_map.link[dirs[j]]
 
                     (q,r)= VBase2(l_map.exa.x, l_map.exa.a)
-                    v_center= VBase3(s3*q, v3s*2*(q/2+r), random.uniform(0, CHAR_MAX_ZGAP*0.99)) #z=random
+                    v_center= VBase3(s3*q, v3s*2*(q/2+r), random.uniform(0, CHAR_MAX_ZGAP*0.99))  # z = random
 
                     if Map.radius in (abs(l_map.exa.e), abs(l_map.exa.x), abs(l_map.exa.a)):
-                        color = "green"
+                        color = "green"  # map edge
                     else:
                         color = "green"
 
-                    #prova!
-                    if i==Map.radius and k%Map.radius==0:
-                        print("QUII! :",k)
-                        list = [(0, 10)] * 80 + [(11, 40)] * 15 + [(41, 100)] * 5
-                        chosen = random.choice(list)
-                        height = random.randint(chosen[0], chosen[1])/10*random.choice([-1,1])
+                    # prova!
+                    if i == Map.radius and k == 3:  # vertices
+                        print("QUA! (j)(center):", j, (v_center[0], v_center[1]))
+                        height = map0_edges_z[j]
                         hexI = self.model.loadExaTile(self, v_center[0], v_center[1], height, "yellow")
                     ###
-                    else:
-                        hexI= self.model.loadExaTile(self, v_center[0], v_center[1], 0, color)
+                    else:  # run-time calculated exaTiles
+                        if l_map.exa.a >= 0 and l_map.exa.e >= 0:
+                           # high = ExaRandom.interpolate((0, map0_edges_z[0], map0_edges_z[1]), )
+                            hexI = self.model.loadExaTile(self, v_center[0], v_center[1], 1, color)
+                        else:
+                            hexI = self.model.loadExaTile(self, v_center[0], v_center[1], 0, color)
 
                     for c,m in adj_maps.items():
-                        m= m.link[dirs[j]]
-
-                        hexI_adj= self.model.loadExaTile(self, v_center[0]+ coords[c][0], v_center[1]+coords[c][1], 0, color)
+                        m = m.link[dirs[j]]
+                        hexI_adj = self.model.loadExaTile(self, v_center[0]+coords[c][0], v_center[1]+coords[c][1], 0, color)
 
 
 
