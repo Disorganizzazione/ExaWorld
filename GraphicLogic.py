@@ -12,6 +12,7 @@ from ExaRandomMachine import ExaRandom
 from GRAPHIC import LoadLight, LoadModel
 from LOGIC import Map as Map
 from LOGIC import Exa as Exa
+from LOGIC import Xel as Xel
 
 CHAR_MAX_ZGAP = 5  # temporary value
 apo = 0.86603
@@ -73,24 +74,53 @@ def addTitle(text):
 
 
 class MyApp(ShowBase):
+
+    def insertTile(self, xel:Xel.Xel):
+        # print(isinstance(xel, Xel.Xel))
+        (q,r) = xel.exa.x, xel.exa.e
+
+        tile_z=0 #TODO
+        
+        tile_color = "green" #TODO
+        
+        v_center = VBase2(s3*q, v3s*2*(q/2+r))
+
+        return self.model.loadExaTile(self, v_center[0], v_center[1], tile_z, tile_color)
+        
+
     def drawMap(self, x_center, y_center):
         
         Map.init()
         l_map= Map.l_map
         adj_maps= Map.adj_maps
 
-        #Centers
-        hexI = self.model.loadExaTile(self, x_center, y_center, 0, "red")  # TODO: Z= prevedi!
-
         map0_edges_z = [3, 8, -2, -1, 6, -6]
         # map0_edges_z = ExaRandom.randomize_vertices(self)
         print(map0_edges_z)
+
+        #Centers
+        hexI = self.model.loadExaTile(self, x_center, y_center, 0, "red")  # TODO: Z= prevedi!
 
         for c,m in adj_maps.items():
             hexI_adj= self.model.loadExaTile(self, x_center + coords[c][0], y_center+coords[c][1], random.uniform(0, CHAR_MAX_ZGAP*0.99), "red")
         
         #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
-        
+
+
+        ### prova 
+        center_map = l_map
+        for t in range(1):  # scan each sub-triangle
+            for r in range(Map.radius):  # distance from center
+                l_map = l_map.link[dirs[t]]
+                self.insertTile(l_map)
+                tmp_map = l_map
+                for n in range(r):  # each cell from t triangle side (included) to next triangle side (excluded)
+                    tmp_map = tmp_map.link[dirs[(t+2)%5]]
+                    print("tmp:", tmp_map)
+                    self.insertTile(tmp_map)
+        ###
+
+        """
         for i in range(1, Map.radius+1):  # scan the hexagonal-rings
             l_map= l_map.link['s']
             for m in adj_maps.values():
@@ -124,7 +154,7 @@ class MyApp(ShowBase):
                     for c,m in adj_maps.items():
                         m = m.link[dirs[j]]
                         hexI_adj = self.model.loadExaTile(self, v_center[0]+coords[c][0], v_center[1]+coords[c][1], 0, color)
-
+        """
 
 
 
