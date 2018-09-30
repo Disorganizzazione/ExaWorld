@@ -75,12 +75,9 @@ def addTitle(text):
 
 class MyApp(ShowBase):
 
-    def insertTile(self, xel:Xel.Xel):
-        # print(isinstance(xel, Xel.Xel))
+    def insertTile(self, xel:Xel.Xel, tile_z):
         (q,r) = xel.exa.x, xel.exa.e
 
-        tile_z=0 #TODO
-        
         tile_color = "green" #TODO
         
         v_center = VBase2(s3*q, v3s*2*(q/2+r))
@@ -106,18 +103,23 @@ class MyApp(ShowBase):
         
         #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
 
-
         ### prova 
         center_map = l_map
         for t in range(1):  # scan each sub-triangle
-            for r in range(Map.radius):  # distance from center
-                l_map = l_map.link[dirs[t]]
-                self.insertTile(l_map)
-                tmp_map = l_map
-                for n in range(r):  # each cell from t triangle side (included) to next triangle side (excluded)
-                    tmp_map = tmp_map.link[dirs[(t+2)%5]]
-                    print("tmp:", tmp_map)
-                    self.insertTile(tmp_map)
+            center_map = l_map
+            for d in range(1, Map.radius+1):  # distance from center moving along triangle side t
+                center_map = center_map.link[dirs[t]]
+                print(center_map)
+                tmp_map = center_map
+                for n in range(0, d):  # each cell from t triangle edge (included) to next triangle edge (excluded)
+                    if d==Map.radius and n==0: 
+                        cell_z = map0_edges_z[t]
+                    else:
+                        cell_z = ExaRandom.interpolate(self, (0, map0_edges_z[t], map0_edges_z[(t+1)%6]), Map.radius, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a))
+
+                    self.insertTile(tmp_map, cell_z)
+                    print(n, "temp:", tmp_map)
+                    tmp_map = tmp_map.link[dirs[(t+2)%6]]
         ###
 
         """
