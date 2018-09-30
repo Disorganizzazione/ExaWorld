@@ -17,16 +17,6 @@ class Model:
 
     @staticmethod
     def loadExaTile(self, x, y, z, type):
-        #temporary randomizing
-        #z = openS.noise2d(x,y) + (math.sqrt(x*x+y*y)-2)/5
-
-        #temporary
-        if type == "green":
-            if z > 3:
-                type = "brown"
-            elif z<0:
-                type = "blue"
-
         self.obj1 = self.loader.loadModel("GRAPHIC/Models/" + switch_exa[type])
         self.obj1.reparentTo(self.render)
         self.obj1.setPos(x, y, z)

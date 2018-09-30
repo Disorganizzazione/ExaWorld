@@ -2,7 +2,7 @@ from panda3d.core import VBase3
 import random
 import math
 
-vertices_exa = [VBase3(0, -1, 1), VBase3(1, -1, 0), VBase3(1, 0, -1)]  # 'e' and 'a' coords are inverted for GraphicLogic.drawMap() problem
+vertices_exa = [VBase3(1, -1, 0), VBase3(1, 0, -1), VBase3(0, 1, -1)]  # q,w,e (top corners)
 
 class ExaRandom:
 
@@ -18,10 +18,26 @@ class ExaRandom:
     def interpolate(self, vABC, radius, exaP):
         (vA, vB, vC) = vABC
         (eP, xP, aP) = exaP
-        # TODO: change sign of vertices_exa when opposite
-        # TODO: chose vertices_exa[index] for each point P
-        (eB, xB, aB) = vertices_exa[1]*radius
-        (eC, xC, aC) = vertices_exa[2]*radius
+
+        vertex_index = 0
+        if aP <= 0 and xP < 0:    # qw triangle
+            vertex_index = 0
+        elif xP >= 0 and eP > 0:  # we triangle
+            vertex_index = 1
+        elif eP <= 0 and aP < 0:  # ed triangle
+            vertex_index = 2
+        elif aP >= 0 and xP > 0:  # ds triangle
+            vertex_index = 0
+            radius = -radius
+        elif xP <= 0 and eP < 0:  # sa triangle
+            vertex_index = 1
+            radius = -radius
+        else:  # (eP>=0 and aP>0) # aq triangle
+            vertex_index = 2
+            radius = -radius
+
+        (eB, xB, aB) = vertices_exa[vertex_index]*radius
+        (eC, xC, aC) = vertices_exa[(vertex_index+1)%3]*radius
         
         # the influence of each vertex on P scales with the inverse of the distance
         wA = 1 / max(abs(eP), abs(xP), abs(aP))

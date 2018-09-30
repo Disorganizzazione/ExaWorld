@@ -14,7 +14,7 @@ from LOGIC import Map as Map
 from LOGIC import Exa as Exa
 from LOGIC import Xel as Xel
 
-CHAR_MAX_ZGAP = 5  # temporary value
+CHAR_MAX_ZGAP = 2  # temporary value
 apo = 0.86603
 
 PI = math.pi
@@ -77,10 +77,18 @@ class MyApp(ShowBase):
 
     def insertTile(self, xel:Xel.Xel, tile_z):
         (q,r) = xel.exa.x, xel.exa.e
+        v_center = VBase2(s3*q, v3s*2*(q/2+r))
 
         tile_color = "green" #TODO
-        
-        v_center = VBase2(s3*q, v3s*2*(q/2+r))
+        if q == r == 0:
+            tile_color = "red"
+        #elif abs(q) == Map.radius or abs(r) == Map.radius or abs(-q-r) == Map.radius:
+        #    tile_color = "yellow"
+        else:  #temporary
+            if tile_z > 3:
+                tile_color = "brown"
+            elif tile_z<0:
+                tile_color = "blue"
 
         return self.model.loadExaTile(self, v_center[0], v_center[1], tile_z, tile_color)
         
@@ -90,35 +98,39 @@ class MyApp(ShowBase):
         Map.init()
         l_map= Map.l_map
         adj_maps= Map.adj_maps
+        submap_seed = random.randint(0, 100)
 
-        map0_edges_z = [3, 8, -2, -1, 6, -6]
-        # map0_edges_z = ExaRandom.randomize_vertices(self)
+        open_s = OpenSimplex(submap_seed)
+
+        #map0_edges_z = [3, 8, -2, -1, 6, -6]
+        map0_edges_z = ExaRandom.randomize_vertices(self)
         print(map0_edges_z)
 
         #Centers
-        hexI = self.model.loadExaTile(self, x_center, y_center, 0, "red")  # TODO: Z= prevedi!
+        hexI = self.insertTile(l_map, 0)  # TODO: z
 
         for c,m in adj_maps.items():
             hexI_adj= self.model.loadExaTile(self, x_center + coords[c][0], y_center+coords[c][1], random.uniform(0, CHAR_MAX_ZGAP*0.99), "red")
         
         #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
 
-        ### prova 
+        ### Graphic map contruction triangle by triangle 
         center_map = l_map
-        for t in range(1):  # scan each sub-triangle
+        for t in range(6):  # scan each triangle
             center_map = l_map
             for d in range(1, Map.radius+1):  # distance from center moving along triangle side t
                 center_map = center_map.link[dirs[t]]
-                print(center_map)
+                #print(center_map)
                 tmp_map = center_map
                 for n in range(0, d):  # each cell from t triangle edge (included) to next triangle edge (excluded)
                     if d==Map.radius and n==0: 
                         cell_z = map0_edges_z[t]
                     else:
                         cell_z = ExaRandom.interpolate(self, (0, map0_edges_z[t], map0_edges_z[(t+1)%6]), Map.radius, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a))
-
+                    
+                    cell_z += open_s.noise2d(tmp_map.exa.x, tmp_map.exa.e)/5
                     self.insertTile(tmp_map, cell_z)
-                    print(n, "temp:", tmp_map)
+                    #print(n, "temp:", tmp_map)
                     tmp_map = tmp_map.link[dirs[(t+2)%6]]
         ###
 
