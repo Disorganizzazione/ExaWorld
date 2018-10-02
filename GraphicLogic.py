@@ -8,6 +8,7 @@ import math
 import random
 from opensimplex import OpenSimplex
 from ExaRandomMachine import ExaRandom
+import Submap
 
 from GRAPHIC import LoadLight, LoadModel
 from LOGIC import Map as Map
@@ -36,6 +37,13 @@ coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*s
 
 #previous exa position
 pix_pos_tmp= VBase3(0,0,0)
+
+#list of stored submaps
+stored_submaps_list = []
+#array of on-screen submaps
+rendered_submaps = []
+#current submap
+current_submap = None
 
 # distance of each char's step in dt (delta time)
 step = 5    
@@ -70,42 +78,100 @@ def addTitle(text):
                         pos=(-0.1, 0.09), shadow=(0, 0, 0, 1))
 
 
-
-
-
 class MyApp(ShowBase):
 
-    def insertTile(self, xel:Xel.Xel, tile_z):
+    def insertTile(self, submap_center, xel:Xel.Xel, tile_z):
+        dx, dy = submap_center
         (q,r) = xel.exa.x, xel.exa.e
         v_center = VBase2(s3*q, v3s*2*(q/2+r))
 
         tile_color = "green" #TODO
         if q == r == 0:
             tile_color = "red"
-        #elif abs(q) == Map.radius or abs(r) == Map.radius or abs(-q-r) == Map.radius:
-        #    tile_color = "yellow"
+        elif abs(q) == Map.radius or abs(r) == Map.radius or abs(xel.exa.a) == Map.radius:
+            tile_color = "yellow"
         else:  #temporary
             if tile_z > 3:
                 tile_color = "brown"
             elif tile_z<0:
                 tile_color = "blue"
 
-        return self.model.loadExaTile(self, v_center[0], v_center[1], tile_z, tile_color)
-        
+        return self.model.loadExaTile(self, v_center[0] + dx, v_center[1] + dy, tile_z, tile_color)
+
+    def drawSubmap(self, submap_center, value_center, value_vertices = ExaRandom.randomize_vertices(0), noise_seed = random.randint(0, 100)):
+        l_map = Map.l_map  # TODO: chose if letting this way or pass l_map as parameter
+
+        submap_seed = noise_seed
+        #submap_seed = 10
+        open_s = OpenSimplex(submap_seed)
+
+        #Center
+        hex0 = self.insertTile(submap_center, l_map, value_center)
+
+        ### Graphic map contruction, triangle-by-triangle way
+        center_map = l_map
+        for t in range(6):  # scan each triangle
+            center_map = l_map
+            for d in range(1, Map.radius+1):  # distance from center moving along triangle side t
+                center_map = center_map.link[dirs[t]]
+                #print(center_map)
+                tmp_map = center_map
+                for n in range(0, d):  # each cell from t triangle edge (included) to next triangle edge (excluded)
+                    if d==Map.radius and n==0: 
+                        cell_z = value_vertices[t]
+                    else:
+                        cell_z = ExaRandom.interpolate(self, (0, value_vertices[t], value_vertices[(t+1)%6]), Map.radius, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a))
+                    
+                    cell_z += open_s.noise2d(tmp_map.exa.x, tmp_map.exa.e)/5
+                    self.insertTile(submap_center, tmp_map, cell_z)
+                    #print(n, "temp:", tmp_map)
+                    tmp_map = tmp_map.link[dirs[(t+2)%6]]
+        ###
 
     def drawMap(self, x_center, y_center):
+        global current_submap
         
+        l_map= Map.l_map
+        current_submap = l_map
+        adj_maps= Map.adj_maps
+
+        global stored_submaps_list
+        global rendered_submaps
+
+        to_draw_list = []
+        for c,m in adj_maps.items(): #TODO: create a submap class
+            if m not in stored_submaps_list:
+                to_draw_list.append(m)
+        print("to draw: ", to_draw_list)
+
+        # empties the list
+        rendered_submaps.clear()
+
+        # draw central map
+        self.drawSubmap((x_center, y_center), 0, [3, 8, -2, -1, 6, -6], 10)
+        rendered_submaps.insert(0,(x_center, y_center))
+        # draw adj maps
+        for c,m in adj_maps.items():
+            tmp_center = (x_center + coords[c][0], y_center+coords[c][1])
+            self.drawSubmap(tmp_center, 0, [3, 8, -2, -1, 6, -6], 10)
+            rendered_submaps.append(tmp_center)
+        print(rendered_submaps)
+
+
+        """
         Map.init()
         l_map= Map.l_map
         adj_maps= Map.adj_maps
-        submap_seed = random.randint(0, 100)
 
+        #submap_seed = random.randint(0, 100)
+        submap_seed = 10
         open_s = OpenSimplex(submap_seed)
 
         #map0_edges_z = [3, 8, -2, -1, 6, -6]
         map0_edges_z = ExaRandom.randomize_vertices(self)
         print(map0_edges_z)
 
+        
         #Centers
         hexI = self.insertTile(l_map, 0)  # TODO: z
 
@@ -114,7 +180,7 @@ class MyApp(ShowBase):
         
         #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
 
-        ### Graphic map contruction triangle by triangle 
+        ### Graphic map contruction, triangle by triangle way
         center_map = l_map
         for t in range(6):  # scan each triangle
             center_map = l_map
@@ -133,7 +199,7 @@ class MyApp(ShowBase):
                     #print(n, "temp:", tmp_map)
                     tmp_map = tmp_map.link[dirs[(t+2)%6]]
         ###
-
+        """
         """
         for i in range(1, Map.radius+1):  # scan the hexagonal-rings
             l_map= l_map.link['s']
@@ -170,8 +236,6 @@ class MyApp(ShowBase):
                         hexI_adj = self.model.loadExaTile(self, v_center[0]+coords[c][0], v_center[1]+coords[c][1], 0, color)
         """
 
-
-
     def __init__(self):
         ShowBase.__init__(self)
 
@@ -184,9 +248,11 @@ class MyApp(ShowBase):
         
         #hexs = list()
         #x, y = hex0.getX(), hex0.getY()
+        Map.init()
         self.drawMap(0,0)
 
-
+        subprova = Submap.Submap((0,0))
+        print(subprova)
 
         # Create the main character
         self.char = self.model.loadCharacter(self, 0, 0, 0)
@@ -314,6 +380,12 @@ class MyApp(ShowBase):
                     cam_delta_angle = math.copysign(cam_delta_angle, 1)
                 self.taskMgr.doMethodLater(cam_task_time, self.spinCameraTask, "SpinCameraTask")
             cam_rotating = True
+
+        # draw map only if needed
+        global current_submap
+        if current_submap != Map.l_map:
+            print("map's changed, ",Map.l_map)
+            self.drawMap(Map.l_map.exa.x, Map.l_map.exa.e)
 
         if not cam_rotating:
             # save char's initial position so that we can restore it,
