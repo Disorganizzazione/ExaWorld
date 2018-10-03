@@ -6,11 +6,10 @@ vertices_exa = [VBase3(1, -1, 0), VBase3(1, 0, -1), VBase3(0, 1, -1)]  # q,w,e (
 
 class ExaRandom:
 
-    @staticmethod
-    def randomize_vertices(self):
+    def randomize_values(self, number_of_values):
         rnd_list = [(0, 10)] * 80 + [(11, 40)] * 15 + [(41, 100)] * 5
         result = []
-        for i in range(0, 6):
+        for i in range(0, number_of_values):
             chosen = random.choice(rnd_list)
             result.append(random.randint(chosen[0], chosen[1]) / 10 * random.choice([-1, 1]))
         return result

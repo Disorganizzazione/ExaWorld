@@ -98,7 +98,22 @@ class MyApp(ShowBase):
 
         return self.model.loadExaTile(self, v_center[0] + dx, v_center[1] + dy, tile_z, tile_color)
 
-    def drawSubmap(self, submap_center, value_center, value_vertices = ExaRandom.randomize_vertices(0), noise_seed = random.randint(0, 100)):
+    def drawTriangle(self, submap_center, submap_xel, triangle_index, nodes_Z, open_simplex):
+        center_map = submap_xel
+        for d in range(1, Map.radius+1):  # distance from center moving along triangle side t
+            center_map = center_map.link[dirs[triangle_index]]
+            tmp_map = center_map
+            for n in range(0, d):  # each cell from triangle_index triangle edge (included) to next triangle edge (excluded)
+                if d==Map.radius and n==0: 
+                    cell_z = nodes_Z[triangle_index]
+                else:
+                    cell_z = ExaRandom.interpolate(self, (nodes_Z[6], nodes_Z[triangle_index], nodes_Z[(triangle_index+1)%6]), Map.radius, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a))
+                
+                cell_z += open_simplex.noise2d(tmp_map.exa.x, tmp_map.exa.e)/5
+                self.insertTile(submap_center, tmp_map, cell_z)
+                tmp_map = tmp_map.link[dirs[(triangle_index+2)%6]]
+
+    def drawSubmap(self, submap_center, nodes_Z, noise_seed):  # TODO: change with drawSubmap(self, submap)
         l_map = Map.l_map  # TODO: chose if letting this way or pass l_map as parameter
 
         submap_seed = noise_seed
@@ -106,10 +121,18 @@ class MyApp(ShowBase):
         open_s = OpenSimplex(submap_seed)
 
         #Center
-        hex0 = self.insertTile(submap_center, l_map, value_center)
+        hex0 = self.insertTile(submap_center, l_map, nodes_Z[6])
 
-        ### Graphic map contruction, triangle-by-triangle way
+        subm = Submap.Submap(submap_center, array_Z=nodes_Z, noise_seed=submap_seed)
+        print("subm:", subm)
+
+        ### Graphic map construction, triangle-by-triangle way
         center_map = l_map
+        for t in range(6):  # scan each triangle
+            self.drawTriangle(submap_center, center_map, t, nodes_Z, open_s)
+        ###
+        return subm
+        """
         for t in range(6):  # scan each triangle
             center_map = l_map
             for d in range(1, Map.radius+1):  # distance from center moving along triangle side t
@@ -126,37 +149,56 @@ class MyApp(ShowBase):
                     self.insertTile(submap_center, tmp_map, cell_z)
                     #print(n, "temp:", tmp_map)
                     tmp_map = tmp_map.link[dirs[(t+2)%6]]
-        ###
+        """
 
     def drawMap(self, x_center, y_center):
         global current_submap
         
         l_map= Map.l_map
         current_submap = l_map
-        adj_maps= Map.adj_maps
+        adj_maps = Map.adj_maps
 
         global stored_submaps_list
         global rendered_submaps
 
+        temporary_submap = Submap.Submap((x_center,y_center), [3, 8, -2, -1, 6, -6, 0], 10)
+        # TODO: must have a list of submaps centered in the new central submap
+        new_seven_submaps = [
+            temporary_submap, 
+            temporary_submap, 
+            temporary_submap,
+            temporary_submap, 
+            temporary_submap, 
+            temporary_submap, 
+            temporary_submap
+        ]
         to_draw_list = []
-        for c,m in adj_maps.items(): #TODO: create a submap class
-            if m not in stored_submaps_list:
-                to_draw_list.append(m)
-        print("to draw: ", to_draw_list)
+        
+        for s in new_seven_submaps: 
+            if s not in rendered_submaps:
+                to_draw_list.append(s)
+        #print("to draw: ", to_draw_list)
 
         # empties the list
-        rendered_submaps.clear()
+        # rendered_submaps.clear()
 
         # draw central map
-        self.drawSubmap((x_center, y_center), 0, [3, 8, -2, -1, 6, -6], 10)
-        rendered_submaps.insert(0,(x_center, y_center))
+        # self.drawSubmap((x_center, y_center), [3, 8, -2, -1, 6, -6, 0], 10) #TODO
+        #rendered_submaps.insert(0,(x_center, y_center))
         # draw adj maps
+        for s in to_draw_list:
+            tmp_center = s.centerXY
+            sub = self.drawSubmap(tmp_center, [3, 8, -2, -1, 6, -6, 0], 10) #TODO
+            rendered_submaps.append(sub)
+        print("rendered:", rendered_submaps)
+
+        """
         for c,m in adj_maps.items():
             tmp_center = (x_center + coords[c][0], y_center+coords[c][1])
-            self.drawSubmap(tmp_center, 0, [3, 8, -2, -1, 6, -6], 10)
-            rendered_submaps.append(tmp_center)
-        print(rendered_submaps)
-
+            sub = self.drawSubmap(tmp_center, [0, 3, 8, -2, -1, 6, -6], 10) #TODO
+            rendered_submaps.append(sub)
+        print("rendered:", rendered_submaps)
+        """
 
         """
         Map.init()

@@ -13,4 +13,3 @@ class Submap:
         for i in range(7):
             string += "xel {}: Z={}, T={}, H={}, seed={}\n".format(i,self.array_Z[i],self.array_T[i],self.array_H[i],self.noise_seed)
         return "Submap (x,y) = {self.centerXY}\n"+string
-        #return Exa.Exa.__str__(self.exa) + f" -> [   q: {self.link['q'].exa if self.link['q']!=None else None},   w: {self.link['w'].exa if self.link['w']!=None else None},   e: {self.link['e'].exa if self.link['e']!=None else None},   d: {self.link['d'].exa if self.link['d']!=None else None},   s: {self.link['s'].exa if self.link['s']!=None else None},   a: {self.link['a'].exa if self.link['a']!=None else None}   ]"

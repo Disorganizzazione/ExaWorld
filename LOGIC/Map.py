@@ -13,7 +13,7 @@ def init():
     global l_map
     global position
     global adj_maps
-    #instatntiate
+    #instantiate
     l_map= Xel.Xel.newHex(radius)
     position= l_map
     for i in adj_maps:
