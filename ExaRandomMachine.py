@@ -1,4 +1,5 @@
 from panda3d.core import VBase3
+import Submap
 import random
 import math
 
@@ -13,6 +14,13 @@ class ExaRandom:
             chosen = random.choice(rnd_list)
             result.append(random.randint(chosen[0], chosen[1]) / 10 * random.choice([-1, 1]))
         return result
+
+    def create_submap(self, submapXY):
+        rnd_Z = self.randomize_values(7)
+        rnd_H = self.randomize_values(7)
+        rnd_T = self.randomize_values(7)
+        rnd_seed = random.randint(0,100)
+        return Submap.Submap(submapXY, rnd_Z, rnd_T, rnd_H, rnd_seed)
 
     def interpolate(self, vABC, radius, exaP):
         (vA, vB, vC) = vABC

@@ -39,11 +39,13 @@ coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*s
 pix_pos_tmp= VBase3(0,0,0)
 
 #list of stored submaps
-stored_submaps_list = []
+stored_submaps_list = {}
 #array of on-screen submaps
 rendered_submaps = []
 #current submap
 current_submap = None
+# temporary submap for map movement
+new_submap = None
 
 # distance of each char's step in dt (delta time)
 step = 5    
@@ -113,170 +115,50 @@ class MyApp(ShowBase):
                 self.insertTile(submap_center, tmp_map, cell_z)
                 tmp_map = tmp_map.link[dirs[(triangle_index+2)%6]]
 
-    def drawSubmap(self, submap_center, nodes_Z, noise_seed):  # TODO: change with drawSubmap(self, submap)
+    def drawSubmap(self, submap):
         l_map = Map.l_map  # TODO: chose if letting this way or pass l_map as parameter
 
-        submap_seed = noise_seed
-        #submap_seed = 10
-        open_s = OpenSimplex(submap_seed)
+        open_s = OpenSimplex(submap.noise_seed)
 
         #Center
-        hex0 = self.insertTile(submap_center, l_map, nodes_Z[6])
+        hex0 = self.insertTile(submap.centerXY, l_map, submap.array_Z[6])
 
-        subm = Submap.Submap(submap_center, array_Z=nodes_Z, noise_seed=submap_seed)
-        print("subm:", subm)
+        print("subm:", submap)
 
         ### Graphic map construction, triangle-by-triangle way
         center_map = l_map
         for t in range(6):  # scan each triangle
-            self.drawTriangle(submap_center, center_map, t, nodes_Z, open_s)
+            self.drawTriangle(submap.centerXY, center_map, t, submap.array_Z, open_s)
         ###
-        return subm
-        """
-        for t in range(6):  # scan each triangle
-            center_map = l_map
-            for d in range(1, Map.radius+1):  # distance from center moving along triangle side t
-                center_map = center_map.link[dirs[t]]
-                #print(center_map)
-                tmp_map = center_map
-                for n in range(0, d):  # each cell from t triangle edge (included) to next triangle edge (excluded)
-                    if d==Map.radius and n==0: 
-                        cell_z = value_vertices[t]
-                    else:
-                        cell_z = ExaRandom.interpolate(self, (0, value_vertices[t], value_vertices[(t+1)%6]), Map.radius, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a))
-                    
-                    cell_z += open_s.noise2d(tmp_map.exa.x, tmp_map.exa.e)/5
-                    self.insertTile(submap_center, tmp_map, cell_z)
-                    #print(n, "temp:", tmp_map)
-                    tmp_map = tmp_map.link[dirs[(t+2)%6]]
-        """
+        return submap
 
-    def drawMap(self, x_center, y_center):
+    def drawMap(self, submap):
         global current_submap
-        
-        l_map= Map.l_map
-        current_submap = l_map
-        adj_maps = Map.adj_maps
-
         global stored_submaps_list
         global rendered_submaps
 
-        temporary_submap = Submap.Submap((x_center,y_center), [3, 8, -2, -1, 6, -6, 0], 10)
-        # TODO: must have a list of submaps centered in the new central submap
-        new_seven_submaps = [
-            temporary_submap, 
-            temporary_submap, 
-            temporary_submap,
-            temporary_submap, 
-            temporary_submap, 
-            temporary_submap, 
-            temporary_submap
-        ]
-        to_draw_list = []
-        
-        for s in new_seven_submaps: 
-            if s not in rendered_submaps:
-                to_draw_list.append(s)
-        #print("to draw: ", to_draw_list)
+        new_seven_centers = []
+        for d,v in coords.items():
+            temp_c = (v[0]+submap.centerXY[0], v[1]+submap.centerXY[1])
+            new_seven_centers.append(temp_c)
+        new_seven_centers.append(submap.centerXY)
 
-        # empties the list
-        # rendered_submaps.clear()
+        if len(rendered_submaps)==0:
+            rendered_submaps.append(self.drawSubmap(submap))
 
-        # draw central map
-        # self.drawSubmap((x_center, y_center), [3, 8, -2, -1, 6, -6, 0], 10) #TODO
-        #rendered_submaps.insert(0,(x_center, y_center))
-        # draw adj maps
-        for s in to_draw_list:
-            tmp_center = s.centerXY
-            sub = self.drawSubmap(tmp_center, [3, 8, -2, -1, 6, -6, 0], 10) #TODO
-            rendered_submaps.append(sub)
-        print("rendered:", rendered_submaps)
-
-        """
-        for c,m in adj_maps.items():
-            tmp_center = (x_center + coords[c][0], y_center+coords[c][1])
-            sub = self.drawSubmap(tmp_center, [0, 3, 8, -2, -1, 6, -6], 10) #TODO
-            rendered_submaps.append(sub)
-        print("rendered:", rendered_submaps)
-        """
-
-        """
-        Map.init()
-        l_map= Map.l_map
-        adj_maps= Map.adj_maps
-
-        #submap_seed = random.randint(0, 100)
-        submap_seed = 10
-        open_s = OpenSimplex(submap_seed)
-
-        #map0_edges_z = [3, 8, -2, -1, 6, -6]
-        map0_edges_z = ExaRandom.randomize_vertices(self)
-        print(map0_edges_z)
-
-        
-        #Centers
-        hexI = self.insertTile(l_map, 0)  # TODO: z
-
-        for c,m in adj_maps.items():
-            hexI_adj= self.model.loadExaTile(self, x_center + coords[c][0], y_center+coords[c][1], random.uniform(0, CHAR_MAX_ZGAP*0.99), "red")
-        
-        #hex_n= (Map.radius+1)**3 - (Map.radius)**3 -1
-
-        ### Graphic map contruction, triangle by triangle way
-        center_map = l_map
-        for t in range(6):  # scan each triangle
-            center_map = l_map
-            for d in range(1, Map.radius+1):  # distance from center moving along triangle side t
-                center_map = center_map.link[dirs[t]]
-                #print(center_map)
-                tmp_map = center_map
-                for n in range(0, d):  # each cell from t triangle edge (included) to next triangle edge (excluded)
-                    if d==Map.radius and n==0: 
-                        cell_z = map0_edges_z[t]
+        for c in new_seven_centers:
+            for s in rendered_submaps:
+                if c != s.centerXY:
+                    print("c!=center")
+                    if c in stored_submaps_list.keys():
+                        s_map = stored_submaps_list[c]
                     else:
-                        cell_z = ExaRandom.interpolate(self, (0, map0_edges_z[t], map0_edges_z[(t+1)%6]), Map.radius, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a))
-                    
-                    cell_z += open_s.noise2d(tmp_map.exa.x, tmp_map.exa.e)/5
-                    self.insertTile(tmp_map, cell_z)
-                    #print(n, "temp:", tmp_map)
-                    tmp_map = tmp_map.link[dirs[(t+2)%6]]
-        ###
-        """
-        """
-        for i in range(1, Map.radius+1):  # scan the hexagonal-rings
-            l_map= l_map.link['s']
-            for m in adj_maps.values():
-                m= m.link['s']
-
-            for j in range(6):  # direction for movement through map links
-                for k in range(i):  # scan all positions
-                    l_map= l_map.link[dirs[j]]
-
-                    (q,r)= VBase2(l_map.exa.x, l_map.exa.a)
-                    v_center= VBase3(s3*q, v3s*2*(q/2+r), random.uniform(0, CHAR_MAX_ZGAP*0.99))  # z = random
-
-                    if Map.radius in (abs(l_map.exa.e), abs(l_map.exa.x), abs(l_map.exa.a)):
-                        color = "green"  # map edge
-                    else:
-                        color = "green"
-
-                    # prova!
-                    if i == Map.radius and k == Map.radius-1:  # vertices
-                        print("QUA! (j)(center):", j, (v_center[0], v_center[1]))
-                        height = map0_edges_z[j]
-                        hexI = self.model.loadExaTile(self, v_center[0], v_center[1], height, "yellow")
-                    ###
-                    else:  # run-time calculated exaTiles
-                        if l_map.exa.x <= 0 and l_map.exa.a <= 0:  #TODO: fix: this map scan inverts 'e' with 'a' coords
-                            high = ExaRandom.interpolate(self, (0, map0_edges_z[1], map0_edges_z[2]), Map.radius, (l_map.exa.e, l_map.exa.x, l_map.exa.a))  #TODO: fix: this map scan inverts 'e' with 'a' coords
-                            hexI = self.model.loadExaTile(self, v_center[0], v_center[1], high, color)
-                        else:
-                            hexI = self.model.loadExaTile(self, v_center[0], v_center[1], 0, color)
-
-                    for c,m in adj_maps.items():
-                        m = m.link[dirs[j]]
-                        hexI_adj = self.model.loadExaTile(self, v_center[0]+coords[c][0], v_center[1]+coords[c][1], 0, color)
-        """
+                        s_map = ExaRandom().create_submap(c)
+                        stored_submaps_list[c] = s_map
+                    rendered_submaps.remove(s)
+                    rendered_submaps.append(self.drawSubmap(s_map))
+        print("STORED:",stored_submaps_list)
+        current_submap = submap
 
     def __init__(self):
         ShowBase.__init__(self)
@@ -287,14 +169,17 @@ class MyApp(ShowBase):
 
         # Load Environment
         self.model = LoadModel.Model
-        
-        #hexs = list()
-        #x, y = hex0.getX(), hex0.getY()
-        Map.init()
-        self.drawMap(0,0)
 
-        subprova = Submap.Submap((0,0))
-        print(subprova)
+        Map.init()
+        map_center = (0,0)
+        subprova = Submap.Submap(map_center)
+        global stored_submaps_list
+        global current_submap
+        stored_submaps_list[map_center] = subprova
+        current_submap = subprova
+        print("stored in init:", stored_submaps_list)
+        self.drawMap(subprova)
+
 
         # Create the main character
         self.char = self.model.loadCharacter(self, 0, 0, 0)
@@ -423,12 +308,6 @@ class MyApp(ShowBase):
                 self.taskMgr.doMethodLater(cam_task_time, self.spinCameraTask, "SpinCameraTask")
             cam_rotating = True
 
-        # draw map only if needed
-        global current_submap
-        if current_submap != Map.l_map:
-            print("map's changed, ",Map.l_map)
-            self.drawMap(Map.l_map.exa.x, Map.l_map.exa.e)
-
         if not cam_rotating:
             # save char's initial position so that we can restore it,
             # in case he falls off the map or runs into something.
@@ -491,33 +370,44 @@ class MyApp(ShowBase):
             pix_pos_diff= VBase3(abs(pix_pos[0] - exa_pos[0]), abs(pix_pos[1] - exa_pos[1]), abs(pix_pos[2] - (-exa_pos[0] - exa_pos[1])))
 
 
-            if( pix_pos_diff[0] > pix_pos_diff[1] and pix_pos_diff[0] > pix_pos_diff[2]):
+            if pix_pos_diff[0] > pix_pos_diff[1] and pix_pos_diff[0] > pix_pos_diff[2]:
                 pix_pos[0]= -pix_pos[1]-pix_pos[2]
-            elif (pix_pos_diff[1] > pix_pos_diff[2]):
+            elif pix_pos_diff[1] > pix_pos_diff[2]:
                 pix_pos[1]= -pix_pos[0]-pix_pos[2]
             else:
                 pix_pos[2]= -pix_pos[0]-pix_pos[1]
 
-            
-            if(pix_pos_tmp != pix_pos):
+            if pix_pos_tmp != pix_pos:
                 direc= pix_pos - pix_pos_tmp
                 directions= {VBase3(1,-1,0): 'q', VBase3(1,0,-1): 'w', VBase3(0,1,-1): 'e', VBase3(-1,1,0): 'd', VBase3(-1,0,1): 's', VBase3(0,-1,1): 'a'}
                 Map.menu(directions.get(direc))
                 print(Map.position)
                 print(self.char.getPos())
+
+                # New submap check
+                if Map.new_dir != None:
+                    global current_submap
+                    global new_submap
+                    d = Map.new_dir
+                    new_center = (current_submap.centerXY[0] + coords[d][0], current_submap.centerXY[1] + coords[d][1])
+                    for c,s in stored_submaps_list:
+                        if c == new_center:
+                            new_submap = s
+                            break
+                    self.drawMap(new_submap)
+                """
+                # draw map only if needed
+                global current_submap
+                if current_submap != Map.l_map:
+                    print("map's changed, ", Map.l_map)
+                    self.drawMap(Map.l_map.exa.x, Map.l_map.exa.e)
+                """
             
             pix_pos_tmp= pix_pos
-
 
             #Map.position= l_map.findXel()
         
             #print(Exa.Exa(pix_pos[0], pix_pos[1], -pix_pos[2]))
-            
-            
-
-
-
-
 
             # Camera position handling: it depends on char's position
             self.camera.setX(self.char.getX() + math.sin(current_angle*DEG_RAD) * cam_dist)
