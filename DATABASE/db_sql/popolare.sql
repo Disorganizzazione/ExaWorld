@@ -12,6 +12,7 @@ insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) val
 insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('quercia', 30, 'v', 40, 10, 25, 2, 5 );
 insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('sparaci', 10, 'v', 7, 20, 30, 5, 9 );
 insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('abete', 50, 'v', 20, -5, 15, 1, 3 );
+
 insert into carnivoro(predatore, preda) values(1,5);
 insert into carnivoro(predatore, preda) values(3,1);
 insert into carnivoro(predatore, preda) values(1,2);
@@ -21,6 +22,7 @@ insert into carnivoro(predatore, preda) values(3,4);
 insert into carnivoro(predatore, preda) values(4,1);
 insert into carnivoro(predatore, preda) values(4,5);
 insert into carnivoro(predatore, preda) values(4,2);
+
 insert into erbivoro(animale, vegetale) values(2,1);
 insert into erbivoro(animale, vegetale) values(2,3);
 insert into erbivoro(animale, vegetale) values(5,1);

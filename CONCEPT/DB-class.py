@@ -1,11 +1,6 @@
 import psycopg2
 
 class ExaDB(): #insieme delle strutture contenenti gli elementi del database
-    terrains = []
-    creatures = []
-    herbivores = []
-    carnivores = []
-    behaviours = []
     def __init__(self):
         try:
             conn = psycopg2.connect("dbname=exaworld user=postgres") #connessione database
@@ -27,31 +22,49 @@ class Creature():   #classe creatura dinamica che può essere usata sia tramite 
     def __init__(self,database,id):
         self.nome = database.creatures[id][1]    #usa le strutture della classe ExaDB per raccogliere i dati dell'oggetto
         self.prede = ["boh"]
-        if database.creatures[id][2] > 0:
+        #if database.creatures[id][2] > 0:
+        #    self.comportamento = database.behaviours[database.creatures[id][2]][1]
+        #   self.ferocia = database.behaviours[database.creatures[id][2]][2]
+        #   self.branco = database.behaviours[database.creatures[id][2]][3]
+         #   self.sedentarieta = database.behaviours[database.creatures[id][2]][4]
+         #   self.riproduzione = database.behaviours[database.creatures[id][2]][5]
+        #else:
+        #    self.riproduzione = database.behaviours[database.creatures][id][3]
+        if database.creatures[id][4] == "a":                     #distingue tra animale e vegetale
+            self.tipo = "animale"
             self.comportamento = database.behaviours[database.creatures[id][2]][1]
             self.ferocia = database.behaviours[database.creatures[id][2]][2]
             self.branco = database.behaviours[database.creatures[id][2]][3]
             self.sedentarieta = database.behaviours[database.creatures[id][2]][4]
             self.riproduzione = database.behaviours[database.creatures[id][2]][5]
         else:
-            self.riproduzione = database.behaviours[database.creatures][id][3]
-        if database.creatures[id][4] == "a":                     #distingue tra animale e vegetale
-            self.tipo = "animale"
-        else:
+            print("hey")
             self.tipo = "vegetale"
+            self.riproduzione = database.creatures[id][3]
+            print("her")
+
         self.resistenza = database.creatures[id][5]
         if self.tipo == "animale":
             self.forza = database.creatures[id][6]               #forza viene assegnata solo se animale
             self.velocita = database.creatures[id][7]            #velocità viene assegnata solo se animale
         if database.creatures[id][8] == "e":                     #risale tutte le chiavi esterne a seconda di se erbivoro o carnivoro e crea una lista delle prede
             for i in range(0,len(database.herbivores)):
-                if id+1 == database.herbivores[i][0]:
-                    self.prede.append(database.creatures[database.herbivores[i][0]][1])
+                if id+1== database.herbivores[i][0]:
+                    self.prede.append(database.creatures[database.herbivores[i][1]][1])
+
         if database.creatures[id][8] == "c":
             for i in range(0,len(database.carnivores)):
-                if id+1 == database.carnivores[i][0]:
-                    self.prede.append(database.creatures[database.carnivores[i][0]][1])
+                if id+1== database.carnivores[i][0]:
+                    self.prede.append(database.creatures[database.carnivores[i][1]][1])
+
         self.mintemp = database.creatures[id][9]
         self.maxtemp = database.creatures[id][10]
         self.minhmd = database.creatures[id][11]
         self.maxhmd = database.creatures[id][12]
+
+
+
+a=ExaDB()
+
+b=Creature(a,8)
+print(b.nome + str(b.prede))
