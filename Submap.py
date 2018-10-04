@@ -12,4 +12,4 @@ class Submap:
         string = ""
         for i in range(7):
             string += "xel {}: Z={}, T={}, H={}, seed={}\n".format(i,self.array_Z[i],self.array_T[i],self.array_H[i],self.noise_seed)
-        return "Submap (x,y) = {self.centerXY}\n"+string
+        return "Submap (x,y) = {}\n".format(self.centerXY)+string

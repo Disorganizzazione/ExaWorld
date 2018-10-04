@@ -123,8 +123,6 @@ class MyApp(ShowBase):
         #Center
         hex0 = self.insertTile(submap.centerXY, l_map, submap.array_Z[6])
 
-        print("subm:", submap)
-
         ### Graphic map construction, triangle-by-triangle way
         center_map = l_map
         for t in range(6):  # scan each triangle
@@ -148,15 +146,18 @@ class MyApp(ShowBase):
 
         for c in new_seven_centers:
             for s in rendered_submaps:
-                if c != s.centerXY:
+                print("c,s=",c,s)
+                if c[0] != s.centerXY[0] or c[1] != s.centerXY[1]: # QUI! 4-10-18
                     print("c!=center")
                     if c in stored_submaps_list.keys():
                         s_map = stored_submaps_list[c]
                     else:
                         s_map = ExaRandom().create_submap(c)
                         stored_submaps_list[c] = s_map
-                    rendered_submaps.remove(s)
                     rendered_submaps.append(self.drawSubmap(s_map))
+                    rendered_submaps.remove(s)
+                else: 
+                    print("EEEEEEEElse")
         print("STORED:",stored_submaps_list)
         current_submap = submap
 
@@ -389,8 +390,9 @@ class MyApp(ShowBase):
                     global current_submap
                     global new_submap
                     d = Map.new_dir
+                    Map.new_dir = None
                     new_center = (current_submap.centerXY[0] + coords[d][0], current_submap.centerXY[1] + coords[d][1])
-                    for c,s in stored_submaps_list:
+                    for c,s in stored_submaps_list.items():
                         if c == new_center:
                             new_submap = s
                             break
