@@ -30,7 +30,6 @@ v3R = math.sqrt(3) * R / 2.0
 s3 = 1.5*side
 dirs = ['q', 'w', 'e', 'd', 's', 'a']
 
-boh=R*100
 scale= math.sqrt(3)
 coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*scale +2*apo), 'ed': (2*v3R*scale +s3, 0*scale +apo),
           'ds': (v3R*scale +s3, -1.5*R*scale -apo), 'sa': (-v3R*scale +0, -1.5*R*scale -2*apo), 'qa': (-2*v3R*scale -s3, 0*scale -apo)}
@@ -142,23 +141,26 @@ class MyApp(ShowBase):
         new_seven_centers.append(submap.centerXY)
 
         if len(rendered_submaps)==0:
-            rendered_submaps.append(self.drawSubmap(submap))
-
-        for c in new_seven_centers:
+            center= self.drawSubmap(submap)
+            rendered_submaps.append(center)
+            tmp_rendered_submaps=[None, None, None, None, None, None, center]
+        else:
+            tmp_rendered_submaps=[None, None, None, None, None, None, None]
+            
+        for i in range(7):
+            c = new_seven_centers[i]
             for s in rendered_submaps:
-                print("c,s=",c,s)
-                if c[0] != s.centerXY[0] or c[1] != s.centerXY[1]: # QUI! 4-10-18
-                    print("c!=center")
+                diff = (c[0] - s.centerXY[0], c[1] - s.centerXY[1])
+                if diff != (0,0): # QUI! 4-10-18
                     if c in stored_submaps_list.keys():
                         s_map = stored_submaps_list[c]
                     else:
                         s_map = ExaRandom().create_submap(c)
                         stored_submaps_list[c] = s_map
-                    rendered_submaps.append(self.drawSubmap(s_map))
-                    rendered_submaps.remove(s)
-                else: 
-                    print("EEEEEEEElse")
+                    tmp_rendered_submaps[i]= self.drawSubmap(s_map)
         print("STORED:",stored_submaps_list)
+        print("tmp= ", tmp_rendered_submaps, "\nrend= ", rendered_submaps)
+        rendered_submaps= tmp_rendered_submaps
         current_submap = submap
 
     def __init__(self):
@@ -385,10 +387,12 @@ class MyApp(ShowBase):
                 print(Map.position)
                 print(self.char.getPos())
 
+                Map.new_dir_lock=False
                 # New submap check
                 if Map.new_dir != None:
                     global current_submap
                     global new_submap
+                    Map.new_dir_lock=True
                     d = Map.new_dir
                     Map.new_dir = None
                     new_center = (current_submap.centerXY[0] + coords[d][0], current_submap.centerXY[1] + coords[d][1])
@@ -397,6 +401,9 @@ class MyApp(ShowBase):
                             new_submap = s
                             break
                     self.drawMap(new_submap)
+                
+                    
+
                 """
                 # draw map only if needed
                 global current_submap
