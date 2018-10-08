@@ -15,7 +15,7 @@ from LOGIC import Map as Map
 from LOGIC import Exa as Exa
 from LOGIC import Xel as Xel
 
-CHAR_MAX_ZGAP = 2  # temporary value
+CHAR_MAX_ZGAP = 11  # temporary value
 apo = 0.86603
 
 PI = math.pi
@@ -82,6 +82,12 @@ def addTitle(text):
     return OnscreenText(text=text, style=1, fg=(1, 1, 1, 1), scale=.07,
                         parent=base.a2dBottomRight, align=TextNode.ARight,
                         pos=(-0.1, 0.09), shadow=(0, 0, 0, 1))
+
+# Function to put runtime data on the screen.
+def addInfo(text):
+    return OnscreenText(text=text, style=1, fg=(1, 1, 1, 1), scale=.07,
+                        parent=base.a2dBottomLeft, align=TextNode.ALeft,
+                        pos=(0.1, 0.1), shadow=(0, 0, 0, 1))
 
 
 class MyApp(ShowBase):
@@ -203,6 +209,7 @@ class MyApp(ShowBase):
         print("stored in init:", stored_submaps_list)
         self.drawMap(subprova)
 
+        self.tmp_text = None
 
         # Create the main character
         self.char = self.model.loadCharacter(self, 0, 0, 0)
@@ -406,6 +413,9 @@ class MyApp(ShowBase):
                 Map.menu(directions.get(direc))
                 print(Map.position)
                 print(self.char.getPos())
+                if self.tmp_text != None:
+                    self.tmp_text.destroy()
+                self.tmp_text = addInfo("("+str(self.char.getX())+","+str(self.char.getY())+")")
 
                 Map.new_dir_lock=False
                 # New submap check
