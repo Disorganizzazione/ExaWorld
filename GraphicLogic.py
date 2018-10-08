@@ -31,9 +31,14 @@ s3 = 1.5*side
 dirs = ['q', 'w', 'e', 'd', 's', 'a']
 
 scale= math.sqrt(3)
-coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*scale +2*apo), 'ed': (2*v3R*scale +s3, 0*scale +apo),
-          'ds': (v3R*scale +s3, -1.5*R*scale -apo), 'sa': (-v3R*scale +0, -1.5*R*scale -2*apo), 'qa': (-2*v3R*scale -s3, 0*scale -apo)}
 
+coords = {'qw': (-v3R*scale -s3, (1.5*R*scale +apo).__round__()), 'we': ((v3R*scale +0).__round__(1), (1.5*R*scale +2*apo).__round__()), 'ed': ((2*v3R*scale +s3).__round__(1), (0*scale +apo).__round__()),
+          'ds': (v3R*scale +s3, (-1.5*R*scale -apo).__round__()), 'sa': ((-v3R*scale +0).__round__(1), (-1.5*R*scale -2*apo).__round__()), 'qa': ((-2*v3R*scale -s3).__round__(1), (0*scale -apo).__round__())}
+
+#coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*scale +2*apo), 'ed': (2*v3R*scale +s3, 0*scale +apo),
+#          'ds': (v3R*scale +s3, -1.5*R*scale -apo), 'sa': (-v3R*scale +0, -1.5*R*scale -2*apo), 'qa': (-2*v3R*scale -s3, 0*scale -apo)}
+
+print(coords)
 #previous exa position
 pix_pos_tmp= VBase3(0,0,0)
 
@@ -143,24 +148,39 @@ class MyApp(ShowBase):
         if len(rendered_submaps)==0:
             center= self.drawSubmap(submap)
             rendered_submaps.append(center)
-            tmp_rendered_submaps=[None, None, None, None, None, None, center]
-        else:
-            tmp_rendered_submaps=[None, None, None, None, None, None, None]
+            #tmp_rendered_submaps=[None, None, None, None, None, None, center]
+        #else:
+            #tmp_rendered_submaps=[None, None, None, None, None, None, None]
             
         for i in range(7):
+            draw=True #check if a sub_map in new_seven_centers has to be drawn.
+            #print all rendered maps
+            print("Rendered:")
+            for s in rendered_submaps:
+                print(s, end='')
+            print("")
             c = new_seven_centers[i]
             for s in rendered_submaps:
                 diff = (c[0] - s.centerXY[0], c[1] - s.centerXY[1])
-                if diff != (0,0): # QUI! 4-10-18
-                    if c in stored_submaps_list.keys():
-                        s_map = stored_submaps_list[c]
-                    else:
-                        s_map = ExaRandom().create_submap(c)
-                        stored_submaps_list[c] = s_map
-                    tmp_rendered_submaps[i]= self.drawSubmap(s_map)
-        print("STORED:",stored_submaps_list)
-        print("tmp= ", tmp_rendered_submaps, "\nrend= ", rendered_submaps)
-        rendered_submaps= tmp_rendered_submaps
+                if diff == (0,0): # QUI! 4-10-18
+                    draw=False #if a map in new_seven_centers is already in rendered_submaps set draw to false
+                    break
+            if draw==True: #if draw is still True, then draw the map in new_seven_centers
+                if c in stored_submaps_list.keys():
+                    s_map = stored_submaps_list[c]
+                else:
+                    s_map = ExaRandom().create_submap(c)
+                    stored_submaps_list[c] = s_map
+                rendered_submaps.append(self.drawSubmap(s_map))
+                print(c, "drawn\n")
+            else:
+                print(c, "NOT drawn\n")
+            
+            
+                
+        #print("STORED:",stored_submaps_list)
+        #print("tmp= ", tmp_rendered_submaps, "\nrend= ", rendered_submaps)
+        #rendered_submaps= tmp_rendered_submaps
         current_submap = submap
 
     def __init__(self):
