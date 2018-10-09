@@ -2,7 +2,7 @@ from LOGIC import Xel as Xel
 import gc, sys
 import copy
 
-radius=2 #radius maps
+radius=3 #radius maps
 position=None #position in l_map. Must be a Xel! position.exa in order to get coordinates (EXA)
 l_map=None #local map
 adj_maps={'qw':None,'we':None, 'ed':None,'ds':None,'sa':None,'qa':None} #maps stored in memory
@@ -82,7 +82,7 @@ def change_map(a, n):
             update_maps(direc) #update adj_maps and local_map
             mirror(a, direc, piv)
             print("New Map= ",direc)
-            if not new_dir_lock:
+            if not new_dir_lock: # WARNING
                 new_dir = direc
             return True
         update_maps(direc) #update adj_maps and local_map

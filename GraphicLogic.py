@@ -42,11 +42,13 @@ print(coords)
 #previous exa position
 pix_pos_tmp= VBase3(0,0,0)
 
-#list of stored submaps
+# list of stored submaps
 stored_submaps_list = {}
-#array of on-screen submaps
+# array of on-screen submaps
 rendered_submaps = []
-#current submap
+# array of model sets loaded in panda
+rendered_model_sets = []
+# current submap
 current_submap = None
 # temporary submap for map movement
 new_submap = None
@@ -84,11 +86,14 @@ def addTitle(text):
                         pos=(-0.1, 0.09), shadow=(0, 0, 0, 1))
 
 # Function to put runtime data on the screen.
-def addInfo(text):
+def addInfo(pos, text):
     return OnscreenText(text=text, style=1, fg=(1, 1, 1, 1), scale=.07,
                         parent=base.a2dBottomLeft, align=TextNode.ALeft,
-                        pos=(0.1, 0.1), shadow=(0, 0, 0, 1))
+                        pos=(0.08, pos + 0.04), shadow=(0, 0, 0, 1))
 
+# ModelSet definition
+def ModelSet(name="set_?"):
+    return NodePath(name)
 
 class MyApp(ShowBase):
 
@@ -168,7 +173,7 @@ class MyApp(ShowBase):
             c = new_seven_centers[i]
             for s in rendered_submaps:
                 diff = (c[0] - s.centerXY[0], c[1] - s.centerXY[1])
-                if diff == (0,0): # QUI! 4-10-18
+                if diff == (0,0):
                     draw=False #if a map in new_seven_centers is already in rendered_submaps set draw to false
                     break
             if draw==True: #if draw is still True, then draw the map in new_seven_centers
@@ -188,6 +193,12 @@ class MyApp(ShowBase):
         #print("tmp= ", tmp_rendered_submaps, "\nrend= ", rendered_submaps)
         #rendered_submaps= tmp_rendered_submaps
         current_submap = submap
+
+    def destroy_all(self):
+        for n in self.render.getNodes():
+            print(str(n))
+        #for model in self.render.getChildren():
+        #    model.destroy()
 
     def __init__(self):
         ShowBase.__init__(self)
@@ -209,7 +220,10 @@ class MyApp(ShowBase):
         print("stored in init:", stored_submaps_list)
         self.drawMap(subprova)
 
-        self.tmp_text = None
+        # Text on screen
+        self.text_char_pos = None
+        self.text_submap = None
+        self.text_lock = None
 
         # Create the main character
         self.char = self.model.loadCharacter(self, 0, 0, 0)
@@ -253,6 +267,7 @@ class MyApp(ShowBase):
 
         # Accept the control keys for movement and rotation
         self.accept("escape", sys.exit)
+        self.accept("k", self.destroy_all)
         self.accept("arrow_left", self.setKey, ["left", True])
         self.accept("arrow_right", self.setKey, ["right", True])
         self.accept("arrow_up", self.setKey, ["forward", True])
@@ -378,13 +393,14 @@ class MyApp(ShowBase):
             else:
                 self.char.setPos(startpos)
 
-            
+            # Put on screen the lock's value
+            if self.text_lock != None:
+                self.text_lock.destroy()
+            self.text_lock = addInfo(0.15, "Lock: "+str(Map.new_dir_lock))
 
-            #QUIIIIIII+
+            #
             global pix_pos_tmp 
             pix_pos= self.char.getPos()
-
-            
 
             exa_pos= None
             
@@ -413,9 +429,9 @@ class MyApp(ShowBase):
                 Map.menu(directions.get(direc))
                 print(Map.position)
                 print(self.char.getPos())
-                if self.tmp_text != None:
-                    self.tmp_text.destroy()
-                self.tmp_text = addInfo("("+str(self.char.getX())+","+str(self.char.getY())+")")
+                if self.text_char_pos != None:
+                    self.text_char_pos.destroy()
+                self.text_char_pos = addInfo(0, "Char position: ("+str(round(self.char.getX(),2))+" , "+str(round(self.char.getY(),2))+")")
 
                 Map.new_dir_lock=False
                 # New submap check
@@ -426,21 +442,14 @@ class MyApp(ShowBase):
                     d = Map.new_dir
                     Map.new_dir = None
                     new_center = (current_submap.centerXY[0] + coords[d][0], current_submap.centerXY[1] + coords[d][1])
+                    if self.text_submap != None:
+                        self.text_submap.destroy()
+                    self.text_submap = addInfo(0.08, "Current submap's center: "+str(new_center))
                     for c,s in stored_submaps_list.items():
                         if c == new_center:
                             new_submap = s
                             break
-                    self.drawMap(new_submap)
-                
-                    
-
-                """
-                # draw map only if needed
-                global current_submap
-                if current_submap != Map.l_map:
-                    print("map's changed, ", Map.l_map)
-                    self.drawMap(Map.l_map.exa.x, Map.l_map.exa.e)
-                """
+                    self.drawMap(new_submap)          
             
             pix_pos_tmp= pix_pos
 
