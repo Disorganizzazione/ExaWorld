@@ -32,12 +32,13 @@ dirs = ['q', 'w', 'e', 'd', 's', 'a']
 
 scale= math.sqrt(3)
 
-coords = {'qw': (-v3R*scale -s3, (1.5*R*scale +apo).__round__()), 'we': ((v3R*scale +0).__round__(1), (1.5*R*scale +2*apo).__round__()), 'ed': ((2*v3R*scale +s3).__round__(1), (0*scale +apo).__round__()),
-          'ds': (v3R*scale +s3, (-1.5*R*scale -apo).__round__()), 'sa': ((-v3R*scale +0).__round__(1), (-1.5*R*scale -2*apo).__round__()), 'qa': ((-2*v3R*scale -s3).__round__(1), (0*scale -apo).__round__())}
+coords = {'qw': ((-v3R*scale -s3).__round__(1), (1.5*R*scale +apo).__round__()), 'we': ((v3R*scale +0).__round__(1), (1.5*R*scale +2*apo).__round__()), 'ed': ((2*v3R*scale +s3).__round__(1), (0*scale +apo).__round__()),
+          'ds': ((v3R*scale +s3).__round__(1), (-1.5*R*scale -apo).__round__()), 'sa': ((-v3R*scale +0).__round__(1), (-1.5*R*scale -2*apo).__round__()), 'qa': ((-2*v3R*scale -s3).__round__(1), (0*scale -apo).__round__())}
 
 #coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*scale +2*apo), 'ed': (2*v3R*scale +s3, 0*scale +apo),
 #          'ds': (v3R*scale +s3, -1.5*R*scale -apo), 'sa': (-v3R*scale +0, -1.5*R*scale -2*apo), 'qa': (-2*v3R*scale -s3, 0*scale -apo)}
 
+v3= math.sqrt(3)
 print(coords)
 #previous exa position
 pix_pos_tmp= VBase3(0,0,0)
@@ -345,10 +346,10 @@ class MyApp(ShowBase):
             if self.keyMap["backward"]:
                 v_rot += (0, -1, 0)
             if self.keyMap["left"]:
-                v_rot += (-1, 0, 0)
+                v_rot += (-v3, 0, 0)
             if self.keyMap["right"]:
-                v_rot += (1, 0, 0)
-
+                v_rot += (v3, 0, 0)
+            
             if v_rot.normalize():
                 self.char.lookAt(self.char.getPos() + v_rot)
                 self.char.setH(self.char.getH() + self.camera.getH())
@@ -369,7 +370,7 @@ class MyApp(ShowBase):
                     and entries[0].getSurfacePoint(render).getZ()-self.char.getZ() <= CHAR_MAX_ZGAP):
                 self.char.setZ(entries[0].getSurfacePoint(render).getZ())
             else:
-                self.char.setPos(startpos)
+                self.char.setPos(startpos) 
 
             
 
@@ -384,7 +385,6 @@ class MyApp(ShowBase):
             #if (math.isclose(abs(pix_pos[0])%(apo+0.05), apo, rel_tol=0.05) or math.isclose(abs(pix_pos[1])%(apo+0.05), apo,rel_tol=0.05)):
             
             exa_pos= -1/3 *pix_pos[0] + math.sqrt(3)/3*pix_pos[1], 2/3 * pix_pos[0]
-            
 
             pix_pos= VBase3(round(exa_pos[0]), round(exa_pos[1]), 0)
             pix_pos+= VBase3(0,0, round(-pix_pos[0] - pix_pos[1]))
@@ -399,20 +399,21 @@ class MyApp(ShowBase):
                 pix_pos[1]= -pix_pos[0]-pix_pos[2]
             else:
                 pix_pos[2]= -pix_pos[0]-pix_pos[1]
-
+            
             if pix_pos_tmp != pix_pos:
                 direc= pix_pos - pix_pos_tmp
                 directions= {VBase3(1,-1,0): 'q', VBase3(1,0,-1): 'w', VBase3(0,1,-1): 'e', VBase3(-1,1,0): 'd', VBase3(-1,0,1): 's', VBase3(0,-1,1): 'a'}
+                print("DIREC= ",direc, directions.get(direc))
                 Map.menu(directions.get(direc))
                 print(Map.position)
                 print(self.char.getPos())
 
-                Map.new_dir_lock=False
+                #Map.new_dir_lock=False
                 # New submap check
                 if Map.new_dir != None:
                     global current_submap
                     global new_submap
-                    Map.new_dir_lock=True
+                    #Map.new_dir_lock=True
                     d = Map.new_dir
                     Map.new_dir = None
                     new_center = (current_submap.centerXY[0] + coords[d][0], current_submap.centerXY[1] + coords[d][1])
@@ -420,6 +421,8 @@ class MyApp(ShowBase):
                         if c == new_center:
                             new_submap = s
                             break
+                    if new_submap.centerXY != new_center:
+                        new_submap= Submap.Submap(new_center)
                     self.drawMap(new_submap)
                 
                     
