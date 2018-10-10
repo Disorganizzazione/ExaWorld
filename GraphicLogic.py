@@ -426,9 +426,9 @@ class MyApp(ShowBase):
                 self.char.setPos(startpos)
 
             # Put on screen the lock's value
-            if self.text_lock != None:
-                self.text_lock.destroy()
-            self.text_lock = addInfo(0.15, "Lock: "+str(Map.new_dir_lock))
+            #if self.text_lock != None:
+            #    self.text_lock.destroy()
+            #self.text_lock = addInfo(0.15, "Lock: "+str(Map.new_dir_lock))
 
             #QUIIIIIII+
             global pix_pos_tmp 
