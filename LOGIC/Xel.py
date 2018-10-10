@@ -1,8 +1,8 @@
-from Exa import *
+from LOGIC import Exa
 
 class Xel:
     def __init__(self, origin=None, direction=None):
-        self.values=None
+        self.content=None
         self.exa=None
         self.link= {'q':None,'w':None,'e':None,'d':None,'s':None,'a':None}
 
@@ -20,10 +20,14 @@ class Xel:
             elif direction == "a":
                 self.exa= origin.A()
         else:
-            self.exa=Exa()
+            self.exa=Exa.Exa()
 
     def __str__(self):
-        return Exa.__str__(self.exa) + f" -> [   q: {self.link['q'].exa if self.link['q']!=None else None},   w: {self.link['w'].exa if self.link['w']!=None else None},   e: {self.link['e'].exa if self.link['e']!=None else None},   d: {self.link['d'].exa if self.link['d']!=None else None},   s: {self.link['s'].exa if self.link['s']!=None else None},   a: {self.link['a'].exa if self.link['a']!=None else None}   ]"
+        return Exa.Exa.__str__(self.exa) + f" -> [   q: {self.link['q'].exa if self.link['q']!=None else None},   w: {self.link['w'].exa if self.link['w']!=None else None},   e: {self.link['e'].exa if self.link['e']!=None else None},   d: {self.link['d'].exa if self.link['d']!=None else None},   s: {self.link['s'].exa if self.link['s']!=None else None},   a: {self.link['a'].exa if self.link['a']!=None else None}   ]"
+    
+    def add_content(self, animal=None, vegetal=None, terrain=None):#aggiunge valore ad una cella
+        self.content(animal,vegetal,terrain)
+
 
 #q,w,e,d,s,a
 #0,1,2,3,4,5
@@ -96,7 +100,7 @@ class Xel:
         return self.link[direction]
 
     def findXel(self, exa):
-        assert self.exa == Exa(0, 0, 0)
+        assert self.exa == Exa.Exa(0, 0, 0)
         assert exa.e+exa.x+exa.a==0
         
         directions = ['q', 'w', 'e', 'd', 's', 'a'] #Use an array of directions
