@@ -11,14 +11,13 @@ switch_exa = {
         "brown": "Exa_brown.egg",
         "blue": "Exa_blue.egg"
         }
-openS = OpenSimplex(42) #temporary
 
 class Model:
 
     @staticmethod
-    def loadExaTile(self, x, y, z, type):
+    def loadExaTile(self, parent, x, y, z, type):
         self.obj1 = self.loader.loadModel("GRAPHIC/Models/" + switch_exa[type])
-        self.obj1.reparentTo(self.render)
+        self.obj1.reparentTo(parent)
         self.obj1.setPos(x, y, z)
         return self.obj1
 

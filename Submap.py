@@ -7,6 +7,7 @@ class Submap:
         self.array_T = array_T
         self.array_H = array_H
         self.noise_seed = noise_seed
+        self.node = None
 
     def __str__(self):
-        return self.centerXY.__format__("")
+        return str(self.centerXY)+" NodePath: "+str(self.node)

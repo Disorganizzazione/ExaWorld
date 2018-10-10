@@ -32,8 +32,8 @@ dirs = ['q', 'w', 'e', 'd', 's', 'a']
 
 scale= math.sqrt(3)
 
-coords = {'qw': (-v3R*scale -s3, (1.5*R*scale +apo).__round__()), 'we': ((v3R*scale +0).__round__(1), (1.5*R*scale +2*apo).__round__()), 'ed': ((2*v3R*scale +s3).__round__(1), (0*scale +apo).__round__()),
-          'ds': (v3R*scale +s3, (-1.5*R*scale -apo).__round__()), 'sa': ((-v3R*scale +0).__round__(1), (-1.5*R*scale -2*apo).__round__()), 'qa': ((-2*v3R*scale -s3).__round__(1), (0*scale -apo).__round__())}
+coords = {'qw': ((-v3R*scale -s3).__round__(1), (1.5*R*scale +apo).__round__()), 'we': ((v3R*scale +0).__round__(1), (1.5*R*scale +2*apo).__round__()), 'ed': ((2*v3R*scale +s3).__round__(1), (0*scale +apo).__round__()),
+          'ds': ((v3R*scale +s3).__round__(1), (-1.5*R*scale -apo).__round__()), 'sa': ((-v3R*scale +0).__round__(1), (-1.5*R*scale -2*apo).__round__()), 'qa': ((-2*v3R*scale -s3).__round__(1), (0*scale -apo).__round__())}
 
 #coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*scale +2*apo), 'ed': (2*v3R*scale +s3, 0*scale +apo),
 #          'ds': (v3R*scale +s3, -1.5*R*scale -apo), 'sa': (-v3R*scale +0, -1.5*R*scale -2*apo), 'qa': (-2*v3R*scale -s3, 0*scale -apo)}
@@ -423,25 +423,22 @@ class MyApp(ShowBase):
                     and entries[0].getSurfacePoint(render).getZ()-self.char.getZ() <= CHAR_MAX_ZGAP):
                 self.char.setZ(entries[0].getSurfacePoint(render).getZ())
             else:
-                self.char.setPos(startpos)
+                self.char.setPos(startpos) 
 
             # Put on screen the lock's value
             if self.text_lock != None:
                 self.text_lock.destroy()
             self.text_lock = addInfo(0.15, "Lock: "+str(Map.new_dir_lock))
 
-            #QUIIIIIII+
+            #
             global pix_pos_tmp 
             pix_pos= self.char.getPos()
-
-            
 
             exa_pos= None
             
             #if (math.isclose(abs(pix_pos[0])%(apo+0.05), apo, rel_tol=0.05) or math.isclose(abs(pix_pos[1])%(apo+0.05), apo,rel_tol=0.05)):
             
             exa_pos= -1/3 *pix_pos[0] + math.sqrt(3)/3*pix_pos[1], 2/3 * pix_pos[0]
-            
 
             pix_pos= VBase3(round(exa_pos[0]), round(exa_pos[1]), 0)
             pix_pos+= VBase3(0,0, round(-pix_pos[0] - pix_pos[1]))
@@ -456,10 +453,11 @@ class MyApp(ShowBase):
                 pix_pos[1]= -pix_pos[0]-pix_pos[2]
             else:
                 pix_pos[2]= -pix_pos[0]-pix_pos[1]
-
+            
             if pix_pos_tmp != pix_pos:
                 direc= pix_pos - pix_pos_tmp
                 directions= {VBase3(1,-1,0): 'q', VBase3(1,0,-1): 'w', VBase3(0,1,-1): 'e', VBase3(-1,1,0): 'd', VBase3(-1,0,1): 's', VBase3(0,-1,1): 'a'}
+                print("DIREC= ",direc, directions.get(direc))
                 Map.menu(directions.get(direc))
                 print(Map.position)
                 #print(self.char.getPos())
@@ -476,13 +474,32 @@ class MyApp(ShowBase):
                     d = Map.new_dir
                     Map.new_dir = None
                     new_center = (current_submap.centerXY[0] + coords[d][0], current_submap.centerXY[1] + coords[d][1])
+                    if self.text_submap != None:
+                        self.text_submap.destroy()
+                    self.text_submap = addInfo(0.08, "Current submap's center: "+str(new_center))
                     for c,s in stored_submaps_list.items():
                         if c == new_center:
                             new_submap = s
                             break
+<<<<<<< HEAD
+                    if new_submap.centerXY != new_center:
+                        new_submap= Submap.Submap(new_center)
+                    self.drawMap(new_submap)
+                
+                    
+
+                """
+                # draw map only if needed
+                global current_submap
+                if current_submap != Map.l_map:
+                    print("map's changed, ", Map.l_map)
+                    self.drawMap(Map.l_map.exa.x, Map.l_map.exa.e)
+                """
+=======
                     self.drawMap(new_submap)  # TODO: maybe we can give direction as parameter
                     global rendered_submaps
                     print("Rendered.length = "+str(len(rendered_submaps)))
+>>>>>>> frabulous
             
             pix_pos_tmp= pix_pos
 
