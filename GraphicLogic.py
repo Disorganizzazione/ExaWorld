@@ -42,12 +42,13 @@ print(coords)
 #previous exa position
 pix_pos_tmp= VBase3(0,0,0)
 
+# NodePath container
+all_nodes = set() # useless (TODO: consider if it'll be useful)
+
 # list of stored submaps
 stored_submaps_list = {}
 # array of on-screen submaps
 rendered_submaps = []
-# array of model sets loaded in panda
-rendered_model_sets = []
 # current submap
 current_submap = None
 # temporary submap for map movement
@@ -91,13 +92,15 @@ def addInfo(pos, text):
                         parent=base.a2dBottomLeft, align=TextNode.ALeft,
                         pos=(0.08, pos + 0.04), shadow=(0, 0, 0, 1))
 
-# ModelSet definition
-def ModelSet(name="set_?"):
-    return NodePath(name)
+# NodePath definition
+def SubmapNode(name="set_N"):
+    n = NodePath(name)
+    all_nodes.add(n)
+    return n
 
 class MyApp(ShowBase):
 
-    def insertTile(self, submap_center, xel:Xel.Xel, tile_z):
+    def insertTile(self, node, submap_center, xel:Xel.Xel, tile_z):
         dx, dy = submap_center
         (q,r) = xel.exa.x, xel.exa.e
         v_center = VBase2(s3*q, v3s*2*(q/2+r))
@@ -113,9 +116,9 @@ class MyApp(ShowBase):
             elif tile_z<0:
                 tile_color = "blue"
 
-        return self.model.loadExaTile(self, v_center[0] + dx, v_center[1] + dy, tile_z, tile_color)
+        return self.model.loadExaTile(self, node, v_center[0] + dx, v_center[1] + dy, tile_z, tile_color)
 
-    def drawTriangle(self, submap_center, submap_xel, triangle_index, nodes_Z, open_simplex):
+    def drawTriangle(self, node, submap_center, submap_xel, triangle_index, nodes_Z, open_simplex):
         center_map = submap_xel
         for d in range(1, Map.radius+1):  # distance from center moving along triangle side t
             center_map = center_map.link[dirs[triangle_index]]
@@ -127,7 +130,7 @@ class MyApp(ShowBase):
                     cell_z = ExaRandom.interpolate(self, (nodes_Z[6], nodes_Z[triangle_index], nodes_Z[(triangle_index+1)%6]), Map.radius, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a))
                 
                 cell_z += open_simplex.noise2d(tmp_map.exa.x, tmp_map.exa.e)/5
-                self.insertTile(submap_center, tmp_map, cell_z)
+                self.insertTile(node, submap_center, tmp_map, cell_z)
                 tmp_map = tmp_map.link[dirs[(triangle_index+2)%6]]
 
     def drawSubmap(self, submap):
@@ -136,12 +139,12 @@ class MyApp(ShowBase):
         open_s = OpenSimplex(submap.noise_seed)
 
         #Center
-        hex0 = self.insertTile(submap.centerXY, l_map, submap.array_Z[6])
+        self.insertTile(submap.node, submap.centerXY, l_map, submap.array_Z[6])
 
         ### Graphic map construction, triangle-by-triangle way
         center_map = l_map
         for t in range(6):  # scan each triangle
-            self.drawTriangle(submap.centerXY, center_map, t, submap.array_Z, open_s)
+            self.drawTriangle(submap.node, submap.centerXY, center_map, t, submap.array_Z, open_s)
         ###
         return submap
 
@@ -156,25 +159,32 @@ class MyApp(ShowBase):
             new_seven_centers.append(temp_c)
         new_seven_centers.append(submap.centerXY)
 
-        if len(rendered_submaps)==0:
+        if len(rendered_submaps)==0:  # Starting case
+            submap.node = SubmapNode("0")
+            submap.node.reparentTo(self.render)
             center= self.drawSubmap(submap)
             rendered_submaps.append(center)
-            #tmp_rendered_submaps=[None, None, None, None, None, None, center]
-        #else:
-            #tmp_rendered_submaps=[None, None, None, None, None, None, None]
+            tmp_rendered_submaps=[None, None, None, None, None, None, center]
+        else:
+            tmp_rendered_submaps=[None, None, None, None, None, None, None]
+
+        useful_values = []
             
         for i in range(7):
             draw=True #check if a sub_map in new_seven_centers has to be drawn.
             #print all rendered maps
-            print("Rendered:")
+            """print("Rendered:")
             for s in rendered_submaps:
                 print(s, end='')
-            print("")
+            print("")"""
             c = new_seven_centers[i]
             for s in rendered_submaps:
                 diff = (c[0] - s.centerXY[0], c[1] - s.centerXY[1])
                 if diff == (0,0):
                     draw=False #if a map in new_seven_centers is already in rendered_submaps set draw to false
+                    tmp_rendered_submaps[i] = s
+                    # prova
+                    useful_values.append(s)
                     break
             if draw==True: #if draw is still True, then draw the map in new_seven_centers
                 if c in stored_submaps_list.keys():
@@ -182,23 +192,43 @@ class MyApp(ShowBase):
                 else:
                     s_map = ExaRandom().create_submap(c)
                     stored_submaps_list[c] = s_map
-                rendered_submaps.append(self.drawSubmap(s_map))
+                s_map.node = SubmapNode("1")
+                s_map.node.reparentTo(self.render)
+                tmp_rendered_submaps[i] = self.drawSubmap(s_map)
+                #rendered_submaps.append(self.drawSubmap(self.render, s_map))
                 print(c, "drawn\n")
             else:
                 print(c, "NOT drawn\n")
-            
-            
-                
-        #print("STORED:",stored_submaps_list)
-        #print("tmp= ", tmp_rendered_submaps, "\nrend= ", rendered_submaps)
-        #rendered_submaps= tmp_rendered_submaps
-        current_submap = submap
+        # identify no-longer loaded submaps and clear their nodes
+        for s in rendered_submaps:
+            if s not in tmp_rendered_submaps:
+                self.clear_node(s.node)
+                s.node.removeNode() # needs to be tested (TODO)
+                s.node = None # if previous line doesn't remove it automatically
 
-    def destroy_all(self):
-        for n in self.render.getNodes():
-            print(str(n))
-        #for model in self.render.getChildren():
-        #    model.destroy()
+        rendered_submaps= tmp_rendered_submaps
+        current_submap = submap
+        print("Rendered:")
+        for s in rendered_submaps:
+            print(s, end='')
+        print("")
+
+    def clear_node(self, nodepath):
+        if not nodepath.isEmpty():
+            for model in nodepath.getChildren():
+                model.removeNode()
+
+    def clear_all_nodes(self):
+        self.clear_node(rendered_submaps[random.randint(0,5)].node) # temporary madness
+        #for n in all_nodes:
+        #    self.clear_node(n)
+        #    n.remove_node()
+
+    def print_all_nodes(self):
+        string = ""
+        for n in all_nodes:
+            string += str(n)+ "; "
+        print(string)
 
     def __init__(self):
         ShowBase.__init__(self)
@@ -267,7 +297,8 @@ class MyApp(ShowBase):
 
         # Accept the control keys for movement and rotation
         self.accept("escape", sys.exit)
-        self.accept("k", self.destroy_all)
+        self.accept("n", self.print_all_nodes)
+        self.accept("k", self.clear_all_nodes)
         self.accept("arrow_left", self.setKey, ["left", True])
         self.accept("arrow_right", self.setKey, ["right", True])
         self.accept("arrow_up", self.setKey, ["forward", True])
@@ -428,7 +459,7 @@ class MyApp(ShowBase):
                 directions= {VBase3(1,-1,0): 'q', VBase3(1,0,-1): 'w', VBase3(0,1,-1): 'e', VBase3(-1,1,0): 'd', VBase3(-1,0,1): 's', VBase3(0,-1,1): 'a'}
                 Map.menu(directions.get(direc))
                 print(Map.position)
-                print(self.char.getPos())
+                #print(self.char.getPos())
                 if self.text_char_pos != None:
                     self.text_char_pos.destroy()
                 self.text_char_pos = addInfo(0, "Char position: ("+str(round(self.char.getX(),2))+" , "+str(round(self.char.getY(),2))+")")
@@ -449,7 +480,9 @@ class MyApp(ShowBase):
                         if c == new_center:
                             new_submap = s
                             break
-                    self.drawMap(new_submap)          
+                    self.drawMap(new_submap)  # TODO: maybe we can give direction as parameter
+                    global rendered_submaps
+                    print("Rendered.length = "+str(len(rendered_submaps)))
             
             pix_pos_tmp= pix_pos
 

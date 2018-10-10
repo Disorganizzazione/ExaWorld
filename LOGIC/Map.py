@@ -2,7 +2,7 @@ from LOGIC import Xel as Xel
 import gc, sys
 import copy
 
-radius=3 #radius maps
+radius=8 #radius maps
 position=None #position in l_map. Must be a Xel! position.exa in order to get coordinates (EXA)
 l_map=None #local map
 adj_maps={'qw':None,'we':None, 'ed':None,'ds':None,'sa':None,'qa':None} #maps stored in memory
