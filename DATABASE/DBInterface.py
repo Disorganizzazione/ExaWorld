@@ -1,18 +1,9 @@
 
 class DBInterface:
 
-    def getConnect(self):
+    def getTerrain(self, code):
         pass
-    def getTerrain(self):
+    def getPlant(self, code):
         pass
-    def searchCode(self):
+    def getanimal(self, code):
         pass
-    def getPlant(self):
-        pass
-    def getHerbivore(self):
-        pass
-    def getCarnivorous(self):
-        pass
-    def getOmnivorous(self):
-        pass
-    
