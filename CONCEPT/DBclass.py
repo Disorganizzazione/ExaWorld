@@ -76,7 +76,7 @@ class Creature():   #classe creatura dinamica che può essere usata sia tramite 
         self.maxtemp = database.creatures[index][10]
         self.minhmd = database.creatures[index][11]
         self.maxhmd = database.creatures[index][12]
-        print(database.creatures[index][8])
+        #print(database.creatures[index][8])
 
 class Terrain():
     def __init__(self,database,id):
@@ -87,20 +87,17 @@ class Terrain():
         self.minhmd = database.terrains[index][4]
         self.maxhmd = database.terrains[index][5]
 
+
+
+
+
+
+
 d = ExaDB()
-c1 = Creature(d,2)
-c2 = Creature(d,5)
-c3 = Creature(d,1)
-t1 = Terrain(d,1)
-#print(c1.prede)
-print(c2.prede)
-print(c3.prede)
-print(c2.nome)
-print(c3.nome)
-#print(c1.nome)
-#print(c1.comportamento)
-print(t1.nome)
-print(t1.mintemp)
-print(t1.maxtemp)
-print(t1.maxhmd)
-print(t1.minhmd)
+a=1
+for i in d.creatures:
+    c = Creature(d,a)
+    print(str(c.nome))
+    if c.tipo=='animale' :
+        print(str(c.comportamento))
+    a=a+1
