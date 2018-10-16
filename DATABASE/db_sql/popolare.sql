@@ -29,8 +29,6 @@ insert into erbivoro(animale, vegetale) values(5,1);
 insert into erbivoro(animale, vegetale) values(5,3);
 insert into erbivoro(animale, vegetale) values(5,2);
 
-<<<<<<< HEAD
-=======
 insert into terreno(nome,tmin,tmax,umin,umax) values('acqua',1,99,30,100);
 insert into terreno(nome,tmin,tmax,umin,umax) values('deserto',-20,50,4,30);
 insert into terreno(nome,tmin,tmax,umin,umax) values('ghiaccio',-30,0,30,100);
@@ -38,5 +36,4 @@ insert into terreno(nome,tmin,tmax,umin,umax) values('erba',10,30,30,50);
 
 
 
->>>>>>> 2c788fc1a6681cf09c26588a5f3b46bd909a3221
 
