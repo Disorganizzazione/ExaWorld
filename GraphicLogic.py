@@ -32,8 +32,8 @@ dirs = ['q', 'w', 'e', 'd', 's', 'a']
 
 scale= math.sqrt(3)
 
-coords = {'qw': (-v3R*scale -s3, (1.5*R*scale +apo).__round__()), 'we': ((v3R*scale +0).__round__(1), (1.5*R*scale +2*apo).__round__()), 'ed': ((2*v3R*scale +s3).__round__(1), (0*scale +apo).__round__()),
-          'ds': (v3R*scale +s3, (-1.5*R*scale -apo).__round__()), 'sa': ((-v3R*scale +0).__round__(1), (-1.5*R*scale -2*apo).__round__()), 'qa': ((-2*v3R*scale -s3).__round__(1), (0*scale -apo).__round__())}
+coords = {'qw': ((-v3R*scale -s3).__round__(1), (1.5*R*scale +apo).__round__()), 'we': ((v3R*scale +0).__round__(1), (1.5*R*scale +2*apo).__round__()), 'ed': ((2*v3R*scale +s3).__round__(1), (0*scale +apo).__round__()),
+          'ds': ((v3R*scale +s3).__round__(1), (-1.5*R*scale -apo).__round__()), 'sa': ((-v3R*scale +0).__round__(1), (-1.5*R*scale -2*apo).__round__()), 'qa': ((-2*v3R*scale -s3).__round__(1), (0*scale -apo).__round__())}
 
 #coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*scale +2*apo), 'ed': (2*v3R*scale +s3, 0*scale +apo),
 #          'ds': (v3R*scale +s3, -1.5*R*scale -apo), 'sa': (-v3R*scale +0, -1.5*R*scale -2*apo), 'qa': (-2*v3R*scale -s3, 0*scale -apo)}
