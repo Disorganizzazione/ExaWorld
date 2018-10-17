@@ -32,14 +32,15 @@ dirs = ['q', 'w', 'e', 'd', 's', 'a']
 
 scale= math.sqrt(3)
 
-coords = {'qw': (-v3R*scale -s3, (1.5*R*scale +apo).__round__()), 'we': ((v3R*scale +0).__round__(1), (1.5*R*scale +2*apo).__round__()), 'ed': ((2*v3R*scale +s3).__round__(1), (0*scale +apo).__round__()),
-          'ds': (v3R*scale +s3, (-1.5*R*scale -apo).__round__()), 'sa': ((-v3R*scale +0).__round__(1), (-1.5*R*scale -2*apo).__round__()), 'qa': ((-2*v3R*scale -s3).__round__(1), (0*scale -apo).__round__())}
+#coords = {'qw': ((-v3R*scale -s3).__round__(1), (1.5*R*scale +apo).__round__(1)), 'we': ((v3R*scale +0).__round__(1), (1.5*R*scale +2*apo).__round__(1)), 'ed': ((2*v3R*scale +s3).__round__(1), (0*scale +apo).__round__(1)),
+#          'ds': ((v3R*scale +s3).__round__(1), (-1.5*R*scale -apo).__round__(1)), 'sa': ((-v3R*scale +0).__round__(1), (-1.5*R*scale -2*apo).__round__(1)), 'qa': ((-2*v3R*scale -s3).__round__(1), (0*scale -apo).__round__(1))}
 
-#coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*scale +2*apo), 'ed': (2*v3R*scale +s3, 0*scale +apo),
-#          'ds': (v3R*scale +s3, -1.5*R*scale -apo), 'sa': (-v3R*scale +0, -1.5*R*scale -2*apo), 'qa': (-2*v3R*scale -s3, 0*scale -apo)}
+coords = {'qw': (-v3R*scale -s3, 1.5*R*scale +apo), 'we': (v3R*scale +0, 1.5*R*scale +2*apo), 'ed': (2*v3R*scale +s3, 0*scale +apo),
+          'ds': (v3R*scale +s3, -1.5*R*scale -apo), 'sa': (-v3R*scale +0, -1.5*R*scale -2*apo), 'qa': (-2*v3R*scale -s3, 0*scale -apo)}
 
 v3= math.sqrt(3)
 print(coords)
+#print(coords1)
 #previous exa position
 pix_pos_tmp= VBase3(0,0,0)
 
@@ -156,7 +157,8 @@ class MyApp(ShowBase):
 
         new_seven_centers = []
         for d,v in coords.items():
-            temp_c = (v[0]+submap.centerXY[0], v[1]+submap.centerXY[1])
+            temp_c = ((v[0]+submap.centerXY[0]), (v[1]+submap.centerXY[1]))
+            #print("-----------------------",v, submap.centerXY, temp_c) #BUGGONE
             new_seven_centers.append(temp_c)
         new_seven_centers.append(submap.centerXY)
 
@@ -173,15 +175,17 @@ class MyApp(ShowBase):
             
         for i in range(7):
             draw=True #check if a sub_map in new_seven_centers has to be drawn.
-            #print all rendered maps
+            #print all rendenew_seven_centersred maps
             """print("Rendered:")
             for s in rendered_submaps:
                 print(s, end='')
             print("")"""
             c = new_seven_centers[i]
             for s in rendered_submaps:
-                diff = (c[0] - s.centerXY[0], c[1] - s.centerXY[1])
-                if diff == (0,0):
+                #diff = (abs(c[0] - s.centerXY[0]), abs(c[1] - s.centerXY[1]))
+                #print("_--------------",c,s)
+                #print("DIFF= ", math.isclose(c[0], s.centerXY[0], rel_tol=0.1) and math.isclose(c[1],s.centerXY[1], rel_tol=0.1))
+                if math.isclose(c[0], s.centerXY[0], rel_tol=0.1) and math.isclose(c[1],s.centerXY[1], rel_tol=0.1):
                     draw=False #if a map in new_seven_centers is already in rendered_submaps set draw to false
                     tmp_rendered_submaps[i] = s
                     # prova
