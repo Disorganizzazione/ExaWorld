@@ -183,8 +183,8 @@ class MyApp(ShowBase):
             c = new_seven_centers[i]
             for s in rendered_submaps:
                 #diff = (abs(c[0] - s.centerXY[0]), abs(c[1] - s.centerXY[1]))
-                #print("_--------------",c,s)
-                #print("DIFF= ", math.isclose(c[0], s.centerXY[0], rel_tol=0.1) and math.isclose(c[1],s.centerXY[1], rel_tol=0.1))
+                print("_--------------",c,s)
+                print("DIFF= ", math.isclose(c[0], s.centerXY[0], rel_tol=0.1) and math.isclose(c[1],s.centerXY[1], rel_tol=0.1))
                 if math.isclose(c[0], s.centerXY[0], rel_tol=0.1) and math.isclose(c[1],s.centerXY[1], rel_tol=0.1):
                     draw=False #if a map in new_seven_centers is already in rendered_submaps set draw to false
                     tmp_rendered_submaps[i] = s
@@ -481,7 +481,7 @@ class MyApp(ShowBase):
                     Map.new_dir = None
                     new_center = (current_submap.centerXY[0] + coords[d][0], current_submap.centerXY[1] + coords[d][1])
                     for c,s in stored_submaps_list.items():
-                        if c == new_center:
+                        if math.isclose(c[0], new_center[0], rel_tol=0.1) and math.isclose(c[1], new_center[1], rel_tol=0.1):
                             new_submap = s
                             break
                     self.drawMap(new_submap)  # TODO: maybe we can give direction as parameter
