@@ -183,8 +183,8 @@ class MyApp(ShowBase):
             c = new_seven_centers[i]
             for s in rendered_submaps:
                 #diff = (abs(c[0] - s.centerXY[0]), abs(c[1] - s.centerXY[1]))
-                print("_--------------",c,s)
-                print("DIFF= ", math.isclose(c[0], s.centerXY[0], rel_tol=0.1) and math.isclose(c[1],s.centerXY[1], rel_tol=0.1))
+                #print("_--------------",c,s)
+                #print("DIFF= ", math.isclose(c[0], s.centerXY[0], rel_tol=0.1) and math.isclose(c[1],s.centerXY[1], rel_tol=0.1))
                 if math.isclose(c[0], s.centerXY[0], rel_tol=0.1) and math.isclose(c[1],s.centerXY[1], rel_tol=0.1):
                     draw=False #if a map in new_seven_centers is already in rendered_submaps set draw to false
                     tmp_rendered_submaps[i] = s
