@@ -73,6 +73,7 @@ class Creature():   #classe creatura dinamica che può essere usata sia tramite 
                     #self.prede.append(database.creatures[database.carnivores[i][1]][1])
 
         self.mintemp = database.creatures[index][9]
+        #print(str(self.mintemp) +" uguale " + str(database.creatures[index][9]))
         self.maxtemp = database.creatures[index][10]
         self.minhmd = database.creatures[index][11]
         self.maxhmd = database.creatures[index][12]
@@ -86,18 +87,3 @@ class Terrain():
         self.maxtemp = database.terrains[index][3]
         self.minhmd = database.terrains[index][4]
         self.maxhmd = database.terrains[index][5]
-
-
-
-
-
-
-
-d = ExaDB()
-a=1
-for i in d.creatures:
-    c = Creature(d,a)
-    print(str(c.nome))
-    if c.tipo=='animale' :
-        print(str(c.comportamento))
-    a=a+1
