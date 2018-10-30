@@ -117,8 +117,8 @@ class MyApp(ShowBase):
                 tile_color = "brown"
             elif tile_z<0:
                 tile_color = "blue"
-
-        return self.model.loadExaTile(self, node, v_center[0] + dx, v_center[1] + dy, tile_z, tile_color)
+        
+        return self.model.loadExaTile(node, v_center[0] + dx, v_center[1] + dy, tile_z, tile_color)
 
     def drawTriangle(self, node, submap_center, submap_xel, triangle_index, nodes_Z, open_simplex):
         center_map = submap_xel
@@ -243,7 +243,8 @@ class MyApp(ShowBase):
         self.light.setupLight(self)
 
         # Load Environment
-        self.model = LoadModel.Model
+        self.model = LoadModel.Model()
+        self.model.initialize(self)
 
         Map.init()
         map_center = (0,0)
@@ -255,13 +256,27 @@ class MyApp(ShowBase):
         print("stored in init:", stored_submaps_list)
         self.drawMap(subprova)
 
+        
+
+        self.model.loadAnimal(5,6,0, "bear")
+        self.model.loadAnimal(12,-6,0, "cow")
+        self.model.loadAnimal(7,-9,0, "panther")
+        self.model.loadAnimal(-17,5,0, "rabbit")
+        self.model.loadAnimal(-7,5,0, "wolf")
+        
+        self.model.loadPlant(8,-2,0, "fir")
+        self.model.loadPlant(-3,-2,0, "grass")
+        self.model.loadPlant(-4,2,0, "oak")
+        self.model.loadPlant(-1,17,0, "berry_bush")
+        
+        
         # Text on screen
         self.text_char_pos = None
         self.text_submap = None
         self.text_lock = None
 
         # Create the main character
-        self.char = self.model.loadCharacter(self, 0, 0, 0)
+        self.char = self.model.loadCharacter(0, 0, 0)
 
         # We will detect the height of the terrain by creating a collision
         # ray and casting it downward toward the terrain.  One ray will
