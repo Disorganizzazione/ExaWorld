@@ -14,33 +14,31 @@ class content():
         a=1
         for i in db.creatures:
             creatures=DBclass.Creature(db,a)
-            print(str(creatures.nome)+ "--------------------------------------------------")
-            print(str(creatures.mintemp) +"   "+ str(temp) +"    "+ str(creatures.maxtemp) )
-            print(str(creatures.minhmd) +"   "+ str(umid) +"    "+ str(creatures.maxhmd) )
+
             if creatures.tipo== "vegetale":
                 if temp <= creatures.maxtemp and temp >= creatures.mintemp  and umid <= creatures.maxhmd and umid >= creatures.minhmd:
                     vegetal.append(creatures)
             else:
                 if temp <= creatures.maxtemp and temp >= creatures.mintemp  and umid <= creatures.maxhmd and umid >= creatures.minhmd:
                     animal.append(creatures)
-            animal.append(None)
-            vegetal.append(None)
+
             a=a+1
+
+        animal.append(None)
+        vegetal.append(None)
         a=1
         for i in db.terrains:
             terrains=DBclass.Terrain(db,a)
             if temp <= creatures.maxtemp and temp >= creatures.mintemp  and umid <= creatures.maxhmd and umid >= creatures.minhmd:
                 terrain.append(terrains)
-            terrain.append(None)
-            #print(terrains.nome)
             a=a+1
-        
+
+        terrain.append(None)
+
+
         indexa=random.randint(0,len(animal)-1)
         indexv=random.randint(0,len(vegetal)-1)
         indext=random.randint(0,len(terrain)-1)
-        print("\n\n\n\n")
-        print(len(animal),len(vegetal),len(terrain))
-        print(indexa,indext,indexv)
 
         if gxel not in self.content.keys() :
             self.content[gxel]={}
