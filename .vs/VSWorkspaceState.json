@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\DATABASE",
-    "\\DATABASE\\db_sql"
+    "\\CONCEPT"
   ],
-  "SelectedNode": "\\DATABASE\\db_sql\\database.sql",
+  "SelectedNode": "\\CONCEPT\\Deploy.py",
   "PreviewInSolutionExplorer": false
 }
