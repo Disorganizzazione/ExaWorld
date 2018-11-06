@@ -1,4 +1,6 @@
-import DBclass
+import sys
+sys.path.append("../")
+import DATABASE.DBclass
 import random
 
 class content():
@@ -10,10 +12,10 @@ class content():
         animal=[]
         vegetal=[]
         terrain=[]
-        db=DBclass.ExaDB()
+        db=DATABASE.DBclass.ExaDB()
         a=1
         for i in db.creatures:
-            creatures=DBclass.Creature(db,a)
+            creatures=DATABASE.DBclass.Creature(db,a)
             if creatures.tipo== "vegetale":
                 if temp <= creatures.maxtemp and temp >= creatures.mintemp  and umid <= creatures.maxhmd and umid >= creatures.minhmd:
                     vegetal.append(creatures)
@@ -26,17 +28,12 @@ class content():
         vegetal.append(None)
         a=1
         for i in db.terrains:
-            terr=DBclass.Terrain(db,a)
+            terr=DATABASE.DBclass.Terrain(db,a)
             if temp <= terr.maxtemp and temp >= terr.mintemp  and umid <= terr.maxhmd and umid >= terr.minhmd:
                 terrain.append(terr)
             a=a+1
 
         terrain.append(None)
-
-        print(vegetal)
-        print(animal)
-        print(terrain)
-        print("\n\n")
 
 
         indexa=random.randint(0,len(animal)-1)
