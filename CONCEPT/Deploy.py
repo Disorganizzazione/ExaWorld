@@ -2,6 +2,7 @@ import sys
 sys.path.append("../")
 import DATABASE.DBclass
 import random
+import Snippet
 
 class content():
 
@@ -43,6 +44,19 @@ class content():
             self.content[gxel]={}
 
         self.content[gxel][xel]=(animal[indexa],vegetal[indexv],terrain[indext])
+
+    def filedictionary(self, gxel, xel):
+        if gxel not in self.content.keys() :
+            self.content[gxel]=Snippet.load(gxel)
+            if self.content[gxel]== -1 :
+                return "errore mappa non creata"
+            else:
+                return self.content[gxel][xel]
+
+    def dictionaryfile(self, gxel):
+        Snippet.save(self.content[gxel])
+        self.content.pop(gxel)
+
 
 
 
