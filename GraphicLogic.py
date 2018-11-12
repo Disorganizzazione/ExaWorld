@@ -14,6 +14,7 @@ from GRAPHIC import LoadLight, LoadModel
 from LOGIC import Map as Map
 from LOGIC import Exa as Exa
 from LOGIC import Xel as Xel
+from CONCEPT import Deploy, Snippet
 
 CHAR_MAX_ZGAP = 11  # temporary value
 apo = 0.86603
@@ -75,6 +76,8 @@ cam_rotating = False
 # char's rotation angle
 char_angle = 0
 
+god= Deploy.content()
+
 
 # Function to put instructions on the screen.
 def addInstructions(pos, msg):
@@ -120,20 +123,46 @@ class MyApp(ShowBase):
         
         return self.model.loadExaTile(node, v_center[0] + dx, v_center[1] + dy, tile_z, tile_color)
 
-    def drawTriangle(self, node, submap_center, submap_xel, triangle_index, nodes_Z, open_simplex):
+    def drawTriangle(self, node, submap_center, submap_xel, triangle_index, nodes_ZTH, open_simplex):
+        global god
         center_map = submap_xel
         for d in range(1, Map.radius+1):  # distance from center moving along triangle side t
             center_map = center_map.link[dirs[triangle_index]]
             tmp_map = center_map
             for n in range(0, d):  # each cell from triangle_index triangle edge (included) to next triangle edge (excluded)
                 if d==Map.radius and n==0: 
-                    cell_z = nodes_Z[triangle_index]
+                    cell_z = nodes_ZTH[0][triangle_index]
+                    cell_t = nodes_ZTH[1][triangle_index]
+                    cell_h = nodes_ZTH[2][triangle_index]
                 else:
-                    cell_z = ExaRandom.interpolate(self, (nodes_Z[6], nodes_Z[triangle_index], nodes_Z[(triangle_index+1)%6]), Map.radius, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a))
-                
+                    interna= ((nodes_ZTH[0][6], nodes_ZTH[0][triangle_index], nodes_ZTH[0][(triangle_index+1)%6]),
+                                (nodes_ZTH[1][6], nodes_ZTH[1][triangle_index], nodes_ZTH[1][(triangle_index+1)%6]),
+                                (nodes_ZTH[2][6], nodes_ZTH[2][triangle_index], nodes_ZTH[2][(triangle_index+1)%6])
+                    )
+                    res= ExaRandom.interpolate(self, interna, Map.radius, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a))
+
+                    (cell_z, cell_t, cell_h) = res
                 cell_z += open_simplex.noise2d(tmp_map.exa.x, tmp_map.exa.e)/5
                 self.insertTile(node, submap_center, tmp_map, cell_z)
                 tmp_map = tmp_map.link[dirs[(triangle_index+2)%6]]
+
+                esterna= god.creation(submap_center, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a), cell_t, cell_h) #animale, vegetale, terreno
+
+                #load models
+
+                dx, dy = submap_center
+                (q,r) = xel.exa.x, xel.exa.e
+                v_center = VBase2(s3*q, v3s*2*(q/2+r))
+
+                if esterna[0]!=None:
+                    self.model.loadAnimal(v_center[0] + dx, v_center[1] + dy,cell_z, esterna[0].nome)
+                if esterna[1]!=None:
+                    self.model.loadPlant(v_center[0] - side + dx, v_center[1] + dy, cell_z, esterna[1].nome)
+
+                print(god.content)
+
+
+
 
     def drawSubmap(self, submap):
         l_map = Map.l_map  # TODO: chose if letting this way or pass l_map as parameter
@@ -146,7 +175,8 @@ class MyApp(ShowBase):
         ### Graphic map construction, triangle-by-triangle way
         center_map = l_map
         for t in range(6):  # scan each triangle
-            self.drawTriangle(submap.node, submap.centerXY, center_map, t, submap.array_Z, open_s)
+            interna = (submap.array_Z, submap.array_T, submap.array_H)
+            self.drawTriangle(submap.node, submap.centerXY, center_map, t, interna, open_s)
         ###
         return submap
 
@@ -257,7 +287,7 @@ class MyApp(ShowBase):
         self.drawMap(subprova)
 
         
-
+"""
         self.model.loadAnimal(5,6,0, "bear")
         self.model.loadAnimal(12,-6,0, "cow")
         self.model.loadAnimal(7,-9,0, "panther")
@@ -268,7 +298,7 @@ class MyApp(ShowBase):
         self.model.loadPlant(-3,-2,0, "grass")
         self.model.loadPlant(-4,2,0, "oak")
         self.model.loadPlant(-1,17,0, "berry_bush")
-        
+        """
         
         # Text on screen
         self.text_char_pos = None

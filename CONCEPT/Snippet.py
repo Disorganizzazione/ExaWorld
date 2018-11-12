@@ -25,12 +25,3 @@ def load(filename):             #funzione che carica un file json da un percorso
     except:
         return("brutto errore")
 
-dict = {
-    'Name': 'Zara',
-    'Age': 7,
-    'Nick' : 'Za',
-    'Class': 'First'
-}
-save(dict, "0,1,2")
-prova = load("0,1,2.json")
-print(prova)

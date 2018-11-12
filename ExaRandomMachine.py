@@ -23,7 +23,9 @@ class ExaRandom:
         return Submap.Submap(submapXY, rnd_Z, rnd_T, rnd_H, rnd_seed)
 
     def interpolate(self, vABC, radius, exaP):
-        (vA, vB, vC) = vABC
+        (zA, zB, zC) = vABC[0]
+        (tA, tB, tC) = vABC[1]
+        (hA, hB, hC) = vABC[2]
         (eP, xP, aP) = exaP
 
         vertex_index = None
@@ -85,5 +87,7 @@ class ExaRandom:
         wB = (eC*xP_xC + -xC*eP_eC) / divisore
         wC = 1 - wA - wB
         """
-        return (wA*vA + wB*vB + wC*vC)/(wA+wB+wC)
+        return ((wA*zA + wB*zB + wC*zC)/(wA+wB+wC),
+        (wA*tA + wB*tB + wC*tC)/(wA+wB+wC),
+        (wA*hA + wB*hB + wC*hC)/(wA+wB+wC))
         
