@@ -52,13 +52,12 @@ class content():
         else:
             return self.content[gxel][xel]
 
-    def filedictionary(self, gxel, xel):
+    def filedictionary(self, gxel):
         if gxel not in self.content.keys() :
             self.content[gxel]=Snippet.load(gxel)
             if self.content[gxel]== -1 :
                 return "errore mappa non creata"
-            else:
-                return self.content[gxel][xel]
+            
 
     def dictionaryfile(self, gxel):
         Snippet.save(self.content[gxel])
