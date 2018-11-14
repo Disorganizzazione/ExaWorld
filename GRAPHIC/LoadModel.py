@@ -74,13 +74,13 @@ class Model:
         return self.char
 
     def loadAnimal(self, x, y, z, type):
-        animal = self.animal_obj[type]
+        animal = copy.copy(self.animal_obj[type])
         animal.reparentTo(self.render)
         animal.setPos(x, y, z)
         return animal
 
     def loadPlant(self, x, y, z, type):
-        plant = self.plant_obj[type]
+        plant = copy.copy(self.plant_obj[type])
         plant.reparentTo(self.render)
         plant.setPos(x, y, z)
         return plant

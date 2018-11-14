@@ -14,7 +14,8 @@ from GRAPHIC import LoadLight, LoadModel
 from LOGIC import Map as Map
 from LOGIC import Exa as Exa
 from LOGIC import Xel as Xel
-from CONCEPT import Deploy, Snippet
+from CONCEPT import Snippet
+import Deploy
 
 CHAR_MAX_ZGAP = 11  # temporary value
 apo = 0.86603
@@ -151,7 +152,7 @@ class MyApp(ShowBase):
                 #load models
 
                 dx, dy = submap_center
-                (q,r) = xel.exa.x, xel.exa.e
+                (q,r) = tmp_map.exa.x, tmp_map.exa.e
                 v_center = VBase2(s3*q, v3s*2*(q/2+r))
 
                 if esterna[0]!=None:
@@ -287,7 +288,7 @@ class MyApp(ShowBase):
         self.drawMap(subprova)
 
         
-"""
+        """
         self.model.loadAnimal(5,6,0, "bear")
         self.model.loadAnimal(12,-6,0, "cow")
         self.model.loadAnimal(7,-9,0, "panther")
