@@ -6,11 +6,12 @@ import random
 import copy
 
 switch_exa = {
-        "green": "Exa.egg",
-        "red": "Exa_red.egg",
+        "grass": "exa_grass.egg",
+        "ice": "exa_ice.egg",
         "yellow": "Exa_yellow.egg",
-        "brown": "Exa_brown.egg",
-        "blue": "Exa_blue.egg"
+        "desert": "exa_desert.egg",
+        "rock": "exa_rock.egg",
+        "water": "exa_water.egg"
         }
 
 switch_animal = {
@@ -30,11 +31,12 @@ switch_plant = {
 
 class Model:
     exa_obj=  {
-        "green": None, 
-        "red": None, 
+        "grass": None, 
+        "ice": None, 
         "yellow": None, 
-        "brown": None, 
-        "blue": None
+        "desert" : None,
+        "rock": None, 
+        "water": None
         }
     animal_obj= {
         "bear": None, 
@@ -77,10 +79,12 @@ class Model:
         animal = copy.copy(self.animal_obj[type])
         animal.reparentTo(parent)
         animal.setPos(x, y, z)
+        animal.setH(random.randint(0, 360))
         return animal
 
     def loadPlant(self, parent, x, y, z, type):
         plant = copy.copy(self.plant_obj[type])
         plant.reparentTo(parent)
         plant.setPos(x, y, z)
+        plant.setH(random.randint(0, 360))
         return plant

@@ -29,10 +29,10 @@ insert into erbivoro(animale, vegetale) values(5,1);
 insert into erbivoro(animale, vegetale) values(5,3);
 insert into erbivoro(animale, vegetale) values(5,2);
 
-insert into terreno(nome,tmin,tmax,umin,umax) values('acqua',1,99,30,100);
-insert into terreno(nome,tmin,tmax,umin,umax) values('deserto',-20,50,4,30);
-insert into terreno(nome,tmin,tmax,umin,umax) values('ghiaccio',-30,0,30,100);
-insert into terreno(nome,tmin,tmax,umin,umax) values('erba',10,30,30,50);
+insert into terreno(nome,tmin,tmax,umin,umax) values('water',1,99,30,100);
+insert into terreno(nome,tmin,tmax,umin,umax) values('desert',-20,50,4,30);
+insert into terreno(nome,tmin,tmax,umin,umax) values('ice',-30,0,30,100);
+insert into terreno(nome,tmin,tmax,umin,umax) values('grass',10,30,30,50);
 
 
 

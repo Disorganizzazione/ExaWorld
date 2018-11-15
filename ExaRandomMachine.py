@@ -16,7 +16,7 @@ class ExaRandom:
         return result
 
     def create_submap(self, submapXY):
-        rnd_Z = self.randomize_values(7, 0, 100)
+        rnd_Z = self.randomize_values(7, 25, 25)
         rnd_T = self.randomize_values(7, 10, 80)
         rnd_H = self.randomize_values(7, 40, 50)
         rnd_seed = random.randint(0,100)

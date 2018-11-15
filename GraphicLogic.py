@@ -106,21 +106,18 @@ def SubmapNode(name="set_N"):
 
 class MyApp(ShowBase):
 
-    def insertTile(self, node, submap_center, xel:Xel.Xel, tile_z):
+    def insertTile(self, node, submap_center, xel:Xel.Xel, tile_z, terrain):
         dx, dy = submap_center
         (q,r) = xel.exa.x, xel.exa.e
         v_center = VBase2(s3*q, v3s*2*(q/2+r))
 
-        tile_color = "green" #TODO
-        if q == r == 0:
-            tile_color = "red"
-        elif abs(q) == Map.radius or abs(r) == Map.radius or abs(xel.exa.a) == Map.radius:
+        tile_color = "rock" #TODO
+        if abs(q) == Map.radius or abs(r) == Map.radius or abs(xel.exa.a) == Map.radius:
             tile_color = "yellow"
         else:  #temporary
-            if tile_z > 3:
-                tile_color = "brown"
-            elif tile_z<0:
-                tile_color = "blue"
+            if terrain=="water":
+                tile_z=0
+            tile_color = terrain
         
         return self.model.loadExaTile(node, v_center[0] + dx, v_center[1] + dy, tile_z, tile_color)
 
@@ -144,8 +141,6 @@ class MyApp(ShowBase):
 
                     (cell_z, cell_t, cell_h) = res
                 cell_z += open_simplex.noise2d(tmp_map.exa.x, tmp_map.exa.e)/5
-                self.insertTile(node, submap_center, tmp_map, cell_z)
-                tmp_map = tmp_map.link[dirs[(triangle_index+2)%6]]
 
                 esterna= god.creation(submap_center, (tmp_map.exa.e, tmp_map.exa.x, tmp_map.exa.a), cell_t, cell_h) #animale, vegetale, terreno
 
@@ -159,8 +154,16 @@ class MyApp(ShowBase):
                     self.model.loadAnimal(node, v_center[0] + dx, v_center[1] + dy,cell_z, esterna[0].nome)
                 if esterna[1]!=None:
                     self.model.loadPlant(node, v_center[0] - side + dx, v_center[1] + dy, cell_z, esterna[1].nome)
+                
+                if esterna[2]!=None:
+                    terrain_name= esterna[2].nome
+                else: 
+                    terrain_name= "rock"
 
-                print(god.content)
+                self.insertTile(node, submap_center, tmp_map, cell_z, terrain_name)
+                       
+                tmp_map = tmp_map.link[dirs[(triangle_index+2)%6]]
+
 
 
 
@@ -171,7 +174,15 @@ class MyApp(ShowBase):
         open_s = OpenSimplex(submap.noise_seed)
 
         #Center
-        self.insertTile(submap.node, submap.centerXY, l_map, submap.array_Z[6])
+        global god
+        esterna= god.creation(submap.centerXY, (0, 0, 0), submap.array_T[6], submap.array_H[6]) #animale, vegetale, terreno
+        
+        if esterna[2]!=None:
+            terrain_name= esterna[2].nome
+        else: 
+            terrain_name= "rock"
+            
+        self.insertTile(submap.node, submap.centerXY, l_map, submap.array_Z[6], terrain_name)
 
         ### Graphic map construction, triangle-by-triangle way
         center_map = l_map
