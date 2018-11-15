@@ -7,18 +7,21 @@ vertices_exa = [VBase3(1, -1, 0), VBase3(1, 0, -1), VBase3(0, 1, -1)]  # q,w,e (
 
 class ExaRandom:
 
-    def randomize_values(self, number_of_values, mid_value,  max_diff):
+    def randomize_values(self, number_of_values, mid_value,  max_diff, negative):
         rnd_list = [(0, round(max_diff*0.10))] * 80 + [(round(max_diff*0.11), round(max_diff*0.4))] * 15 + [(round(max_diff*0.41),  max_diff)] * 5
         result = []
         for i in range(0, number_of_values):
             chosen = random.choice(rnd_list)
-            result.append(mid_value + round(random.randint(chosen[0], chosen[1]) / 10 * random.choice([-1, 1])))
+            if negative:
+                result.append(mid_value + round(random.randint(chosen[0], chosen[1]) / 10 * random.choice([-1, 1])))
+            else:
+                result.append(mid_value + round(random.randint(chosen[0], chosen[1]) / 10))
         return result
 
     def create_submap(self, submapXY):
-        rnd_Z = self.randomize_values(7, 25, 25)
-        rnd_T = self.randomize_values(7, 10, 80)
-        rnd_H = self.randomize_values(7, 40, 50)
+        rnd_Z = self.randomize_values(7, 0, 100, False)
+        rnd_T = self.randomize_values(7, 10, 80, True)
+        rnd_H = self.randomize_values(7, 40, 50, True)
         rnd_seed = random.randint(0,100)
         return Submap.Submap(submapXY, rnd_Z, rnd_T, rnd_H, rnd_seed)
 
