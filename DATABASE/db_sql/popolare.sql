@@ -8,10 +8,10 @@ insert into creature(nome, comp, tipo, resistenza, forza, velocita, dieta, tmin,
 insert into creature(nome, comp, tipo, resistenza, forza, velocita, dieta, tmin, tmax, umin, umax) values ('bear', 3, 'a', 9, 7, 2, 'c', -20, 30, 10, 60);
 insert into creature(nome, comp, tipo, resistenza, forza, velocita, dieta, tmin, tmax, umin, umax) values ('panther', 4, 'a', 5, 4, 8, 'c', 15, 40, 5, 55);
 insert into creature(nome, comp, tipo, resistenza, forza, velocita, dieta, tmin, tmax, umin, umax) values ('rabbit', 5, 'a', 2, 1, 9, 'e', -15, 30, 20, 60);
-insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('grass', 90, 'v', 4, 0, 30, 10, 90 );
-insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('oak', 30, 'v', 40, -10, 45, 20, 50 );
+insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('grass', 90, 'v', 4, 0, 30, 30, 80 );
+insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('oak', 30, 'v', 40, 0, 30, 20, 50 );
 insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('berry_bush', 10, 'v', 7, -20, 30, 15, 70 );
-insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('fir', 50, 'v', 20, -50, 30, 10, 60 );
+insert into creature(nome, riprod, tipo, resistenza, tmin, tmax, umin, umax) values ('fir', 50, 'v', 20, -30, 15, 10, 60 );
 
 insert into carnivoro(predatore, preda) values(1,5);
 insert into carnivoro(predatore, preda) values(3,1);

@@ -73,14 +73,14 @@ class Model:
         self.char.setPos(x, y, z)
         return self.char
 
-    def loadAnimal(self, x, y, z, type):
+    def loadAnimal(self, parent, x, y, z, type):
         animal = copy.copy(self.animal_obj[type])
-        animal.reparentTo(self.render)
+        animal.reparentTo(parent)
         animal.setPos(x, y, z)
         return animal
 
-    def loadPlant(self, x, y, z, type):
+    def loadPlant(self, parent, x, y, z, type):
         plant = copy.copy(self.plant_obj[type])
-        plant.reparentTo(self.render)
+        plant.reparentTo(parent)
         plant.setPos(x, y, z)
         return plant

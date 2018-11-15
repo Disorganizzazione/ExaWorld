@@ -156,9 +156,9 @@ class MyApp(ShowBase):
                 v_center = VBase2(s3*q, v3s*2*(q/2+r))
 
                 if esterna[0]!=None:
-                    self.model.loadAnimal(v_center[0] + dx, v_center[1] + dy,cell_z, esterna[0].nome)
+                    self.model.loadAnimal(node, v_center[0] + dx, v_center[1] + dy,cell_z, esterna[0].nome)
                 if esterna[1]!=None:
-                    self.model.loadPlant(v_center[0] - side + dx, v_center[1] + dy, cell_z, esterna[1].nome)
+                    self.model.loadPlant(node, v_center[0] - side + dx, v_center[1] + dy, cell_z, esterna[1].nome)
 
                 print(god.content)
 
