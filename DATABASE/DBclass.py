@@ -2,10 +2,8 @@ import psycopg2
 
 class ExaDB(): #insieme delle strutture contenenti gli elementi del database
     def __init__(self):
-        try:
-            conn = psycopg2.connect("dbname=exaworld user=postgres") #connessione database
-        except:
-            print("dbconnection fail")
+        
+        conn = psycopg2.connect("dbname=exaworld user=postgres") #connessione database
         cur = conn.cursor()                                     #cursore per eseguire le query sul database
         cur.execute("select * from world.terreno", vars = None)
         self.terrains = cur.fetchall()                          #una volta visualizzate le tabelle, ognuna viene trasformata in una lista di liste
