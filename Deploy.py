@@ -6,7 +6,6 @@ class content():
 
     def __init__(self):
         self.content={}
-
         self.counter=-1
 
     def creation(self, gxel, xel, temp, umid):
@@ -20,23 +19,8 @@ class content():
             vegetal=[]
             terrain=[]
             db=DBclass.ExaDB()
-            a=1
 
-            if (self.counter%random.randint(5,15))==0:
-                for i in db.creatures:
-                    creatures= DBclass.Creature(db,a)
-                    if creatures.tipo== "vegetale":
-                        if temp <= creatures.maxtemp and temp >= creatures.mintemp  and umid <= creatures.maxhmd and umid >= creatures.minhmd:
-                            vegetal.append(creatures)
-                    
-                    else:
-                        if temp <= creatures.maxtemp and temp >= creatures.mintemp  and umid <= creatures.maxhmd and umid >= creatures.minhmd:
-                            animal.append(creatures)
-                    
-                    a=a+1
 
-            vegetal.append(None)
-            animal.append(None)
             a=1
             for i in db.terrains:
                 terr= DBclass.Terrain(db,a)
@@ -45,9 +29,31 @@ class content():
                 
                 a=a+1
             terrain.append(None)
+            indext=random.randint(0,len(terrain)-1)
+
+            if terrain[indext]!=None:
+                if terrain[indext].nome=="water":
+                    self.content[gxel][xel]=(None, None, terrain[indext])
+                    return (None, None, terrain[indext])
+
+            if self.counter%random.randint(5,20)==0:
+                a=1
+                for i in db.creatures:
+                    creatures= DBclass.Creature(db,a)
+                    if creatures.tipo== "vegetale":
+                        if temp <= creatures.maxtemp and temp >= creatures.mintemp  and umid <= creatures.maxhmd and umid >= creatures.minhmd:
+                            vegetal.append(creatures)
+                    if creatures.tipo== "animale":
+                        if temp <= creatures.maxtemp and temp >= creatures.mintemp  and umid <= creatures.maxhmd and umid >= creatures.minhmd:
+                            animal.append(creatures)
+                    
+                    a=a+1
+
+            vegetal.append(None)
+            animal.append(None)
+           
             indexa=random.randint(0,len(animal)-1)
             indexv=random.randint(0,len(vegetal)-1)
-            indext=random.randint(0,len(terrain)-1)
 
             self.content[gxel][xel]=(animal[indexa],vegetal[indexv],terrain[indext])
 
