@@ -1,6 +1,10 @@
 # ExaWorld
 Exaworld, a project "per la simulazione di un ecosistema virtuale" (for a virtual ecosystem simulation) created by Bultrini Francesco, Ceccagnoli Andrea, Mariani Filippo, Mazza Giorgio for computer science's stage.
 
+<h1 align=center>
+<img src="landscape.png" width=100%>
+</h1>
+
 ## Made up of 4 modules:
 #### LOGIC
     logic map, hexagons and links generator
