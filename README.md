@@ -1,18 +1,15 @@
 ## ExaWorld
+Exaworld, a project "per la simulazione di un ecosistema virtuale" (for a virtual ecosystem simulation) created by Bultrini Francesco, Ceccagnoli Andrea, Mariani Filippo, Mazza Giorgio for computer science's stage.
 
-ExaWorld, un progetto "per la simulazione di un ecosistema virtuale" creato da Filippo Mariani, Francesco Bultrini, Giorgio Mazza ed Andrea Ceccagnoli per il tirocinio di informatica.
-
-##il progetto è stato diviso in 4 parti:
-
+# Made up of 4 modules:
 #LOGIC:
-    consiste nella parte logica del progetto, mappa spoglia generatore delle ,mappe esagonali e strutture dati che le compongono
+    logic map, hexagons and links generator
+    
+#DATABASE
+    database structure containing terrains, plants and animals. Made using psycopg2.
 
 #CONCEPT
-    la parte di popolamento della mappa, quindi valori per casella (temperatura, altezza, umidità) i vari terreni, le piante e le creature
-
-#DATABASE
-    il db su cui sono stanziati i dati delle creature
+    fills the map with tiles' values (temperature, humidity, altitude), terrains, plants and animals.
 
 #GRAPHIC
-    la parte grafica fatta con panda3d
-
+    3d models made in Blender and implementation via Panda3d engine
