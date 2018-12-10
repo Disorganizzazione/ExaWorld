@@ -3,9 +3,9 @@
   <Scalar> diffr { 0.313258 }
   <Scalar> diffg { 0.209801 }
   <Scalar> diffb { 0.127169 }
-  <Scalar> specr { 0.500000 }
-  <Scalar> specg { 0.500000 }
-  <Scalar> specb { 0.500000 }
+  <Scalar> specr { 0.050000 }
+  <Scalar> specg { 0.050000 }
+  <Scalar> specb { 0.050000 }
   <Scalar> shininess { 12.5 }
   <Scalar> ambr { 1.000000 }
   <Scalar> ambg { 1.000000 }
@@ -19,9 +19,9 @@
   <Scalar> diffr { 0.219742 }
   <Scalar> diffg { 0.085618 }
   <Scalar> diffb { 0.046244 }
-  <Scalar> specr { 0.500000 }
-  <Scalar> specg { 0.500000 }
-  <Scalar> specb { 0.500000 }
+  <Scalar> specr { 0.050000 }
+  <Scalar> specg { 0.050000 }
+  <Scalar> specb { 0.050000 }
   <Scalar> shininess { 12.5 }
   <Scalar> ambr { 1.000000 }
   <Scalar> ambg { 1.000000 }
@@ -35,9 +35,9 @@
   <Scalar> diffr { 0.024850 }
   <Scalar> diffg { 0.013372 }
   <Scalar> diffb { 0.009560 }
-  <Scalar> specr { 0.500000 }
-  <Scalar> specg { 0.500000 }
-  <Scalar> specb { 0.500000 }
+  <Scalar> specr { 0.050000 }
+  <Scalar> specg { 0.050000 }
+  <Scalar> specb { 0.050000 }
   <Scalar> shininess { 12.5 }
   <Scalar> ambr { 1.000000 }
   <Scalar> ambg { 1.000000 }

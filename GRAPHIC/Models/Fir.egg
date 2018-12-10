@@ -3,9 +3,9 @@
   <Scalar> diffr { 0.043584 }
   <Scalar> diffg { 0.089546 }
   <Scalar> diffb { 0.038537 }
-  <Scalar> specr { 0.500000 }
-  <Scalar> specg { 0.500000 }
-  <Scalar> specb { 0.500000 }
+  <Scalar> specr { 0.050000 }
+  <Scalar> specg { 0.050000 }
+  <Scalar> specb { 0.050000 }
   <Scalar> shininess { 12.5 }
   <Scalar> ambr { 1.000000 }
   <Scalar> ambg { 1.000000 }
@@ -19,9 +19,9 @@
   <Scalar> diffr { 0.342952 }
   <Scalar> diffg { 0.134616 }
   <Scalar> diffb { 0.117622 }
-  <Scalar> specr { 0.500000 }
-  <Scalar> specg { 0.500000 }
-  <Scalar> specb { 0.500000 }
+  <Scalar> specr { 0.050000 }
+  <Scalar> specg { 0.050000 }
+  <Scalar> specb { 0.050000 }
   <Scalar> shininess { 12.5 }
   <Scalar> ambr { 1.000000 }
   <Scalar> ambg { 1.000000 }

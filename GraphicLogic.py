@@ -61,9 +61,9 @@ new_submap = None
 # distance of each char's step in dt (delta time)
 step = 5    
 # distance between camera and char in x,y plane
-cam_dist = 5
+cam_dist = 6
 # distance between camera and char in z axis
-cam_dz = 10
+cam_dz = 8
 # angles (in rad) that the camera can assume.
 # In deg: {-120, 180, 120, 60, 0, -60}
 cam_angle = {'q': -PI*2/3.0, 'w': PI, 'e': PI*2/3.0, 'd': PI/3.0, 's': 0, 'a': -PI/3.0}
@@ -112,12 +112,12 @@ class MyApp(ShowBase):
         v_center = VBase2(s3*q, v3s*2*(q/2+r))
 
         tile_color = "rock" #TODO
-        if abs(q) == Map.radius or abs(r) == Map.radius or abs(xel.exa.a) == Map.radius:
-            tile_color = "yellow"
-        else:  #temporary
-            if terrain=="water":
-                tile_z=0
-            tile_color = terrain
+        #if abs(q) == Map.radius or abs(r) == Map.radius or abs(xel.exa.a) == Map.radius:
+        #    tile_color = "yellow"
+        #else:  #temporary
+        if terrain=="water":
+            tile_z=0
+        tile_color = terrain
         
         return self.model.loadExaTile(node, v_center[0] + dx, v_center[1] + dy, tile_z, tile_color)
 
@@ -340,11 +340,11 @@ class MyApp(ShowBase):
         self.cTrav.addCollider(self.charGroundColNp, self.charGroundHandler)
 
         # Uncomment this line to see the collision rays
-        self.charGroundColNp.show()
+        #self.charGroundColNp.show()
 
         # Uncomment this line to show a visual representation of the
         # collisions occuring
-        self.cTrav.showCollisions(render)
+        #self.cTrav.showCollisions(render)
 
         # This is used to store which keys are currently pressed.
         self.keyMap = {"restart": 0, "left": 0, "right": 0, "forward": 0, "backward": 0,
@@ -392,7 +392,7 @@ class MyApp(ShowBase):
         self.disableMouse()
         lens = OrthographicLens()
         lens.setFilmSize(20, 16)
-        lens.setNear(-1)
+        lens.setNear(-10)
         self.cam.node().setLens(lens)
         self.camera.setPos(self.char.getPos() +
                            (math.sin(cam_angle[cam_view]) * cam_dist,
