@@ -61,9 +61,9 @@ new_submap = None
 # distance of each char's step in dt (delta time)
 step = 5    
 # distance between camera and char in x,y plane
-cam_dist = 6
+cam_dist = 4
 # distance between camera and char in z axis
-cam_dz = 8
+cam_dz = 2.5
 # angles (in rad) that the camera can assume.
 # In deg: {-120, 180, 120, 60, 0, -60}
 cam_angle = {'q': -PI*2/3.0, 'w': PI, 'e': PI*2/3.0, 'd': PI/3.0, 's': 0, 'a': -PI/3.0}
@@ -391,8 +391,8 @@ class MyApp(ShowBase):
         # Set up the camera with isometric perspective
         self.disableMouse()
         lens = OrthographicLens()
-        lens.setFilmSize(20, 16)
-        lens.setNear(-10)
+        lens.setFilmSize(20, 11.25)
+        lens.setNear(-20)
         self.cam.node().setLens(lens)
         self.camera.setPos(self.char.getPos() +
                            (math.sin(cam_angle[cam_view]) * cam_dist,
@@ -555,6 +555,7 @@ class MyApp(ShowBase):
             self.camera.setX(self.char.getX() + math.sin(current_angle*DEG_RAD) * cam_dist)
             self.camera.setY(self.char.getY() - math.cos(current_angle*DEG_RAD) * cam_dist)
             self.camera.setZ(self.char.getZ() + cam_dz)
+
             self.camera.lookAt(self.char)
 
         else:  # cam is rotating
@@ -568,7 +569,6 @@ class MyApp(ShowBase):
 
     # Task to animate the camera when user changes the angle of view.
     # Make the camera rotate counterclockwise around the character in x,y plane
-    # TODO: add cam's "shortest path". The direction of rotation must be chosen according to the final angle of view
     def spinCameraTask(self, task):
         angle_deg = int(round(self.camera.getH())) + cam_delta_angle
         angle_rad = angle_deg * DEG_RAD
@@ -578,7 +578,7 @@ class MyApp(ShowBase):
         self.camera.setPos(delta_v)
         self.camera.lookAt(self.char)
         return task.done
-
+        
     def restartGame(self):
         pass
 
