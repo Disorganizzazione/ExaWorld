@@ -13,7 +13,7 @@ Exaworld, a project "per la simulazione di un ecosistema virtuale" (for a virtua
     database structure containing terrains, plants and animals. Made using psycopg2.
 
 #### CONCEPT
-    fills the map with tiles' values (temperature, humidity, altitude), terrains, plants and animals.
+    fills the map with procedurally generated tiles' values (temperature, humidity, altitude), terrains, plants and animals.
 
 #### GRAPHIC
     3d models made in Blender and implementation via Panda3d engine
